@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión - Liga Titanes Visa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="pantalla-inicio" class="container">
+        <h1>GESTIÓN DE EQUIPOS</h1>
+        <p>LIGA TITANES VISA 2026</p>
+        
+        <div class="selector-equipos">
+            <div class="card" onclick="seleccionarEquipo('Deportivo')">
+                <div class="logo-placeholder">D</div>
+                <h2>DEPORTIVO</h2>
+                <button>ENTRAR</button>
+            </div>
+
+            <div class="card" onclick="seleccionarEquipo('Halcones')">
+                <div class="logo-placeholder">H</div>
+                <h2>HALCONES</h2>
+                <button>ENTRAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="container" style="display:none;">
+        <header>
+            <button onclick="irInicio()">⬅ Volver</button>
+            <h2 id="nombre-equipo-titulo">Equipo</h2>
+        </header>
+
+        <section class="info-top">
+            <div class="stat">Saldo: <span id="saldo-actual">$200M</span></div>
+            <div class="stat">Estadio: <span id="tipo-estadio">Grande</span></div>
+        </section>
+
+        <section class="buscador">
+            <input type="text" id="input-fichaje" placeholder="Buscar jugador en Transfermarkt o Rival...">
+            <button onclick="buscarFichaje()">BUSCAR</button>
+        </section>
+
+        <div id="resultado-busqueda"></div>
+
+        <section class="plantilla">
+            <h3>Lista de Jugadores</h3>
+            <table id="tabla-plantilla">
+                <thead>
+                    <tr>
+                        <th>Jugador</th>
+                        <th>Valor</th>
+                        <th>Salario</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="body-plantilla">
+                    </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
