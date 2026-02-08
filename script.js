@@ -1,4 +1,4 @@
-const primera = ["Deportivo", "Halcones", "PSG", "Chelsea", "Barca", "Real Madrid", "Bayern Munich", "Inter de Milán"];
+const primera = ["Bayern Munich", "Inter de Milán", "Chelsea", "Barca", "PSG", "Real Madrid", "Deportivo", "Halcones"];
 const segunda = ["Milán", "Manchester City", "Arsenal", "Atlético de Madrid", "Bayer Leverkusen", "Al Nassr", "Botafogo", "Sporting Portugal"];
 
 // 1. PESTAÑAS PRINCIPALES (Tablas, Reglamento, etc.)
