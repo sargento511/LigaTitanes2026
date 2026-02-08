@@ -1,0 +1,31 @@
+body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #f0f0f0; margin: 0; padding: 20px; }
+.container { max-width: 1200px; margin: auto; background: #1a1a1a; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+h1 { text-align: center; color: #ffc107; text-transform: uppercase; letter-spacing: 4px; }
+
+.tab-menu { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; border-bottom: 2px solid #333; padding-bottom: 20px; }
+.tab-btn { background: #2a2a2a; color: #aaa; border: none; padding: 12px 25px; cursor: pointer; border-radius: 10px; font-weight: bold; transition: 0.4s; font-size: 1rem; }
+.tab-btn.active { background: #ffc107; color: #000; transform: translateY(-3px); }
+.tab-btn:hover { background: #444; color: #fff; }
+
+.tab-content { display: none; animation: slideUp 0.4s ease-out; }
+.tab-content.active { display: block; }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.grid-tablas { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; border-radius: 10px; overflow: hidden; }
+th, td { padding: 15px; text-align: center; border-bottom: 1px solid #333; }
+th { background: #252525; color: #ffc107; }
+tr:hover { background: #222; }
+
+.card { background: #222; padding: 25px; border-radius: 15px; border-left: 6px solid #ffc107; line-height: 1.8; }
+.error { border-left-color: #f44336; }
+ul { padding-left: 20px; }
+
+/* Estilos para Sub-pestañas de Finanzas */
+.sub-nav { display: flex; gap: 10px; margin-bottom: 20px; background: #252525; padding: 10px; border-radius: 12px; }
+.sub-btn { background: transparent; color: #fff; border: 1px solid #444; padding: 8px 15px; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+.sub-btn.active { background: #ffc107; color: #000; border-color: #ffc107; }
+.sub-content { display: none; animation: fadeIn 0.3s ease; }
+.sub-content.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

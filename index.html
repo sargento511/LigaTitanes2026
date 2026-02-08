@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga Titanes Visa 2026</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>LIGA TITANES VISA 2026</h1>
+            <nav class="tab-menu">
+                <button class="tab-btn active" onclick="openTab(event, 'tablas')">📊 Tablas</button>
+                <button class="tab-btn" onclick="openTab(event, 'reglamento')">📜 Reglamento</button>
+                <button class="tab-btn" onclick="openTab(event, 'fichajes')">⚽ Fichajes</button>
+                <button class="tab-btn" onclick="openTab(event, 'finanzas')">💰 Finanzas</button>
+                <button class="tab-btn" onclick="openTab(event, 'multas')">⏰ Multas</button>
+            </nav>
+        </header>
+
+        <div id="tablas" class="tab-content" style="display: block;">
+            <div class="grid-tablas">
+                <div class="wrap">
+                    <h2>Primera División</h2>
+                    <table>
+                        <thead><tr><th>Pos</th><th>Club</th><th>Sponsor</th><th>Estatus</th></tr></thead>
+                        <tbody id="body-primera"></tbody>
+                    </table>
+                </div>
+                <div class="wrap">
+                    <h2>Segunda División</h2>
+                    <table>
+                        <thead><tr><th>Pos</th><th>Club</th><th>Sponsor</th><th>Estatus</th></tr></thead>
+                        <tbody id="body-segunda"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="reglamento" class="tab-content" style="display: none;">
+            <div class="card">
+                <h3>⚖️ Sistema de Liga</h3>
+                <ul>
+                    <li><strong>Estructura:</strong> 8 clubes por división con 7 jornadas de fase regular.</li>
+                    <li><strong>Liguilla:</strong> Clasifican los primeros 4 de Primera (1° vs 4°, 2° vs 3°).</li>
+                    <li><strong>Descenso:</strong> 7° y 8° de Primera bajan directo. 6° juega playoffs con 5 pts o menos.</li>
+                    <li><strong>Ascenso:</strong> 1° y 2° de Segunda suben directo. 3° juega contra el 6° de Primera.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="fichajes" class="tab-content" style="display: none;">
+            <div class="card">
+                <h3>🚫 Reglas de Mercado</h3>
+                <ul>
+                    <li>No se fichan jugadores de 1ra/2ra real, campeones vigentes o del Real Madrid.</li>
+                    <li><strong>Excepción:</strong> El campeón de Primera Liga Titanes ficha libremente.</li>
+                    <li><strong>Prioridad:</strong> En empalmes, manda la mejor posición de la temporada anterior.</li>
+                    <li><strong>Retorno:</strong> Venta al club real por el 50% de valor Transfermarkt.</li>
+                    <li><strong>- </strong>Debe de cumplir una temporada para poder ser vendido.</li>
+                    <li><strong>- </strong>Independientemente de como cambio el valor de el jugador en transfermark, se tomara el precio actual.</li>
+                </ul>
+            </div>
+        </div>
+<div id="finanzas" class="tab-content" style="display: none;">
+        <div class="sub-nav" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center;">
+            <button class="sub-btn active" onclick="openSubTab(event, 'ingresos')">📈 Ingresos y Premios</button>
+            <button class="sub-btn" onclick="openSubTab(event, 'gastos')">📉 Gastos y Salarios</button>
+        </div>
+
+        <div id="ingresos" class="sub-content active">
+            <div class="grid-tablas">
+                
+                <div class="wrap">
+                    <h3>👕 Sponsors Jersey</h3>
+                    <table>
+                        <thead><tr><th>Nivel</th><th>Pago</th><th>Perfil</th></tr></thead>
+                        <tr><td>Nivel 1</td><td>65M</td><td>Élite</td></tr>
+                        <tr><td>Nivel 2</td><td>25M</td><td>Media</td></tr>
+                        <tr><td>Nivel 3/4</td><td>8M</td><td>Básico</td></tr>
+                    </table>
+                    <h3 style="margin-top: 20px;">🤝 Sponsors Principales</h3>
+                    <table>
+                        <thead><tr><th>Nivel</th><th>Ranking</th><th>Pago</th></tr></thead>
+                        <tr><td>Nivel 1</td><td>Top 1-50</td><td>170M</td></tr>
+                        <tr><td>Nivel 2</td><td>Top 51-150</td><td>120M</td></tr>
+                        <tr><td>Nivel 3</td><td>Top 151-300</td><td>70M</td></tr>
+                        <tr><td>Nivel 4</td><td>301+</td><td>20M</td></tr>
+                    </table>
+                </div>
+
+                <div class="wrap">
+                    <h3>📺 Derechos de TV</h3>
+                    <table>
+                        <thead><tr><th>División</th><th>Pago Anual</th></tr></thead>
+                        <tr><td>Primera División</td><td>50M</td></tr>
+                        <tr><td>Segunda División</td><td>30M</td></tr>
+                    </table>
+                    <h3 style="margin-top: 20px;">🏆 Premios de Liga</h3>
+                    <table>
+                        <thead><tr><th>Posición</th><th>1ª Div</th><th>2ª Div</th></tr></thead>
+                        <tr><td>Campeón</td><td>85M</td><td>35M</td></tr>
+                        <tr><td>Subcampeón</td><td>60M</td><td>30M</td></tr>
+                        <tr><td>3er Lugar</td><td>40M</td><td>24M</td></tr>
+                        <tr><td>4° Lugar</td><td>30M</td><td>13M</td></tr>
+                        <tr><td>5° Lugar</td><td>20M</td><td>---</td></tr>
+                        <tr><td>6°-7° Lugar</td><td>15M</td><td>---</td></tr>
+                        <tr><td>8° Lugar</td><td>12M</td><td>---</td></tr>
+                    </table>
+                </div>
+
+                <div class="wrap">
+                    <h3>🛍️ Merchandising</h3>
+                    <table>
+                        <thead><tr><th>Posición</th><th>1ª Div</th><th>2ª Div</th></tr></thead>
+                        <tr><td>1°-2° / 1°-3°</td><td>25M</td><td>15M</td></tr>
+                        <tr><td>3°-4° / 4°-6°</td><td>20M</td><td>12M</td></tr>
+                        <tr><td>5°-7° / 7°-8°</td><td>15M</td><td>8M</td></tr>
+                    </table>
+                    <h3 style="margin-top: 20px;">🏟️ Taquilla Anual</h3>
+                    <table>
+                        <thead><tr><th>Estadio</th><th>1ª Div</th><th>2ª Div</th></tr></thead>
+                        <tr><td>Gigante</td><td>44M</td><td>---</td></tr>
+                        <tr><td>Grande</td><td>36M</td><td>27M</td></tr>
+                        <tr><td>Mediano</td><td>20M</td><td>17M</td></tr>
+                        <tr><td>Pequeño</td><td>10M</td><td>8M</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+<div id="seccion-tablas-gastos">
+    <div class="grid-tablas">
+        <div class="wrap">
+            <h3>🏗️ Costo Crear Instalación</h3>
+            <table>
+                <thead><tr><th>Tipo</th><th>Gasto</th></tr></thead>
+                <tr><td>Básico</td><td>10M</td></tr>
+                <tr><td>Profesional</td><td>25M</td></tr>
+                <tr><td>Élite</td><td>50M</td></tr>
+            </table>
+        </div>
+
+        <div class="wrap">
+            <h3>🛡️ Límite Máximo Jugador</h3>
+            <table>
+                <thead><tr><th>Nivel Inst.</th><th>Valor Máx</th></tr></thead>
+                <tr><td>Básico</td><td>50M</td></tr>
+                <tr><td>Profesional</td><td>90M</td></tr>
+                <tr><td>Élite</td><td>Sin Límite</td></tr>
+            </table>
+        </div>
+
+        <div class="wrap">
+            <h3>📊 Clasificación Plantilla</h3>
+            <table>
+                <thead><tr><th>Tipo</th><th>Valor Total</th></tr></thead>
+                <tr><td>Alto</td><td>+300M</td></tr>
+                <tr><td>Medio</td><td>120M - 300M</td></tr>
+                <tr><td>Bajo</td><td>-120M</td></tr>
+            </table>
+        </div>
+
+        <div class="wrap">
+            <h3>👥 Staff (Anual)</h3>
+            <table>
+                <thead><tr><th>Nivel</th><th>Técnico</th><th>Médicos</th></tr></thead>
+                <tr><td>Alto</td><td>12M</td><td>6M</td></tr>
+                <tr><td>Medio</td><td>8M</td><td>4M</td></tr>
+                <tr><td>Bajo</td><td>5M</td><td>2M</td></tr>
+            </table>
+        </div>
+
+        <div class="wrap">
+            <h3>🏗️ Mantenimiento Anual</h3>
+            <table>
+                <thead><tr><th>Nivel</th><th>Instalación</th><th>Estadio</th></tr></thead>
+                <tr><td>Élite</td><td>10M</td><td>28M</td></tr>
+                <tr><td>Pro</td><td>6M</td><td>21M</td></tr>
+                <tr><td>Básico</td><td>3M</td><td>14M</td></tr>
+            </table>
+        </div>
+
+        <div class="wrap" style="grid-column: span 3;">
+            <h3>🏃 Tabla de Salarios y Primas</h3>
+            <table>
+                <thead><tr><th>Valor Jugador</th><th>Salario</th><th>Prima</th></tr></thead>
+                <tr><td>+120M</td><td>22M</td><td>7M</td></tr>
+                <tr><td>90-119M</td><td>18M</td><td>5M</td></tr>
+                <tr><td>70-89M</td><td>14M</td><td>4M</td></tr>
+                <tr><td>50-69M</td><td>11M</td><td>3M</td></tr>
+                <tr><td>30-49M</td><td>8M</td><td>2M</td></tr>
+                <tr><td>20-29M</td><td>5M</td><td>1.5M</td></tr>
+                <tr><td>10-19M</td><td>3M</td><td>1M</td></tr>
+                <tr><td>-5M</td><td>0.8M</td><td>0.4M</td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+    </div> <div id="multas" class="tab-content" style="display: none;">
+        <div class="card error">
+            <h3>⚠️ Penalizaciones y Plazos</h3>
+            <ul>
+                <li><strong>Mercado:</strong> 2 mdd por cada hora de atraso (Hoy 12 PM).</li>
+                <li><strong>Informe Gastos:</strong> 5 mdd por cada día de atraso tras la liguilla.</li>
+                <li><strong>Renovaciones:</strong> Límite 1 semana tras la liguilla. Sin aviso = Jugador libre.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+    
