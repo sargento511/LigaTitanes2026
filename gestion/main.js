@@ -270,3 +270,44 @@ function aceptarOferta(idOferta, idEmisor) {
 function rechazarOferta(idOferta) {
     db.ref(`ofertas/${idActual}/${idOferta}`).remove();
 }
+function prepararContraoferta(idOferta, idEmisor) {
+    const o = todasLasOfertas[idActual][idOferta];
+    
+    // 1. Cargamos los datos de la oferta original en el panel de envío
+    // Ahora tú quieres el jugador que el otro te ofrecía, o pides más dinero
+    document.getElementById('oferta-dinero').value = o.dinero + 5; // Sugiere 5M más por defecto
+    
+    // 2. Avisamos al usuario para que ajuste los selects
+    alert("📝 Ajusta los valores en el panel de 'ENVIAR OFERTA' para mandar tu contrapropuesta.");
+    
+    // 3. Borramos la oferta vieja para que no se duplique
+    db.ref(`ofertas/${idActual}/${idOferta}`).remove();
+    
+    // Scroll suave hacia el panel de negociación
+    document.getElementById('select-jugador-rival').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Mejora para que la oferta llegue "al toque"
+function enviarOferta() {
+    const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
+    const jBuscado = document.getElementById('select-jugador-rival').value;
+    const dinero = parseFloat(document.getElementById('oferta-dinero').value) || 0;
+    const jOfrecido = document.getElementById('mi-jugador-cambio').value;
+
+    const nuevaOferta = {
+        desde: equipoActual.nombre,
+        idEmisor: idActual,
+        jugadorBuscado: jBuscado,
+        dinero: dinero,
+        jugadorOfrecido: jOfrecido,
+        timestamp: Date.now() // Esto ayuda a que Firebase lo detecte como cambio nuevo
+    };
+
+    db.ref('ofertas/' + idRival).push(nuevaOferta).then(() => {
+        alert("✅ Oferta enviada con éxito.");
+        // Limpiamos los campos
+        document.getElementById('oferta-dinero').value = '';
+    }).catch((error) => {
+        alert("❌ Error al enviar: " + error.message);
+    });
+}
