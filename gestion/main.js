@@ -327,3 +327,11 @@ function actualizarListasNegociacion() {
             `<option value="${j.nombre}">${j.nombre}</option>`
         ).join('');
 }
+// Este bloque va al final de tu main.js
+db.ref('ofertas/').on('value', (snapshot) => {
+    todasLasOfertas = snapshot.val() || {};
+    // Solo dibuja si el usuario ya eligió un equipo
+    if (idActual) {
+        dibujarOfertas();
+    }
+});
