@@ -3,9 +3,7 @@ const datosEquipos = {
         nombre: 'DEPORTIVO FEDERAL',
         saldo: 147.2,
         estadio: 'Estadio Federal (Grande)',
-        jugadores: [
-            { nombre: 'Esperando lista de Deportivo...', valor: 0, salario: 0, prima: 0 }
-        ]
+        jugadores: [{ nombre: 'Cargando...', valor: 0, salario: 0, prima: 0 }]
     },
     'Halcones': {
         nombre: 'HALCONES ROJOS',
@@ -42,13 +40,11 @@ const datosEquipos = {
 let equipoActual = null;
 
 function seleccionarEquipo(id) {
+    console.log("Intentando entrar a:", id);
     equipoActual = datosEquipos[id];
     
-    // Cambiar pantallas
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-
-    // Actualizar nombre
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     
     actualizarTabla();
@@ -69,29 +65,4 @@ function actualizarTabla() {
                 <td>$${j.salario}M</td>
                 <td>$${j.prima}M</td>
                 <td>
-                    <div style="display: flex; gap: 5px;">
-                        <button onclick="renovar(${index})" style="background: #28a745; font-size: 10px; padding: 4px; width: auto;">RENOVAR</button>
-                        <button onclick="venderAlAnterior(${index})" style="background: #fd7e14; font-size: 10px; padding: 4px; width: auto;">VENDER (50%)</button>
-                    </div>
-                </td>
-            </tr>`;
-    });
-}
-
-function venderAlAnterior(index) {
-    const j = equipoActual.jugadores[index];
-    const pago = j.valor * 0.5; 
-    if(confirm(`¿Vender a ${j.nombre} por $${pago.toFixed(1)} MDD?`)) {
-        equipoActual.saldo += pago;
-        equipoActual.jugadores.splice(index, 1);
-        actualizarTabla();
-    }
-}
-
-function renovar(index) {
-    alert("Jugador renovado.");
-}
-
-function irInicio() {
-    document.getElementById('pantalla-inicio').style.display = 'block';
-    document.getElementById('dashboard').style.
+                    <button onclick="venderAlAnterior(${index})"
