@@ -104,43 +104,43 @@ function venderAlAnterior(index) {
 }
 
 function finalizarTemporada() {
-    // 1. Contar cuántos jugadores están en riesgo (contrato 0)
-    const jugadoresLibres = equipoActual.jugadores.filter(j => j.contrato === 0);
-    
-    let mensaje = "¿Finalizar temporada? Se restará 1 año de contrato a todos.";
-    if (jugadoresLibres.length > 0) {
-        mensaje = `⚠️ ¡ATENCIÓN! Tienes ${jugadoresLibres.length} jugadores con contrato 0. 
-Si avanzas ahora, estos jugadores SE IRÁN LIBRES del equipo. 
-¿Estás seguro de que quieres continuar?`;
-    }
+    // 1. Confirmación inicial
+    if (!confirm("⚠️ ¿Finalizar temporada? Se restará 1 año de contrato a todos.")) return;
 
-    if (confirm(mensaje)) {
-        // 2. Restar contrato o eliminar si ya estaba en 0
-        // Filtramos la lista: solo se quedan los que tenían contrato > 0
-        // Y a esos les restamos 1 año.
-        
-        const plantillaNueva = [];
-        
-        equipoActual.jugadores.forEach(j => {
-            if (j.contrato > 0) {
-                j.contrato -= 1;
-                plantillaNueva.push(j);
-            } else {
-                console.log(j.nombre + " se ha marchado libre.");
-            }
-        });
-
-        // Actualizamos la plantilla del equipo
-        equipoActual.jugadores = plantillaNueva;
-        
-        actualizarTabla();
-        
-        if (jugadoresLibres.length > 0) {
-            alert("✅ Temporada finalizada. Los jugadores sin contrato se han marchado.");
-        } else {
-            alert("✅ Temporada finalizada. Contratos actualizados.");
+    // 2. Aplicamos la resta a todos los que tengan contrato
+    equipoActual.jugadores.forEach(j => {
+        if (j.contrato > 0) {
+            j.contractoPrevio = j.contrato; // Guardamos estado para avisar
+            j.contrato -= 1;
         }
+    });
+
+    // 3. Revisamos quiénes quedaron en 0 (recién vencidos o ya vencidos)
+    const vencidos = equipoActual.jugadores.filter(j => j.contrato === 0);
+
+    if (vencidos.length > 0) {
+        const nombresVencidos = vencidos.map(j => j.nombre).join(", ");
+        
+        // Mensaje de ultimátum
+        const continuar = confirm(
+            `🚨 ¡CONTRATOS VENCIDOS!\n\n` +
+            `Los siguientes jugadores han quedado con 0 temporadas:\n[ ${nombresVencidos} ]\n\n` +
+            `Si cierras la temporada ahora, estos jugadores se irán LIBRES.\n` +
+            `¿Deseas eliminarlos ahora? (Si cancelas, se quedan en 0 para que los renueves antes de la próxima temporada).`
+        );
+
+        if (continuar) {
+            // Eliminamos a los que tienen 0
+            equipoActual.jugadores = equipoActual.jugadores.filter(j => j.contrato > 0);
+            alert("✅ Temporada cerrada. Los jugadores sin contrato se han marchado.");
+        } else {
+            alert("⚠️ Temporada cerrada. Recuerda renovar a los jugadores en 0 antes del próximo cierre.");
+        }
+    } else {
+        alert("✅ Temporada cerrada con éxito. Todos los contratos están al día.");
     }
+
+    actualizarTabla();
 }
 
 function renovar(index) {
