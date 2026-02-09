@@ -4,7 +4,7 @@ const datosEquipos = {
         saldo: 147.2,
         estadio: 'Estadio Federal (Grande)',
         jugadores: [
-            { nombre: 'Juan Pérez', valor: 20, salario: 2, prima: 1 } // Ejemplo temporal
+            { nombre: 'Esperando lista...', valor: 0, salario: 0, prima: 0 }
         ]
     },
     'Halcones': {
@@ -39,27 +39,19 @@ const datosEquipos = {
     }
 };
 
+let equipoActual = null;
+
+function seleccionarEquipo(id) {
+    equipoActual = datosEquipos[id];
+    if (!equipoActual) return;
+
+    document.getElementById('pantalla-inicio').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
+    
+    actualizarTabla();
+}
+
 function actualizarTabla() {
     document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo.toFixed(1)} MDD`;
     document.getElementById('tipo-estadio').innerText = equipoActual.estadio;
-
-    const tabla = document.getElementById('body-plantilla');
-    tabla.innerHTML = '';
-
-    equipoActual.jugadores.forEach((j, index) => {
-        tabla.innerHTML += `
-            <tr>
-                <td>${j.nombre}</td>
-                <td>$${j.valor}M</td>
-                <td>$${j.salario}M</td>
-                <td>$${j.prima}M</td>
-                <td>
-                    <div style="display: flex; gap: 5px;">
-                        <button onclick="renovar(${index})" style="background: #28a745; font-size: 10px; padding: 4px; width: auto;">RENOVAR</button>
-                        <button onclick="venderAlAnterior(${index})" style="background: #fd7e14; font-size: 10px; padding: 4px; width: auto;">VENDER (50%)</button>
-                        <button onclick="ponerTransferible(${index})" style="background: #007bff; font-size: 10px; padding: 4px; width: auto;">LISTA VENTA</button>
-                    </div>
-                </td>
-            </tr>`;
-    });
-}
