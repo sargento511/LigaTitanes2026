@@ -17,11 +17,9 @@ let idActual = "";
 
 const DATOS_INICIALES = {
     'Deportivo': {
-        nombre: 'DEPORTIVO FEDERAL', saldo: 147.2, estadio: 'Estadio Federal (Grande)',
-        jugadores: [{ nombre: 'Jugador Prueba', valor: 0, salario: 0, prima: 0, enVenta: false, contrato: 2 }]
-    },
-    'Halcones': {
-        nombre: 'HALCONES ROJOS', saldo: 276.4, estadio: 'La Caldera Roja (Gigante)',
+        nombre: 'DEPORTIVO FEDERAL',
+        saldo: 147.2,
+        estadio: 'Estadio Federal (Grande)',
         jugadores: [
             { nombre: 'Keylor Navas', valor: 0.8, salario: 0.8, prima: 0.4, enVenta: false, contrato: 2 },
             { nombre: 'Puchacz', valor: 1.5, salario: 1.5, prima: 0.7, enVenta: false, contrato: 2 },
@@ -47,31 +45,46 @@ const DATOS_INICIALES = {
             { nombre: 'Victor Osimhen', valor: 10, salario: 15, prima: 5, enVenta: false, contrato: 2 },
             { nombre: 'Aymeric Laporte', valor: 9, salario: 7, prima: 2, enVenta: false, contrato: 2 }
         ]
+    },
+    'Halcones': {
+        nombre: 'HALCONES ROJOS',
+        saldo: 276.4,
+        estadio: 'La Caldera Roja (Gigante)',
+        jugadores: [
+            { nombre: 'Modric', valor: 1.5, salario: 0.2, prima: 0.4, enVenta: false, contrato: 2 }
+        ]
     }
 };
-// --- NUEVA FUNCIÓN PARA DIBUJAR OFERTAS ---
+
 function dibujarOfertas() {
     const contenedor = document.getElementById('contenedor-ofertas');
-    if (!contenedor || !idActual) return; // Si no hay equipo, no hace nada
-
-    const misOfertas = todasLasOfertas[idActual] || {};
-    contenedor.innerHTML = '';
-
-    Object.keys(misOfertas).forEach(key => {
-        const o = misOfertas[key];
-        contenedor.innerHTML += `
-            <div style="background:#222; padding:15px; margin:10px 0; border-radius:8px; border-left:5px solid #007bff; text-align:left;">
-                <p>🚀 <b>${o.desde}</b> propone:</p>
-                <p style="font-size:14px;">Quiere a: <b>${o.jugadorBuscado}</b></p>
-                <p style="font-size:14px;">Ofrece: <b>$${o.dinero}M</b> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">ACEPTAR</button>
-                    <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; flex:1; padding:8px; cursor:pointer; border-radius:4px;">CONTRAOFERTA</button>
-                    <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">RECHAZAR</button>
-                </div>
-            </div>`;
+    if (!contenedor) return;
+    contenedor.innerHTML = "";
+    const ofertasMiEquipo = todasLasOfertas[idActual] || {};
+    const ids = Object.keys(ofertasMiEquipo);
+    if (ids.length === 0) {
+        contenedor.innerHTML = "<p style='color:gray;'>No tienes ofertas pendientes.</p>";
+        return;
+    }
+    ids.forEach(id => {
+        const o = ofertasMiEquipo[id];
+        const div = document.createElement('div');
+        div.className = 'oferta-card';
+        div.style = "background:#e3f2fd; border-left:5px solid #2196f3; padding:10px; margin-bottom:10px; border-radius:4px; color:#333;";
+        div.innerHTML = `
+            <p><strong>De:</strong> ${o.desde}</p>
+            <p><strong>Busca a:</strong> ${o.jugadorBuscado}</p>
+            <p><strong>Ofrece:</strong> ${o.dinero}M ${o.jugadorOfrecido ? "+ " + o.jugadorOfrecido : ""}</p>
+            <div style="display:flex; gap:10px; margin-top:5px;">
+                <button onclick="aceptarOferta('${id}')" style="background:green; color:white; border:none; padding:5px 10px; cursor:pointer;">Aceptar</button>
+                <button onclick="rechazarOferta('${id}')" style="background:red; color:white; border:none; padding:5px 10px; cursor:pointer;">Rechazar</button>
+                <button onclick="responderOferta('${id}')" style="background:orange; color:white; border:none; padding:5px 10px; cursor:pointer;">Responder</button>
+            </div>
+        `;
+        contenedor.appendChild(div);
     });
-// --- LÍNEA 77: COMIENZA EL BLOQUE LIMPIO ---
+}
+
 db.ref('liga/').on('value', (snapshot) => {
     const data = snapshot.val();
     datosEquipos = data ? data : DATOS_INICIALES;
@@ -84,44 +97,30 @@ db.ref('liga/').on('value', (snapshot) => {
     cargarMercado();
 });
 
+db.ref('ofertas/').on('value', (snapshot) => {
+    todasLasOfertas = snapshot.val() || {};
+    if (idActual) {
+        dibujarOfertas();
+    }
+});
+
 function seleccionarEquipo(id) {
     idActual = id;
     equipoActual = datosEquipos[id];
+    if (!equipoActual) return;
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     actualizarTabla();
     actualizarListasNegociacion();
     dibujarOfertas();
-} // <-- ESTA LLAVE CIERRA LA FUNCIÓN (Línea 100 aprox)
+}
 
 function irInicio() {
     idActual = "";
     document.getElementById('pantalla-inicio').style.display = 'block';
     document.getElementById('dashboard').style.display = 'none';
 }
-// --- FIN DEL BLOQUE ---
-
- el botón funcione)
-function seleccionarEquipo(id) {
-    idActual = id;
-    equipoActual = datosEquipos[id];
-    document.getElementById('pantalla-inicio').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
-    
-    actualizarTabla();
-    actualizarListasNegociacion();
-    dibujarOfertas();
-}
-
-// 4. FUNCIÓN PARA VOLVER AL INICIO
-function irInicio() {
-    idActual = "";
-    document.getElementById('pantalla-inicio').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-}
-
 function salvar() { 
     db.ref('liga/').set(datosEquipos); 
 }
