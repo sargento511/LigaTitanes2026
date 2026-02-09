@@ -41,7 +41,17 @@
             <div class="stat">Saldo: <span id="saldo-actual">0</span></div>
             <div class="stat">Estadio: <span id="tipo-estadio">---</span></div>
         </div>
-
+        
+<div id="buscador-compra" style="background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid #28a745; margin-bottom: 20px;">
+    <h3 style="color: #28a745; margin-top: 0; font-size: 16px;">🔍 BUSCAR NUEVO FICHAJE</h3>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="nombre-busqueda" placeholder="Nombre del jugador..." style="flex: 1; padding: 8px; border-radius: 5px; border: none; background: #333; color: white;">
+        <input type="number" id="valor-busqueda" placeholder="Valor MDD" style="width: 120px; padding: 8px; border-radius: 5px; border: none; background: #333; color: white;">
+        <button onclick="calcularFichaje()" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">CALCULAR</button>
+    </div>
+    <div id="resultado-busqueda" style="margin-top: 10px; color: white; font-weight: bold;"></div>
+</div>
+        
         <table border="1" style="width:100%; background: #1a1a1a; color: white; border-collapse: collapse;">
             <thead>
                 <tr>
