@@ -92,7 +92,6 @@ function seleccionarEquipo(id) {
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     actualizarTabla();
     actualizarListasNegociacion(); 
-actualizarListasNegociacion();
     dibujarOfertas(); // <-- ESTO LAS DIBUJA APENAS HACES CLIC EN TU BOTÓN
 }
 function irInicio() {
