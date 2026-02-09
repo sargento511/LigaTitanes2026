@@ -1,4 +1,4 @@
-// CONFIGURACIÓN FIREBASE
+// --- CONFIGURACIÓN FIREBASE ---
 const firebaseConfig = {
     apiKey: "AIzaSyBVPj0mlp5ThkbaRb0XClwhmLPjrpTtlSk",
     authDomain: "ligatitanes-5e005.firebaseapp.com",
@@ -12,19 +12,19 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let datosEquipos = {}; // Se cargará de la nube
+let datosEquipos = {}; 
 let equipoActual = null;
 let idEquipoActual = "";
 
-// --- ESCUCHA DE DATOS (NUBE) ---
+// --- SINCRONIZACIÓN NUBE ---
 db.ref('liga/').on('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
         datosEquipos = data;
-        if (equipoActual) {
+        if (idEquipoActual) {
             equipoActual = datosEquipos[idEquipoActual];
             actualizarTabla();
-            revisarOfertas();
+            revisarOfertasRecibidas();
         }
         cargarMercado();
     }
@@ -34,7 +34,7 @@ function guardarEnNube() {
     db.ref('liga/').set(datosEquipos);
 }
 
-// --- LOGICA DE EQUIPOS ---
+// --- NAVEGACIÓN ---
 function seleccionarEquipo(id) {
     idEquipoActual = id;
     equipoActual = datosEquipos[id];
@@ -42,18 +42,23 @@ function seleccionarEquipo(id) {
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     
-    // Crear el contenedor de notificaciones si no existe
-    if(!document.getElementById('seccion-ofertas')){
+    // Crear contenedor de notificaciones si no existe
+    if(!document.getElementById('panel-ofertas')){
         const div = document.createElement('div');
-        div.id = 'seccion-ofertas';
-        div.style = "background:#333; color:white; padding:10px; margin-top:20px; border-radius:8px; display:none;";
+        div.id = 'panel-ofertas';
+        div.style = "background:#1a1a1a; border:2px solid gold; color:white; padding:15px; margin-top:20px; border-radius:10px; display:none;";
         document.getElementById('dashboard').appendChild(div);
     }
     
     actualizarTabla();
-    revisarOfertas();
 }
 
+function irInicio() {
+    document.getElementById('pantalla-inicio').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+}
+
+// --- GESTIÓN DE PLANTILLA (BOTONES CORREGIDOS) ---
 function actualizarTabla() {
     document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo.toFixed(1)} MDD`;
     const tabla = document.getElementById('body-plantilla');
@@ -62,19 +67,55 @@ function actualizarTabla() {
 
     equipoActual.jugadores.forEach((j, index) => {
         const btnVenta = j.enVenta 
-            ? `<button onclick="toggleVenta(${index})" style="background:red;">QUITAR VENTA</button>`
-            : `<button onclick="toggleVenta(${index})" style="background:blue;">VENDER</button>`;
+            ? `<button onclick="toggleVenta(${index})" style="background:red; color:white;">QUITAR LISTA</button>`
+            : `<button onclick="toggleVenta(${index})" style="background:blue; color:white;">LISTA VENTAS</button>`;
 
         tabla.innerHTML += `
             <tr>
                 <td>${j.nombre} ${j.enVenta ? '🔥' : ''}</td>
                 <td>$${j.valor}M</td>
+                <td>$${j.salario}M</td>
+                <td>$${j.prima}M</td>
+                <td>${j.contrato} años</td>
                 <td>
-                    <button onclick="renovar(${index})" style="background:green;">RENOVAR</button>
+                    <button onclick="renovar(${index})" style="background:green; color:white;">RENOVAR</button>
+                    <button onclick="vender50(${index})" style="background:orange;">50%</button>
+                    <button onclick="liberar(${index})" style="background:#444; color:white;">LIBERAR</button>
                     ${btnVenta}
                 </td>
             </tr>`;
     });
+}
+
+function renovar(index) {
+    const j = equipoActual.jugadores[index];
+    if (equipoActual.saldo >= j.prima) {
+        equipoActual.saldo -= j.prima;
+        j.contrato += 1;
+        guardarEnNube();
+    } else { alert("Saldo insuficiente"); }
+}
+
+function vender50(index) {
+    const j = equipoActual.jugadores[index];
+    const pago = j.valor * 0.5;
+    if(confirm(`¿Vender a ${j.nombre} por $${pago}M?`)) {
+        equipoActual.saldo += pago;
+        equipoActual.jugadores.splice(index, 1);
+        guardarEnNube();
+    }
+}
+
+function liberar(index) {
+    const j = equipoActual.jugadores[index];
+    const costo = j.salario * j.contrato;
+    if(confirm(`¿Liberar a ${j.nombre}? Costo: $${costo}M`)) {
+        if(equipoActual.saldo >= costo) {
+            equipoActual.saldo -= costo;
+            equipoActual.jugadores.splice(index, 1);
+            guardarEnNube();
+        } else { alert("No puedes pagar la indemnización"); }
+    }
 }
 
 function toggleVenta(index) {
@@ -82,102 +123,77 @@ function toggleVenta(index) {
     guardarEnNube();
 }
 
-// --- SISTEMA DE MERCADO Y OFERTAS ---
-function cargarMercado() {
-    const listaMercado = document.getElementById('lista-mercado');
-    if (!listaMercado) return;
-    listaMercado.innerHTML = '';
+// --- BUSCADOR INTELIGENTE Y OFERTAS ---
+function calcularFichaje() {
+    const nombreBusqueda = document.getElementById('nombre-busqueda').value.trim();
+    const valor = parseFloat(document.getElementById('valor-busqueda').value);
+    const res = document.getElementById('resultado-busqueda');
+    if (!nombreBusqueda || isNaN(valor)) return;
 
-    for (let eqId in datosEquipos) {
-        if (eqId === idEquipoActual) continue; // No ofertar a uno mismo
+    // Buscar si el jugador ya tiene dueño
+    let dueñoId = null;
+    let jugadorIdx = -1;
 
-        datosEquipos[eqId].jugadores.forEach((j, idx) => {
-            if (j.enVenta) {
-                listaMercado.innerHTML += `
-                    <li style="margin-bottom:10px;">
-                        <strong>${j.nombre}</strong> (${datosEquipos[eqId].nombre})
-                        <button onclick="abrirPanelOferta('${eqId}', ${idx})" style="background:gold; color:black; margin-left:10px;">ENVIAR OFERTA</button>
-                    </li>`;
-            }
-        });
+    for (let id in datosEquipos) {
+        const idx = datosEquipos[id].jugadores.findIndex(j => j.nombre.toLowerCase() === nombreBusqueda.toLowerCase());
+        if (idx !== -1) {
+            dueñoId = id;
+            jugadorIdx = idx;
+            break;
+        }
     }
-}
 
-function abrirPanelOferta(vendedorId, jugadorIdx) {
-    const monto = prompt("¿Cuánto dinero ofreces? (MDD)");
-    if (monto === null || isNaN(monto)) return;
-
-    const jugadorOfertado = datosEquipos[vendedorId].jugadores[jugadorIdx];
-
-    // Crear objeto de oferta
-    const nuevaOferta = {
-        desdeId: idEquipoActual,
-        desdeNombre: equipoActual.nombre,
-        jugadorNombre: jugadorOfertado.nombre,
-        jugadorIdx: jugadorIdx,
-        dinero: parseFloat(monto),
-        estado: 'pendiente'
-    };
-
-    // Guardar oferta en una carpeta especial en Firebase
-    if (!datosEquipos[vendedorId].ofertasRecibidas) {
-        datosEquipos[vendedorId].ofertasRecibidas = [];
-    }
-    datosEquipos[vendedorId].ofertasRecibidas.push(nuevaOferta);
-    
-    guardarEnNube();
-    alert("Oferta enviada. Espera a que el otro equipo acepte.");
-}
-
-// --- REVISAR SI TENGO OFERTAS ---
-function revisarOfertas() {
-    const panel = document.getElementById('seccion-ofertas');
-    const ofertas = equipoActual.ofertasRecibidas;
-
-    if (ofertas && ofertas.length > 0) {
-        panel.style.display = 'block';
-        panel.innerHTML = '<h3>📩 OFERTAS RECIBIDAS</h3>';
-        ofertas.forEach((of, idx) => {
-            if (of.estado === 'pendiente') {
-                panel.innerHTML += `
-                    <div style="border-bottom:1px solid #555; padding:10px;">
-                        <p>${of.desdeNombre} ofrece <strong>$${of.dinero}M</strong> por <strong>${of.jugadorNombre}</strong></p>
-                        <button onclick="responderOferta(${idx}, true)" style="background:green;">ACEPTAR</button>
-                        <button onclick="responderOferta(${idx}, false)" style="background:red;">RECHAZAR</button>
-                    </div>`;
-            }
-        });
-    } else {
-        panel.style.display = 'none';
-    }
-}
-
-function responderOferta(ofertaIdx, aceptada) {
-    const oferta = equipoActual.ofertasRecibidas[ofertaIdx];
-    const comprador = datosEquipos[oferta.desdeId];
-    const vendedor = equipoActual;
-
-    if (aceptada) {
-        if (comprador.saldo < oferta.dinero) {
-            alert("El comprador ya no tiene dinero suficiente.");
-            vendedor.ofertasRecibidas.splice(ofertaIdx, 1);
+    if (dueñoId) {
+        if (dueñoId === idEquipoActual) {
+            res.innerHTML = `<p style="color:cyan;">Este jugador ya está en tu equipo.</p>`;
         } else {
-            // TRANSFERENCIA DE DINERO
-            comprador.saldo -= oferta.dinero;
-            vendedor.saldo += oferta.dinero;
-
-            // TRANSFERENCIA DE JUGADOR
-            const jugadorSubido = vendedor.jugadores.splice(oferta.jugadorIdx, 1)[0];
-            jugadorSubido.enVenta = false; // Quitar del mercado
-            comprador.jugadores.push(jugadorSubido);
-
-            alert("¡TRATO HECHO! El jugador ha cambiado de equipo.");
-            vendedor.ofertasRecibidas.splice(ofertaIdx, 1);
+            res.innerHTML = `
+                <p style="color:yellow;">Dueño: ${datosEquipos[dueñoId].nombre}</p>
+                <button onclick="enviarOfertaDirecta('${dueñoId}', ${jugadorIdx}, '${nombreBusqueda}')" style="background:gold; color:black; font-weight:bold; width:100%; padding:10px;">ENVIAR OFERTA AL DUEÑO</button>`;
         }
     } else {
-        alert("Oferta rechazada.");
-        vendedor.ofertasRecibidas.splice(ofertaIdx, 1);
+        // Jugador libre
+        res.innerHTML = `<p>Jugador Libre</p>
+            <button onclick="confirmarCompraLibre('${nombreBusqueda}', ${valor})" style="background:green; color:white; width:100%; padding:10px;">FICHAR LIBRE</button>`;
     }
-
-    guardarEnNube();
 }
+
+function enviarOfertaDirecta(vendedorId, jugadorIdx, nombreJ) {
+    const monto = prompt(`¿Cuánto ofreces a ${datosEquipos[vendedorId].nombre} por ${nombreJ}?`);
+    if (!monto || isNaN(monto)) return;
+
+    const oferta = {
+        desdeId: idEquipoActual,
+        desdeNombre: equipoActual.nombre,
+        jugadorNombre: nombreJ,
+        jugadorIdx: jugadorIdx,
+        dinero: parseFloat(monto)
+    };
+
+    if (!datosEquipos[vendedorId].ofertasRecibidas) datosEquipos[vendedorId].ofertasRecibidas = [];
+    datosEquipos[vendedorId].ofertasRecibidas.push(oferta);
+    guardarEnNube();
+    alert("Oferta enviada al buzón del otro equipo.");
+}
+
+function confirmarCompraLibre(n, v) {
+    if (equipoActual.saldo >= v) {
+        equipoActual.saldo -= v;
+        equipoActual.jugadores.push({ nombre: n, valor: v, salario: (v*0.2).toFixed(1), prima: (v*0.1).toFixed(1), enVenta: false, contrato: 2 });
+        guardarEnNube();
+        alert("Fichado!");
+    }
+}
+
+// --- BUZÓN DE NOTIFICACIONES ---
+function revisarOfertasRecibidas() {
+    const panel = document.getElementById('panel-ofertas');
+    const ofertas = equipoActual.ofertasRecibidas || [];
+
+    if (ofertas.length > 0) {
+        panel.style.display = 'block';
+        panel.innerHTML = '<h3>📩 OFERTAS POR TUS JUGADORES</h3>';
+        ofertas.forEach((of, idx) => {
+            panel.innerHTML += `
+                <div style="border-bottom:1px solid #444; padding:10px;">
+                    <p><strong>${of.desdeNombre}</strong> quiere a <strong>${of.jugadorNombre}</strong> por <strong>$${of
