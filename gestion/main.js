@@ -21,6 +21,14 @@ const DATOS_INICIALES = {
         saldo: 147.2,
         estadio: 'Estadio Federal (Grande)',
         jugadores: [
+            { nombre: 'Jugador Prueba', valor: 0, salario: 0, prima: 0, enVenta: false, contrato: 2 }
+        ]
+    },
+    'Halcones': {
+        nombre: 'HALCONES ROJOS',
+        saldo: 276.4,
+        estadio: 'La Caldera Roja (Gigante)',
+        jugadores: [
             { nombre: 'Keylor Navas', valor: 0.8, salario: 0.8, prima: 0.4, enVenta: false, contrato: 2 },
             { nombre: 'Puchacz', valor: 1.5, salario: 1.5, prima: 0.7, enVenta: false, contrato: 2 },
             { nombre: 'Kimpembe', valor: 4, salario: 8, prima: 2, enVenta: false, contrato: 2 },
@@ -45,14 +53,6 @@ const DATOS_INICIALES = {
             { nombre: 'Victor Osimhen', valor: 10, salario: 15, prima: 5, enVenta: false, contrato: 2 },
             { nombre: 'Aymeric Laporte', valor: 9, salario: 7, prima: 2, enVenta: false, contrato: 2 }
         ]
-    },
-    'Halcones': {
-        nombre: 'HALCONES ROJOS',
-        saldo: 276.4,
-        estadio: 'La Caldera Roja (Gigante)',
-        jugadores: [
-            { nombre: 'Modric', valor: 1.5, salario: 0.2, prima: 0.4, enVenta: false, contrato: 2 }
-        ]
     }
 };
 
@@ -75,56 +75,6 @@ function dibujarOfertas() {
             <p><strong>De:</strong> ${o.desde}</p>
             <p><strong>Busca a:</strong> ${o.jugadorBuscado}</p>
             <p><strong>Ofrece:</strong> ${o.dinero}M ${o.jugadorOfrecido ? "+ " + o.jugadorOfrecido : ""}</p>
-            <div style="display:flex; gap:10px; margin-top:5px;">
-                <button onclick="aceptarOferta('${id}')" style="background:green; color:white; border:none; padding:5px 10px; cursor:pointer;">Aceptar</button>
-                <button onclick="rechazarOferta('${id}')" style="background:red; color:white; border:none; padding:5px 10px; cursor:pointer;">Rechazar</button>
-                <button onclick="responderOferta('${id}')" style="background:orange; color:white; border:none; padding:5px 10px; cursor:pointer;">Responder</button>
-            </div>
-        `;
-        contenedor.appendChild(div);
-    });
-}
-
-db.ref('liga/').on('value', (snapshot) => {
-    const data = snapshot.val();
-    datosEquipos = data ? data : DATOS_INICIALES;
-    if (idActual) {
-        equipoActual = datosEquipos[idActual];
-        actualizarTabla();
-        actualizarListasNegociacion();
-        dibujarOfertas();
-    }
-    cargarMercado();
-});
-
-db.ref('ofertas/').on('value', (snapshot) => {
-    todasLasOfertas = snapshot.val() || {};
-    if (idActual) {
-        dibujarOfertas();
-    }
-});
-
-function seleccionarEquipo(id) {
-    idActual = id;
-    equipoActual = datosEquipos[id];
-    if (!equipoActual) return;
-    document.getElementById('pantalla-inicio').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
-    actualizarTabla();
-    actualizarListasNegociacion();
-    dibujarOfertas();
-}
-
-function irInicio() {
-    idActual = "";
-    document.getElementById('pantalla-inicio').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-}
-function salvar() { 
-    db.ref('liga/').set(datosEquipos); 
-}
-// --- AQUÍ TERMINA LO QUE TIENES QUE PEGAR ---
 }
 // --- ESCUCHADORES DE FIREBASE (Línea 77) ---
 db.ref('liga/').on('value', (snapshot) => {
