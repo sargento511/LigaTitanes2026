@@ -122,5 +122,66 @@ function irInicio() {
     cargarMercado();
 }
 
+// --- FUNCIONES DE FICHAJES (PEGAR AL FINAL DEL ARCHIVO) ---
+
+function calcularFichaje() {
+    const nombre = document.getElementById('nombre-busqueda').value;
+    const valor = parseFloat(document.getElementById('valor-busqueda').value);
+    const resultadoDiv = document.getElementById('resultado-busqueda');
+
+    if (!nombre || isNaN(valor)) {
+        resultadoDiv.innerHTML = "<span style='color: #ff4444;'>Escribe nombre y valor real.</span>";
+        return;
+    }
+
+    // TABLA DE SALARIOS SEGÚN VALOR
+    let salario = 0;
+    if (valor <= 1) salario = 1;
+    else if (valor <= 5) salario = 5;
+    else if (valor <= 15) salario = 8;
+    else if (valor <= 30) salario = 11;
+    else salario = 15;
+
+    let prima = (salario * 0.3).toFixed(1);
+
+    resultadoDiv.innerHTML = `
+        <div style="background: #222; padding: 10px; border-radius: 5px; border-left: 5px solid #28a745; margin-top: 10px;">
+            <p style="margin: 0; color: #28a745;">✅ <strong>${nombre.toUpperCase()}</strong></p>
+            <p style="margin: 5px 0; font-size: 14px;">💰 Salario: $${salario}M | 💸 Prima: $${prima}M</p>
+            <button onclick="confirmarCompra('${nombre}', ${valor}, ${salario}, ${prima})" style="background: #28a745; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px;">FICHAR E INCORPORAR</button>
+        </div>
+    `;
+}
+
+function confirmarCompra(nombre, valor, salario, prima) {
+    if (equipoActual.saldo < valor) {
+        alert("¡Fondos insuficientes! No puedes pagar los $" + valor + "M que vale el jugador.");
+        return;
+    }
+
+    if (confirm(`¿Pagar $${valor}M por ${nombre}? El dinero se descontará de tu saldo.`)) {
+        // Restar dinero
+        equipoActual.saldo -= valor;
+        
+        // Agregar a la lista
+        equipoActual.jugadores.push({
+            nombre: nombre,
+            valor: valor,
+            salario: salario,
+            prima: parseFloat(prima),
+            enVenta: false
+        });
+        
+        // Limpiar interfaz de búsqueda
+        document.getElementById('nombre-busqueda').value = '';
+        document.getElementById('valor-busqueda').value = '';
+        document.getElementById('resultado-busqueda').innerHTML = '';
+        
+        // Actualizar la vista
+        actualizarTabla();
+        alert("¡Fichaje completado! " + nombre + " ya está en tu plantilla.");
+    }
+}
+
 // Ejecutar al cargar la página por primera vez
 window.onload = cargarMercado;
