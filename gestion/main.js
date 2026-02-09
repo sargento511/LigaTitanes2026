@@ -231,15 +231,28 @@ function actualizarListasNegociacion() {
 
 function enviarOferta() {
     const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
+    const jBuscado = document.getElementById('select-jugador-rival').value;
+    const dinero = parseFloat(document.getElementById('oferta-dinero').value) || 0;
+    const jOfrecido = document.getElementById('mi-jugador-cambio').value;
+
+    // Generamos un ID único para que la oferta entre al instante
+    const idOfertaRealtime = "OFERTA_" + Date.now();
+
     const nuevaOferta = {
         desde: equipoActual.nombre,
         idEmisor: idActual,
-        jugadorBuscado: document.getElementById('select-jugador-rival').value,
-        dinero: parseFloat(document.getElementById('oferta-dinero').value) || 0,
-        jugadorOfrecido: document.getElementById('mi-jugador-cambio').value
+        jugadorBuscado: jBuscado,
+        dinero: dinero,
+        jugadorOfrecido: jOfrecido,
+        timestamp: firebase.database.ServerValue.TIMESTAMP // Prioridad de Firebase
     };
-    db.ref('ofertas/' + idRival).push(nuevaOferta);
-    alert("Oferta enviada.");
+
+    // Usar .set() con ID único es mucho más rápido que .push()
+    db.ref(`ofertas/${idRival}/${idOfertaRealtime}`).set(nuevaOferta)
+        .then(() => {
+            alert("✅ ¡Oferta enviada al instante!");
+            document.getElementById('oferta-dinero').value = '';
+        });
 }
 
 function aceptarOferta(idOferta, idEmisor) {
