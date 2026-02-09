@@ -265,19 +265,28 @@ function actualizarListasNegociacion() {
     const selRival = document.getElementById('select-jugador-rival');
     const selMio = document.getElementById('mi-jugador-cambio');
     
-    // Llenar lista del RIVAL (Jugadores que quieres comprar)
-    if (selRival && rival && rival.jugadores) {
-        selRival.innerHTML = '<option value="">Solo $</option>' + 
-            rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+    // 1. Llenar lista del RIVAL (Jugadores que quieres comprar)
+    if (selRival) {
+        if (rival && rival.jugadores && rival.jugadores.length > 0) {
+            selRival.innerHTML = '<option value="">Solo $</option>' + 
+                rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+        } else {
+            // Si el rival está vacío, evitamos que falle
+            selRival.innerHTML = '<option value="">Rival sin jugadores</option>';
+        }
     }
     
-    // Llenar MI lista (Jugadores que ofreces a cambio)
-    if (selMio && equipoActual && equipoActual.jugadores) {
-        selMio.innerHTML = '<option value="">Solo $</option>' + 
-            equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+    // 2. Llenar TU lista (Jugadores que ofreces a cambio)
+    if (selMio) {
+        if (equipoActual && equipoActual.jugadores && equipoActual.jugadores.length > 0) {
+            selMio.innerHTML = '<option value="">Solo $</option>' + 
+                equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+        } else {
+            // Si tú no tienes jugadores, evitamos que falle
+            selMio.innerHTML = '<option value="">No tienes jugadores</option>';
+        }
     }
 }
-
 function cargarMercado() {
     const lista = document.getElementById('lista-mercado');
     if (!lista) return;
