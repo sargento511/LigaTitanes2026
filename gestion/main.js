@@ -221,24 +221,6 @@ function confirmarCompra(n, v, s, p) {
         salvar();
     }
 }
-function actualizarListasNegociacion() {
-    const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
-    const rival = datosEquipos[idRival];
-    
-    const selectRival = document.getElementById('select-jugador-rival');
-    const selectMio = document.getElementById('mi-jugador-cambio');
-    
-    if (!selectRival || !selectMio || !rival) return;
-
-    selectRival.innerHTML = rival.jugadores.map(j => 
-        `<option value="${j.nombre}">${j.nombre} ($${j.valor}M)</option>`
-    ).join('');
-    
-    selectMio.innerHTML = '<option value="">Solo dinero</option>' + 
-        equipoActual.jugadores.map(j => 
-            `<option value="${j.nombre}">${j.nombre}</option>`
-        ).join('');
-}
 
 function enviarOferta() {
     const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
