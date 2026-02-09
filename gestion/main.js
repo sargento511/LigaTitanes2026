@@ -49,6 +49,16 @@ const DATOS_INICIALES = {
         ]
     }
 };
+db.ref('liga/').on('value', (snapshot) => {
+    const data = snapshot.val();
+    datosEquipos = data ? data : DATOS_INICIALES;
+    if (idActual) { 
+        equipoActual = datosEquipos[idActual];
+        actualizarTabla();
+        actualizarListasNegociacion(); // <--- Esto llena los menús automáticamente
+    }
+    cargarMercado();
+});
 
 // SINCRONIZACIÓN REAL-TIME
 db.ref('liga/').on('value', (snapshot) => {
@@ -60,29 +70,41 @@ db.ref('liga/').on('value', (snapshot) => {
     }
     cargarMercado();
 });
-
 function seleccionarEquipo(id) {
-    idActual = id;
+    idActual = id; 
     equipoActual = datosEquipos[id];
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     actualizarTabla();
-}
-function seleccionarEquipo(id) {
-    idEquipoActual = id;
-    equipoActual = datosEquipos[id];
-    document.getElementById('pantalla-inicio').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
-    actualizarTabla();
-    actualizarListasNegociacion(); // <--- Esta línea llena los menús al entrar
+    actualizarListasNegociacion(); 
 }
 function irInicio() {
     idActual = "";
     document.getElementById('pantalla-inicio').style.display = 'block';
     document.getElementById('dashboard').style.display = 'none';
 }
+let todasLasOfertas = {}; 
+
+db.ref('ofertas/').on('value', (snapshot) => {
+    todasLasOfertas = snapshot.val() || {};
+    const contenedor = document.getElementById('contenedor-ofertas');
+    if (!contenedor || !idActual) return;
+
+    const misOfertas = todasLasOfertas[idActual] || {};
+    contenedor.innerHTML = '';
+
+    Object.keys(misOfertas).forEach(key => {
+        const o = misOfertas[key];
+        contenedor.innerHTML += `
+            <div style="background:#222; padding:10px; margin:5px; border-radius:5px; border-left:4px solid gold; text-align:left;">
+                <p><b>${o.desde}</b> ofrece $${o.dinero}M por <b>${o.jugadorBuscado}</b>
+                ${o.jugadorOfrecido ? ' e intercambia a ' + o.jugadorOfrecido : ''}</p>
+                <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:green; color:white; border:none; padding:5px 10px; cursor:pointer;">Aceptar</button>
+                <button onclick="rechazarOferta('${key}')" style="background:red; color:white; border:none; padding:5px 10px; cursor:pointer; margin-left:5px;">Rechazar</button>
+            </div>`;
+    });
+});
 
 function salvar() { db.ref('liga/').set(datosEquipos); }
 
@@ -183,4 +205,64 @@ function confirmarCompra(n, v, s, p) {
         equipoActual.jugadores.push({ nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 });
         salvar();
     }
+}
+function actualizarListasNegociacion() {
+    const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
+    const rival = datosEquipos[idRival];
+    
+    const selectRival = document.getElementById('select-jugador-rival');
+    const selectMio = document.getElementById('mi-jugador-cambio');
+    
+    if (!selectRival || !selectMio || !rival) return;
+
+    selectRival.innerHTML = rival.jugadores.map(j => 
+        `<option value="${j.nombre}">${j.nombre} ($${j.valor}M)</option>`
+    ).join('');
+    
+    selectMio.innerHTML = '<option value="">Solo dinero</option>' + 
+        equipoActual.jugadores.map(j => 
+            `<option value="${j.nombre}">${j.nombre}</option>`
+        ).join('');
+}
+
+function enviarOferta() {
+    const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
+    const nuevaOferta = {
+        desde: equipoActual.nombre,
+        idEmisor: idActual,
+        jugadorBuscado: document.getElementById('select-jugador-rival').value,
+        dinero: parseFloat(document.getElementById('oferta-dinero').value) || 0,
+        jugadorOfrecido: document.getElementById('mi-jugador-cambio').value
+    };
+    db.ref('ofertas/' + idRival).push(nuevaOferta);
+    alert("Oferta enviada.");
+}
+
+function aceptarOferta(idOferta, idEmisor) {
+    const o = todasLasOfertas[idActual][idOferta];
+    const emisor = datosEquipos[idEmisor];
+    const receptor = equipoActual;
+
+    if (emisor.saldo < o.dinero) return alert("El rival no tiene dinero.");
+
+    emisor.saldo -= o.dinero;
+    receptor.saldo += o.dinero;
+
+    const jBuscadoIdx = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
+    const jBuscado = receptor.jugadores.splice(jBuscadoIdx, 1)[0];
+    emisor.jugadores.push(jBuscado);
+
+    if (o.jugadorOfrecido) {
+        const jOfrecidoIdx = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
+        const jOfrecido = emisor.jugadores.splice(jOfrecidoIdx, 1)[0];
+        receptor.jugadores.push(jOfrecido);
+    }
+
+    db.ref('liga/').set(datosEquipos);
+    db.ref(`ofertas/${idActual}/${idOferta}`).remove();
+    alert("Trato cerrado.");
+}
+
+function rechazarOferta(idOferta) {
+    db.ref(`ofertas/${idActual}/${idOferta}`).remove();
 }
