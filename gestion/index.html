@@ -8,28 +8,28 @@
 </head>
 <body>
 
-<div id="pantalla-inicio" class="container">
-    <h1>GESTIÓN DE EQUIPOS</h1>
-    <div class="selector-equipos">
-        <div class="card" onclick="seleccionarEquipo('Deportivo')">
-            <img src="dep_logo.png" class="logo-equipo">
-            <h2>DEPORTIVO</h2>
-            <button>ENTRAR</button>
+    <div id="pantalla-inicio" class="container">
+        <h1>GESTIÓN DE EQUIPOS</h1>
+        <div class="selector-equipos">
+            <div class="card" onclick="seleccionarEquipo('Deportivo')">
+                <img src="dep_logo.png" class="logo-equipo">
+                <h2>DEPORTIVO</h2>
+                <button>ENTRAR</button>
+            </div>
+            <div class="card" onclick="seleccionarEquipo('Halcones')">
+                <img src="hal.png" class="logo-equipo">
+                <h2>HALCONES</h2>
+                <button>ENTRAR</button>
+            </div>
         </div>
-        <div class="card" onclick="seleccionarEquipo('Halcones')">
-            <img src="hal.png" class="logo-equipo">
-            <h2>HALCONES</h2>
-            <button>ENTRAR</button>
-        </div>
-    </div>
 
-    <div id="mercado-fichajes" style="margin-top: 30px; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #007bff;">
-        <h3 style="color: #007bff; margin-top: 0;">🔥 MERCADO DE TRANSFERIBLES</h3>
-        <ul id="lista-mercado" style="list-style: none; padding: 0; color: white; text-align: left;">
-            <li>No hay jugadores en venta</li>
-        </ul>
+        <div id="mercado-fichajes" style="margin-top: 30px; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #007bff;">
+            <h3 style="color: #007bff; margin-top: 0;">🔥 MERCADO DE TRANSFERIBLES</h3>
+            <ul id="lista-mercado" style="list-style: none; padding: 0; color: white; text-align: left;">
+                <li>No hay jugadores en venta</li>
+            </ul>
+        </div>
     </div>
-</div>
 
     <div id="dashboard" class="container" style="display:none;">
         <header style="display: flex; justify-content: space-between; align-items: center;">
@@ -41,44 +41,34 @@
             <div class="stat">Saldo: <span id="saldo-actual">0</span></div>
             <div class="stat">Estadio: <span id="tipo-estadio">---</span></div>
         </div>
-        </div> 
 
-    </div> 
+        <div id="buscador-compra" style="background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid #28a745; margin-bottom: 20px;">
+            <h3 style="color: #28a745; margin-top: 0; font-size: 16px;">🔍 BUSCAR NUEVO FICHAJE</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="nombre-busqueda" placeholder="Nombre del jugador..." style="flex: 1; padding: 8px; border-radius: 5px; border: none; background: #333; color: white;">
+                <input type="number" id="valor-busqueda" placeholder="Valor MDD" style="width: 120px; padding: 8px; border-radius: 5px; border: none; background: #333; color: white;">
+                <button onclick="calcularFichaje()" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">CALCULAR</button>
+            </div>
+            <div id="resultado-busqueda" style="margin-top: 10px; color: white; font-weight: bold;"></div>
+        </div>
 
-    <button onclick="finalizarTemporada()" class="btn-temporada" style="background: #222; color: #ff4444; border: 2px solid #ff4444; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; margin-bottom: 20px;">
-        🏁 FINALIZAR TEMPORADA (RESTAR CONTRATOS)
-    </button>
+        <button onclick="finalizarTemporada()" class="btn-temporada" style="background: #222; color: #ff4444; border: 2px solid #ff4444; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; margin-bottom: 20px; text-transform: uppercase;">
+            🏁 FINALIZAR TEMPORADA (RESTAR CONTRATOS)
+        </button>
 
-    <table border="1" ...>
-<button onclick="finalizarTemporada()" style="background: #444; color: white; border: 1px solid #ff4444; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 20px; width: 100%; text-transform: uppercase;">
-    🏁 Finalizar Temporada (Restar Contratos)
-</button>
-
-<table border="1" ...>
-<div id="buscador-compra" style="background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid #28a745; margin-bottom: 20px;">
-    <h3 style="color: #28a745; margin-top: 0; font-size: 16px;">🔍 BUSCAR NUEVO FICHAJE</h3>
-    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-        <input type="text" id="nombre-busqueda" placeholder="Nombre del jugador..." style="flex: 1; padding: 8px; border-radius: 5px; border: none; background: #333; color: white;">
-        <input type="number" id="valor-busqueda" placeholder="Valor MDD" style="width: 120px; padding: 8px; border-radius: 5px; border: none; background: #333; color: white;">
-        <button onclick="calcularFichaje()" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;">CALCULAR</button>
-    </div>
-    <div id="resultado-busqueda" style="margin-top: 10px; color: white; font-weight: bold;"></div>
-</div>
-        
         <table border="1" style="width:100%; background: #1a1a1a; color: white; border-collapse: collapse;">
-           <thead>
-    <tr>
-        <th>Jugador</th>
-        <th>Valor</th>
-        <th>Salario</th>
-        <th>Prima</th>
-        <th>Contrato</th> <th>Acción</th>
-    </tr>
-</thead>
+            <thead>
+                <tr>
+                    <th>Jugador</th>
+                    <th>Valor</th>
+                    <th>Salario</th>
+                    <th>Prima</th>
+                    <th>Contrato</th> 
+                    <th>Acción</th>
+                </tr>
+            </thead>
             <tbody id="body-plantilla"></tbody>
         </table>
-    </div>
-
-    <script src="main.js"></script>
+    </div> <script src="main.js"></script>
 </body>
 </html>
