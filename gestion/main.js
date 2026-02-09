@@ -146,12 +146,15 @@ window.calcularFichaje = function() {
 };
 
 window.confirmarCompra = function(n, v, s, p) {
+    // Aseguramos que la lista de jugadores exista siempre (importante para Deportivo)
+    if (!equipoActual.jugadores) equipoActual.jugadores = [];
+
     // 1. Verificar si el jugador ya está en tu equipo (evita duplicados)
     const yaExiste = equipoActual.jugadores.some(j => j.nombre.toLowerCase() === n.toLowerCase());
     
     if (yaExiste) {
         alert("¡Error! " + n + " ya está en tu equipo.");
-        document.getElementById('resultado-busqueda').innerHTML = ''; // Limpia el buscador
+        document.getElementById('resultado-busqueda').innerHTML = ''; 
         return;
     }
 
@@ -161,12 +164,7 @@ window.confirmarCompra = function(n, v, s, p) {
     // 3. Ejecutar la compra
     equipoActual.saldo -= v;
     equipoActual.jugadores.push({ 
-        nombre: n, 
-        valor: v, 
-        salario: s, 
-        prima: p, 
-        enVenta: false, 
-        contrato: 2 
+        nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 
     });
 
     // 4. Guardar y limpiar
@@ -174,7 +172,6 @@ window.confirmarCompra = function(n, v, s, p) {
     document.getElementById('resultado-busqueda').innerHTML = ''; 
     alert(n + " fichado correctamente.");
 };
-
 // --- OFERTAS Y CONTRAOFERTAS ---
 function dibujarOfertas() {
     const contenedor = document.getElementById('contenedor-ofertas');
