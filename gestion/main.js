@@ -75,10 +75,9 @@ function seleccionarEquipo(id) {
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
-    actualizarTabla(); 
-    actualizarListasNegociacion(); // <--- AGREGA ESTA LÍNEA AQUÍ
+    actualizarTabla();
+    actualizarListasNegociacion(); // <--- Esta línea llena los menús al entrar
 }
-
 function irInicio() {
     idActual = "";
     document.getElementById('pantalla-inicio').style.display = 'block';
