@@ -84,8 +84,6 @@ function irInicio() {
     document.getElementById('pantalla-inicio').style.display = 'block';
     document.getElementById('dashboard').style.display = 'none';
 }
-let todasLasOfertas = {}; 
-
 db.ref('ofertas/').on('value', (snapshot) => {
     todasLasOfertas = snapshot.val() || {};
     const contenedor = document.getElementById('contenedor-ofertas');
@@ -97,19 +95,18 @@ db.ref('ofertas/').on('value', (snapshot) => {
     Object.keys(misOfertas).forEach(key => {
         const o = misOfertas[key];
         contenedor.innerHTML += `
-            <div style="background:#222; padding:15px; margin:10px 0; border-radius:8px; border-left:5px solid #007bff; text-align:left; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-                <p style="margin:0 0 10px 0;">🚀 <b>${o.desde}</b> propone:</p>
-                <p style="font-size:14px; color:#ccc;">Quiere a: <span style="color:white; font-weight:bold;">${o.jugadorBuscado}</span></p>
-                <p style="font-size:14px; color:#ccc;">Ofrece: <span style="color:white;">$${o.dinero}M</span> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
-                <div style="margin-top:10px; display:flex; gap:5px;">
-                    <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; flex:1;">ACEPTAR</button>
-                    <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; flex:1;">CONTRAOFERTA</button>
-                    <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; flex:1;">RECHAZAR</button>
+            <div style="background:#222; padding:15px; margin:10px 0; border-radius:8px; border-left:5px solid #007bff; text-align:left;">
+                <p>🚀 <b>${o.desde}</b> propone:</p>
+                <p style="font-size:14px;">Quiere a: <b>${o.jugadorBuscado}</b></p>
+                <p style="font-size:14px;">Ofrece: <b>$${o.dinero}M</b> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">ACEPTAR</button>
+                   <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; flex:1; padding:8px; cursor:pointer; border-radius:4px;">CONTRAOFERTA</button>
+                    <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">RECHAZAR</button>
                 </div>
             </div>`;
     });
-});
-
+}, (error) => console.error("Error en Firebase:", error));
 function salvar() { db.ref('liga/').set(datosEquipos); }
 
 function actualizarTabla() {
@@ -284,43 +281,24 @@ function rechazarOferta(idOferta) {
     db.ref(`ofertas/${idActual}/${idOferta}`).remove();
 }
 function prepararContraoferta(idOferta, idEmisor) {
+    // 1. Obtenemos los datos de la oferta original desde la variable global
     const o = todasLasOfertas[idActual][idOferta];
+    if (!o) return;
+
+    // 2. Cargamos los datos en el panel de envío para que tú los modifiques
+    // El "Jugador buscado" ahora es el que el rival te ofrecía originalmente
+    if (o.jugadorOfrecido) {
+        document.getElementById('select-jugador-rival').value = o.jugadorOfrecido;
+    }
     
-    // 1. Cargamos los datos de la oferta original en el panel de envío
-    // Ahora tú quieres el jugador que el otro te ofrecía, o pides más dinero
-    document.getElementById('oferta-dinero').value = o.dinero + 5; // Sugiere 5M más por defecto
-    
-    // 2. Avisamos al usuario para que ajuste los selects
-    alert("📝 Ajusta los valores en el panel de 'ENVIAR OFERTA' para mandar tu contrapropuesta.");
-    
-    // 3. Borramos la oferta vieja para que no se duplique
+    // Ponemos el dinero original para que solo lo subas o bajes
+    document.getElementById('oferta-dinero').value = o.dinero;
+
+    // 3. Borramos la oferta vieja del muro para que no se duplique
     db.ref(`ofertas/${idActual}/${idOferta}`).remove();
+
+    alert("📝 Datos cargados. Ajusta el precio o jugador y dale a 'ENVIAR' para responder.");
     
-    // Scroll suave hacia el panel de negociación
+    // Scroll automático al panel de negociación para que sea rápido
     document.getElementById('select-jugador-rival').scrollIntoView({ behavior: 'smooth' });
-}
-
-// Mejora para que la oferta llegue "al toque"
-function enviarOferta() {
-    const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
-    const jBuscado = document.getElementById('select-jugador-rival').value;
-    const dinero = parseFloat(document.getElementById('oferta-dinero').value) || 0;
-    const jOfrecido = document.getElementById('mi-jugador-cambio').value;
-
-    const nuevaOferta = {
-        desde: equipoActual.nombre,
-        idEmisor: idActual,
-        jugadorBuscado: jBuscado,
-        dinero: dinero,
-        jugadorOfrecido: jOfrecido,
-        timestamp: Date.now() // Esto ayuda a que Firebase lo detecte como cambio nuevo
-    };
-
-    db.ref('ofertas/' + idRival).push(nuevaOferta).then(() => {
-        alert("✅ Oferta enviada con éxito.");
-        // Limpiamos los campos
-        document.getElementById('oferta-dinero').value = '';
-    }).catch((error) => {
-        alert("❌ Error al enviar: " + error.message);
-    });
 }
