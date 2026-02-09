@@ -53,20 +53,23 @@ let datosEquipos = {
 let equipoActual = null;
 let idEquipoActual = "";
 
-// --- SINCRONIZACIÓN NUBE ---
+// --- ESCUCHA ACTIVA DE LA NUBE ---
 db.ref('liga/').on('value', (snapshot) => {
     const data = snapshot.val();
-    if (data) {
+    
+    // Si la base de datos es null (como en tu foto), enviamos los datos iniciales
+    if (!data) {
+        console.log("Base vacía, reseteando...");
+        guardarEnNube(); 
+    } else {
         datosEquipos = data;
-        if (idEquipoActual) {
+        if (idEquipoActual && datosEquipos[idEquipoActual]) {
             equipoActual = datosEquipos[idEquipoActual];
             actualizarTabla();
             mostrarNotificaciones();
         }
-    } else {
-        guardarEnNube(); // Inicializa la nube si está vacía
+        cargarMercado();
     }
-    cargarMercado();
 });
 
 function guardarEnNube() {
