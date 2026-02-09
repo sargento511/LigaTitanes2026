@@ -4,7 +4,7 @@ const datosEquipos = {
         saldo: 147.2,
         estadio: 'Estadio Federal (Grande)',
         jugadores: [
-            { nombre: 'Esperando lista de Deportivo...', valor: 0, salario: 0, prima: 0 }
+            { nombre: 'Esperando lista...', valor: 0, salario: 0, prima: 0 }
         ]
     },
     'Halcones': {
@@ -57,43 +57,13 @@ function actualizarTabla() {
     tabla.innerHTML = '';
 
     equipoActual.jugadores.forEach((j, index) => {
-        tabla.innerHTML += `
+        // Creamos la fila con los botones directamente en el HTML de la fila
+        const fila = `
             <tr>
                 <td>${j.nombre}</td>
                 <td>$${j.valor}M</td>
                 <td>$${j.salario}M</td>
                 <td>$${j.prima}M</td>
                 <td>
-                    <div style="display: flex; gap: 5px;">
-                        <button onclick="renovar(${index})" style="background: #28a745; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 10px;">RENOVAR</button>
-                        <button onclick="venderAlAnterior(${index})" style="background: #fd7e14; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 10px;">VENDER (50%)</button>
-                        <button onclick="ponerEnVenta(${index})" style="background: #007bff; color: white; border: none; padding: 5px; border-radius: 4px; cursor: pointer; font-size: 10px;">LISTA VENTAS</button>
-                    </div>
-                </td>
-            </tr>`;
-    });
-}
-
-function venderAlAnterior(index) {
-    const j = equipoActual.jugadores[index];
-    const pago = j.valor * 0.5; 
-    if(confirm(`¿Vender a ${j.nombre} al equipo anterior por $${pago.toFixed(1)} MDD?`)) {
-        equipoActual.saldo += pago;
-        equipoActual.jugadores.splice(index, 1);
-        actualizarTabla();
-    }
-}
-
-function renovar(index) {
-    const j = equipoActual.jugadores[index];
-    alert(`Contrato de ${j.nombre} renovado con éxito.`);
-}
-
-function ponerEnVenta(index) {
-    const j = equipoActual.jugadores[index];
-    alert(`${j.nombre} ha sido añadido a la Lista de Ventas de la Liga.`);
-}
-
-function irInicio() {
-    window.location.reload();
-}
+                    <button onclick="renovar(${index})" style="background:green; color:white; border:none; padding:4px 8px; margin:2px; cursor:pointer; border-radius:4px; font-size:10px;">RENOVAR</button>
+                    <button onclick="venderAlAnterior(${index})" style="background:orange; color:white; border:none; padding:4px 8px; margin:2px; cursor:pointer; border
