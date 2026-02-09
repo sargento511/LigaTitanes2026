@@ -71,10 +71,9 @@ function dibujarOfertas() {
                 </div>
             </div>`;
     });
-}
+    // --- PEGA ESTO DESDE LA LÍNEA 77 ---
 
-
-// REEMPLAZA LAS LÍNEAS 77 A 92 CON ESTO:
+// 1. EL VIGILANTE DE LA LIGA (Mantiene la tabla y menús vivos)
 db.ref('liga/').on('value', (snapshot) => {
     const data = snapshot.val();
     datosEquipos = data ? data : DATOS_INICIALES;
@@ -83,33 +82,68 @@ db.ref('liga/').on('value', (snapshot) => {
         equipoActual = datosEquipos[idActual];
         actualizarTabla();
         actualizarListasNegociacion();
-        dibujarOfertas(); // <-- Ahora sí está bien guardadita aquí
+        dibujarOfertas(); 
     }
     cargarMercado();
 });
 
-// Este bloque (que ya tienes cerca de la línea 87) se encargará de dibujar
-// las ofertas en cuanto el bloque de arriba termine de cargar los datos.
+// 2. EL VIGILANTE DE LAS OFERTAS (Dibuja cuando llega algo nuevo)
 db.ref('ofertas/').on('value', (snapshot) => {
     todasLasOfertas = snapshot.val() || {};
-    // ... resto de tu código de dibujo de ofertas ...
+    if (idActual) {
+        dibujarOfertas();
+    }
 });
+
+// 3. FUNCIÓN PARA ENTRAR AL EQUIPO (Lo que hace que el botón funcione)
 function seleccionarEquipo(id) {
-    idActual = id; 
+    idActual = id;
     equipoActual = datosEquipos[id];
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
+    
     actualizarTabla();
-    actualizarListasNegociacion(); 
-    dibujarOfertas(); // <-- ESTO LAS DIBUJA APENAS HACES CLIC EN TU BOTÓN
+    actualizarListasNegociacion();
+    dibujarOfertas();
 }
+
+// 4. FUNCIÓN PARA VOLVER AL INICIO
 function irInicio() {
     idActual = "";
     document.getElementById('pantalla-inicio').style.display = 'block';
     document.getElementById('dashboard').style.display = 'none';
 }
 
+function salvar() { 
+    db.ref('liga/').set(datosEquipos); 
+}
+// --- AQUÍ TERMINA LO QUE TIENES QUE PEGAR ---
+}
+// --- ESCUCHADORES DE FIREBASE (Línea 77) ---
+db.ref('liga/').on('value', (snapshot) => {
+    const data = snapshot.val();
+    datosEquipos = data ? data : DATOS_INICIALES;
+    
+    if (idActual) {
+        equipoActual = datosEquipos[idActual];
+        actualizarTabla();
+        actualizarListasNegociacion();
+        dibujarOfertas();
+    }
+    cargarMercado();
+});
+
+db.ref('ofertas/').on('value', (snapshot) => {
+    todasLasOfertas = snapshot.val() || {};
+    if (idActual) {
+        dibujarOfertas();
+    }
+}, (error) => console.error("Error en Ofertas:", error));
+
+function salvar() { 
+    db.ref('liga/').set(datosEquipos); 
+}
 
 // Escuchador que solo actualiza los datos y manda a dibujar
 db.ref('ofertas/').on('value', (snapshot) => {
