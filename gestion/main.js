@@ -69,6 +69,15 @@ function seleccionarEquipo(id) {
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     actualizarTabla();
 }
+function seleccionarEquipo(id) {
+    idEquipoActual = id;
+    equipoActual = datosEquipos[id];
+    document.getElementById('pantalla-inicio').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
+    actualizarTabla(); 
+    actualizarListasNegociacion(); // <--- AGREGA ESTA LÍNEA AQUÍ
+}
 
 function irInicio() {
     idActual = "";
