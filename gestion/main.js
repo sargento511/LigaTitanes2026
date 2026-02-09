@@ -72,18 +72,9 @@ function dibujarOfertas() {
             </div>`;
     });
 }
-db.ref('liga/').on('value', (snapshot) => {
-    const data = snapshot.val();
-    datosEquipos = data ? data : DATOS_INICIALES;
-    if (idActual) { 
-        equipoActual = datosEquipos[idActual];
-        actualizarTabla();
-        actualizarListasNegociacion(); // <--- Esto llena los menús automáticamente
-    }
-    cargarMercado();
-});
 
-// SINCRONIZACIÓN LIGA Y OFERTAS AL ENTRAR
+
+// REEMPLAZA LAS LÍNEAS 77 A 92 CON ESTO:
 db.ref('liga/').on('value', (snapshot) => {
     const data = snapshot.val();
     datosEquipos = data ? data : DATOS_INICIALES;
@@ -91,12 +82,9 @@ db.ref('liga/').on('value', (snapshot) => {
     if (idActual) {
         equipoActual = datosEquipos[idActual];
         actualizarTabla();
-        actualizarListasNegociacion(); // Esto pone el "Solo dinero" en los menús
-        
-actualizarListasNegociacion();
-    dibujarOfertas(); // <-- ESTO DESPIERTA LAS OFERTAS AL CARGAR LA WEB
-}
-    
+        actualizarListasNegociacion();
+        dibujarOfertas(); // <-- Ahora sí está bien guardadita aquí
+    }
     cargarMercado();
 });
 
