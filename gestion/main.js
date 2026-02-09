@@ -134,54 +134,57 @@ function calcularFichaje() {
         return;
     }
 
-    // TABLA DE SALARIOS SEGÚN VALOR
     let salario = 0;
-    if (valor <= 1) salario = 1;
-    else if (valor <= 5) salario = 5;
-    else if (valor <= 15) salario = 8;
-    else if (valor <= 30) salario = 11;
-    else salario = 15;
+    let prima = 0;
 
-    let prima = (salario * 0.3).toFixed(1);
+    // LÓGICA SEGÚN TU TABLA DE VALORES
+    if (valor >= 120) { salario = 22; prima = 7; }
+    else if (valor >= 90) { salario = 18; prima = 5; }
+    else if (valor >= 70) { salario = 14; prima = 4; }
+    else if (valor >= 50) { salario = 11; prima = 3; }
+    else if (valor >= 30) { salario = 8; prima = 2; }
+    else if (valor >= 20) { salario = 5; prima = 1.5; }
+    else if (valor >= 10) { salario = 3; prima = 1; }
+    else if (valor >= 5) { salario = 1.5; prima = 0.7; }
+    else { salario = 0.8; prima = 0.4; }
 
     resultadoDiv.innerHTML = `
-        <div style="background: #222; padding: 10px; border-radius: 5px; border-left: 5px solid #28a745; margin-top: 10px;">
-            <p style="margin: 0; color: #28a745;">✅ <strong>${nombre.toUpperCase()}</strong></p>
-            <p style="margin: 5px 0; font-size: 14px;">💰 Salario: $${salario}M | 💸 Prima: $${prima}M</p>
-            <button onclick="confirmarCompra('${nombre}', ${valor}, ${salario}, ${prima})" style="background: #28a745; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px;">FICHAR E INCORPORAR</button>
+        <div style="background: #222; padding: 15px; border-radius: 8px; border-left: 5px solid #28a745; margin-top: 15px; text-align: left;">
+            <p style="margin: 0; color: #28a745; font-size: 1.1em;">✅ <strong>${nombre.toUpperCase()}</strong></p>
+            <div style="margin: 10px 0; font-size: 14px; line-height: 1.6;">
+                <strong>💰 Salario:</strong> $${salario}M <br>
+                <strong>💸 Prima:</strong> $${prima}M
+            </div>
+            <button onclick="confirmarCompra('${nombre}', ${valor}, ${salario}, ${prima})" 
+                style="background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;">
+                FICHAR E INCORPORAR
+            </button>
         </div>
     `;
 }
 
 function confirmarCompra(nombre, valor, salario, prima) {
     if (equipoActual.saldo < valor) {
-        alert("¡Fondos insuficientes! No puedes pagar los $" + valor + "M que vale el jugador.");
+        alert("¡No tienes dinero suficiente! Te faltan $" + (valor - equipoActual.saldo).toFixed(1) + "M");
         return;
     }
 
-    if (confirm(`¿Pagar $${valor}M por ${nombre}? El dinero se descontará de tu saldo.`)) {
-        // Restar dinero
+    if (confirm(`¿Pagar $${valor}M por ${nombre}?`)) {
         equipoActual.saldo -= valor;
-        
-        // Agregar a la lista
         equipoActual.jugadores.push({
             nombre: nombre,
             valor: valor,
             salario: salario,
-            prima: parseFloat(prima),
+            prima: prima,
             enVenta: false
         });
         
-        // Limpiar interfaz de búsqueda
+        // Limpiar
         document.getElementById('nombre-busqueda').value = '';
         document.getElementById('valor-busqueda').value = '';
         document.getElementById('resultado-busqueda').innerHTML = '';
         
-        // Actualizar la vista
         actualizarTabla();
-        alert("¡Fichaje completado! " + nombre + " ya está en tu plantilla.");
+        alert("¡Fichaje realizado con éxito!");
     }
 }
-
-// Ejecutar al cargar la página por primera vez
-window.onload = cargarMercado;
