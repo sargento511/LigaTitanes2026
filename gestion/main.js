@@ -49,6 +49,29 @@ const DATOS_INICIALES = {
         ]
     }
 };
+// --- NUEVA FUNCIÓN PARA DIBUJAR OFERTAS ---
+function dibujarOfertas() {
+    const contenedor = document.getElementById('contenedor-ofertas');
+    if (!contenedor || !idActual) return; // Si no hay equipo, no hace nada
+
+    const misOfertas = todasLasOfertas[idActual] || {};
+    contenedor.innerHTML = '';
+
+    Object.keys(misOfertas).forEach(key => {
+        const o = misOfertas[key];
+        contenedor.innerHTML += `
+            <div style="background:#222; padding:15px; margin:10px 0; border-radius:8px; border-left:5px solid #007bff; text-align:left;">
+                <p>🚀 <b>${o.desde}</b> propone:</p>
+                <p style="font-size:14px;">Quiere a: <b>${o.jugadorBuscado}</b></p>
+                <p style="font-size:14px;">Ofrece: <b>$${o.dinero}M</b> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">ACEPTAR</button>
+                    <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; flex:1; padding:8px; cursor:pointer; border-radius:4px;">CONTRAOFERTA</button>
+                    <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">RECHAZAR</button>
+                </div>
+            </div>`;
+    });
+}
 db.ref('liga/').on('value', (snapshot) => {
     const data = snapshot.val();
     datosEquipos = data ? data : DATOS_INICIALES;
@@ -99,29 +122,7 @@ function irInicio() {
     document.getElementById('pantalla-inicio').style.display = 'block';
     document.getElementById('dashboard').style.display = 'none';
 }
-// --- NUEVA FUNCIÓN PARA DIBUJAR OFERTAS ---
-function dibujarOfertas() {
-    const contenedor = document.getElementById('contenedor-ofertas');
-    if (!contenedor || !idActual) return; // Si no hay equipo, no hace nada
 
-    const misOfertas = todasLasOfertas[idActual] || {};
-    contenedor.innerHTML = '';
-
-    Object.keys(misOfertas).forEach(key => {
-        const o = misOfertas[key];
-        contenedor.innerHTML += `
-            <div style="background:#222; padding:15px; margin:10px 0; border-radius:8px; border-left:5px solid #007bff; text-align:left;">
-                <p>🚀 <b>${o.desde}</b> propone:</p>
-                <p style="font-size:14px;">Quiere a: <b>${o.jugadorBuscado}</b></p>
-                <p style="font-size:14px;">Ofrece: <b>$${o.dinero}M</b> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">ACEPTAR</button>
-                    <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; flex:1; padding:8px; cursor:pointer; border-radius:4px;">CONTRAOFERTA</button>
-                    <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">RECHAZAR</button>
-                </div>
-            </div>`;
-    });
-}
 
 // Escuchador que solo actualiza los datos y manda a dibujar
 db.ref('ofertas/').on('value', (snapshot) => {
