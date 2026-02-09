@@ -70,6 +70,15 @@ window.seleccionarEquipo = function(id) {
         alert("Cargando datos... intenta de nuevo en un segundo.");
     }
 };
+// --- FUNCIÓN PARA EL BOTÓN VOLVER ---
+window.irInicio = function() {
+    idActual = ""; // Limpiamos el ID para que deje de escuchar ese equipo
+    equipoActual = null; // Quitamos el equipo activo
+    
+    // Cambiamos la visibilidad de las pantallas
+    document.getElementById('pantalla-inicio').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+};
 
 function actualizarTodo() {
     if (!equipoActual) return;
