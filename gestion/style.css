@@ -1,96 +1,93 @@
+/* DISEÑO LIGA TITANES 2026 */
 body {
-    background-color: #0f0f0f;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
+    background-color: #0b0b0b;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-.container {
-    padding: 40px 20px;
-    width: 100%;
-    max-width: 900px;
-    text-align: center;
-}
-
-.selector-equipos {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 40px;
-    flex-wrap: wrap;
-}
-
-.card {
-    background: #1a1a1a;
-    border: 2px solid #333;
-    border-radius: 20px;
     padding: 20px;
-    width: 260px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: 0.3s;
+}
+
+#pantalla-inicio {
+    text-align: center;
+    margin-top: 50px;
+    border: 2px solid #d4af37;
+    padding: 40px;
+    border-radius: 15px;
+    background: #1a1a1a;
+}
+
+h1 { color: #d4af37; text-shadow: 2px 2px #000; }
+
+button {
+    background: #d4af37;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 5px;
+    font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
 
-.card:hover { border-color: #007bff; transform: translateY(-5px); }
+button:hover { background: #fff; transform: scale(1.05); }
 
-.logo-equipo {
-    width: 100%;
-    height: 180px;
-    object-fit: contain;
-    margin-bottom: 15px;
-}
-
-/* Dashboard */
-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.btn-volver { width: auto; padding: 5px 15px; background: #444; }
-
-.info-top { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-.stat { background: #222; padding: 10px 20px; border-radius: 8px; border: 1px solid #007bff; }
-
-.buscador { margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; }
-input { padding: 10px; border-radius: 5px; border: none; width: 60%; }
-
-table { width: 100%; border-collapse: collapse; background: #1a1a1a; margin-top: 10px; }
-th, td { padding: 12px; border-bottom: 1px solid #333; text-align: left; }
-th { background: #007bff; }
-
-button { background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-button:hover { background: #0056b3; }
-
-/* Contenedor principal del Dashboard para que no se amontone */
 #dashboard {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    width: 95%;
+    max-width: 1000px;
+    background: #161616;
     padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
-/* Estilo para el buscador y el botón de temporada */
-#buscador-compra, .btn-temporada {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto; /* Centrarlos */
+.stats {
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 5px solid #d4af37;
+    font-size: 1.2em;
 }
 
-/* Ajuste de la tabla para que no se vea gigante */
+.buscador {
+    background: #1f1f1f;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px dashed #444;
+}
+
+input, select {
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+    padding: 8px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 0.9em;
+    margin-top: 20px;
+    background: #111;
 }
 
-th, td {
-    padding: 12px;
-    text-align: center;
+th { background: #d4af37; color: black; padding: 12px; }
+
+td {
+    padding: 10px;
     border-bottom: 1px solid #333;
+    text-align: center;
 }
 
-/* Colores para los estados del contrato */
-.contrato-bajo { color: #ff4444; font-weight: bold; }
-.contrato-ok { color: #28a745; font-weight: bold; }
+tr:hover { background: #1d1d1d; }
+
+#muro-notis {
+    border: 1px solid #d4af37;
+    box-shadow: inset 0 0 10px rgba(212, 175, 55, 0.2);
+}
