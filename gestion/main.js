@@ -96,7 +96,6 @@ db.ref('liga/').on('value', (snapshot) => {
 actualizarListasNegociacion();
     dibujarOfertas(); // <-- ESTO DESPIERTA LAS OFERTAS AL CARGAR LA WEB
 }
-    }
     
     cargarMercado();
 });
