@@ -1,7 +1,7 @@
 const datosEquipos = {
     'Deportivo': {
         nombre: 'DEPORTIVO FEDERAL',
-        saldo: 250,
+        saldo: 147.2,
         estadio: 'Estadio Federal (Grande)',
         jugadores: [
             { nombre: 'Juan Pérez', valor: 20, salario: 2 },
@@ -10,8 +10,8 @@ const datosEquipos = {
     },
     'Halcones': {
         nombre: 'HALCONES ROJOS',
-        saldo: 200,
-        estadio: 'Nido del Halcón (Mediano)',
+        saldo: 276.4,
+        estadio: 'La Caldera Roja (Gigante)',
         jugadores: [
             { nombre: 'Águila Real', valor: 30, salario: 3 },
             { nombre: 'Pedro S.', valor: 50, salario: 5 }
@@ -30,7 +30,7 @@ function seleccionarEquipo(id) {
 }
 
 function actualizarTabla() {
-    document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo}M`;
+    document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo.toFixed(1)} MDD`;
     document.getElementById('tipo-estadio').innerText = equipoActual.estadio;
 
     const tabla = document.getElementById('body-plantilla');
@@ -43,36 +43,34 @@ function actualizarTabla() {
                 <td>$${j.valor}M</td>
                 <td>$${j.salario}M</td>
                 <td>
-                    <button onclick="renovar(${index})" style="background:green; width:auto; padding:5px 10px; margin-right:5px;">RENOVAR</button>
-                    <button onclick="venderAlAnterior(${index})" style="background:orange; width:auto; padding:5px 10px; margin-right:5px;">VENDER (50%)</button>
-                    <button onclick="ponerTransferible(${index})" style="background:blue; width:auto; padding:5px 10px;">LISTA VENTA</button>
+                    <div style="display: flex; gap: 5px;">
+                        <button onclick="renovar(${index})" style="background: #28a745; font-size: 11px; padding: 5px; width: auto;">RENOVAR</button>
+                        <button onclick="venderAlAnterior(${index})" style="background: #fd7e14; font-size: 11px; padding: 5px; width: auto;">VENDER (50%)</button>
+                        <button onclick="ponerTransferible(${index})" style="background: #007bff; font-size: 11px; padding: 5px; width: auto;">LISTA VENTA</button>
+                    </div>
                 </td>
             </tr>`;
     });
 }
 
-// REGLA: Vender al equipo anterior por el 50% del valor
 function venderAlAnterior(index) {
     const j = equipoActual.jugadores[index];
-    const pago = j.valor * 0.5; // Solo recibe la mitad
-    if(confirm(`¿Vender a ${j.nombre} al equipo anterior por $${pago}M (50%)?`)) {
+    const pago = j.valor * 0.5; 
+    if(confirm(`¿Vender a ${j.nombre} al equipo anterior por $${pago.toFixed(1)} MDD?`)) {
         equipoActual.saldo += pago;
         equipoActual.jugadores.splice(index, 1);
         actualizarTabla();
     }
 }
 
-// Función para Renovar (Aquí puedes cobrar un gasto si quieres)
 function renovar(index) {
     const j = equipoActual.jugadores[index];
-    alert(`${j.nombre} ha renovado su contrato.`);
-    // Aquí podrías restar saldo por "prima de renovación" si lo deseas
+    alert(`Contrato de ${j.nombre} renovado en ${equipoActual.estadio}.`);
 }
 
-// Función para poner a la venta (Solo avisa por ahora)
 function ponerTransferible(index) {
     const j = equipoActual.jugadores[index];
-    alert(`${j.nombre} ahora está en la lista de transferibles.`);
+    alert(`${j.nombre} ha sido puesto en la lista de transferibles.`);
 }
 
 function irInicio() {
