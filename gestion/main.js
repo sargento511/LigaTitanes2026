@@ -303,3 +303,23 @@ function prepararContraoferta(idOferta, idEmisor) {
     // Scroll automático al panel de negociación para que sea rápido
     document.getElementById('select-jugador-rival').scrollIntoView({ behavior: 'smooth' });
 }
+function actualizarListasNegociacion() {
+    const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
+    const rival = datosEquipos[rivalId];
+    const selectRival = document.getElementById('select-jugador-rival');
+    const selectMio = document.getElementById('mi-jugador-cambio');
+    
+    if (!selectRival || !selectMio || !rival) return;
+
+    // ESTO AGREGA LA OPCIÓN DE "SOLO DINERO" AL RIVAL (IZQUIERDA)
+    selectRival.innerHTML = '<option value="">Solo dinero (Ninguno)</option>' + 
+        rival.jugadores.map(j => 
+            `<option value="${j.nombre}">${j.nombre} ($${j.valor}M)</option>`
+        ).join('');
+    
+    // ESTO AGREGA LA OPCIÓN DE "SOLO DINERO" A TI (DERECHA)
+    selectMio.innerHTML = '<option value="">Solo dinero</option>' + 
+        equipoActual.jugadores.map(j => 
+            `<option value="${j.nombre}">${j.nombre}</option>`
+        ).join('');
+}
