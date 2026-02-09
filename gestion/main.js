@@ -261,13 +261,24 @@ window.aceptarOferta = function(idO, idE) {
 window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
 
 function actualizarListasNegociacion() {
+    // Identificamos correctamente quién es el rival según el ID actual
     const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
     const rival = datosEquipos[rivalId];
+    
     const selRival = document.getElementById('select-jugador-rival');
     const selMio = document.getElementById('mi-jugador-cambio');
     
-    if (selRival && rival) selRival.innerHTML = '<option value="">Solo $</option>' + rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
-    if (selMio) selMio.innerHTML = '<option value="">Solo $</option>' + equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+    // Llenar lista del RIVAL (Jugadores que quieres comprar)
+    if (selRival && rival && rival.jugadores) {
+        selRival.innerHTML = '<option value="">Solo $</option>' + 
+            rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+    }
+    
+    // Llenar MI lista (Jugadores que ofreces a cambio)
+    if (selMio && equipoActual && equipoActual.jugadores) {
+        selMio.innerHTML = '<option value="">Solo $</option>' + 
+            equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+    }
 }
 
 function cargarMercado() {
