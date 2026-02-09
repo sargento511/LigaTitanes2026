@@ -187,4 +187,34 @@ function confirmarCompra(nombre, valor, salario, prima) {
         actualizarTabla();
         alert("¡Fichaje realizado con éxito!");
     }
+    function finalizarTemporada() {
+    // Confirmación para evitar errores
+    if (confirm("⚠️ ¿Estás seguro? Esto restará 1 año de contrato a TODOS los jugadores del equipo.")) {
+        equipoActual.jugadores.forEach(j => {
+            if (j.contrato > 0) {
+                j.contrato -= 1;
+            }
+        });
+        
+        actualizarTabla();
+        alert("✅ Temporada cerrada. Los contratos han bajado 1 año.");
+    }
+}
+
+function renovar(index) {
+    const j = equipoActual.jugadores[index];
+    
+    // Validar si tiene dinero para la prima de renovación
+    if (equipoActual.saldo < j.prima) {
+        alert("❌ No tienes saldo suficiente para pagar la prima de renovación ($" + j.prima + "M)");
+        return;
+    }
+
+    if (confirm(`¿Renovar a ${j.nombre} por 1 año más? Se cobrará una prima de $${j.prima}M`)) {
+        equipoActual.saldo -= j.prima;
+        j.contrato += 1;
+        actualizarTabla();
+        alert("✔️ Contrato extendido y prima pagada.");
+    }
+}
 }
