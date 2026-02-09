@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Liga Titanes 2026 - Gestión</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Liga Titanes</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -11,33 +12,54 @@
 
     <div id="pantalla-inicio">
         <h1>LIGA TITANES 2026</h1>
-        <button onclick="seleccionarEquipo('Deportivo')">DEPORTIVO FEDERAL</button>
-        <button onclick="seleccionarEquipo('Halcones')">HALCONES ROJOS</button>
+        <div class="contenedor-equipos">
+            <div class="card-equipo" onclick="seleccionarEquipo('Deportivo')">
+                <img src="dep_logo.png" alt="Deportivo Federal">
+                <button>DEPORTIVO FEDERAL</button>
+            </div>
+            <div class="card-equipo" onclick="seleccionarEquipo('Halcones')">
+                <img src="hal.png" alt="Halcones Rojos">
+                <button>HALCONES ROJOS</button>
+            </div>
+        </div>
     </div>
 
     <div id="dashboard" style="display:none;">
-        <button onclick="irInicio()">⬅ Volver</button>
-        <h2 id="nombre-equipo-titulo"></h2>
-        <div class="stats">
-            <span id="saldo-actual"></span> | <span id="tipo-estadio"></span>
+        <header>
+            <button onclick="irInicio()" class="btn-volver">⬅ Volver</button>
+            <h2 id="nombre-equipo-titulo"></h2>
+        </header>
+
+        <div class="info-panel">
+            <div class="stat-box">Saldo: <span id="saldo-actual"></span></div>
+            <div class="stat-box">Estadio: <span id="tipo-estadio"></span></div>
         </div>
 
-        <div class="buscador">
-            <h3>🔍 BUSCAR FICHAJE</h3>
-            <input type="text" id="nombre-busqueda" placeholder="Nombre...">
-            <input type="number" id="valor-busqueda" placeholder="MDD">
-            <button onclick="calcularFichaje()">CALCULAR / BUSCAR</button>
+        <div class="buscador-container">
+            <h3>🔍 BUSCADOR / CALCULADOR</h3>
+            <div class="inputs">
+                <input type="text" id="nombre-busqueda" placeholder="Nombre del jugador...">
+                <input type="number" id="valor-busqueda" placeholder="Valor MDD">
+                <button onclick="calcularFichaje()">CALCULAR</button>
+            </div>
             <div id="resultado-busqueda"></div>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Jugador</th><th>Valor</th><th>Salario</th><th>Prima</th><th>Contrato</th><th>Acción</th>
-                </tr>
-            </thead>
-            <tbody id="body-plantilla"></tbody>
-        </table>
+        <div class="tabla-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jugador</th>
+                        <th>Valor</th>
+                        <th>Salario</th>
+                        <th>Prima</th>
+                        <th>Contrato</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="body-plantilla"></tbody>
+            </table>
+        </div>
     </div>
 
     <script src="main.js"></script>
