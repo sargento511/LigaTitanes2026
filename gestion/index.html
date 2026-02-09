@@ -117,19 +117,36 @@ function calcularFichaje() {
 }
 
 function enviarPropuesta(vId, jIdx, nombreJ) {
-    const dinero = prompt("Dinero a ofrecer:", "0");
-    const intercambio = prompt("Jugador a cambio:", "ninguno");
+    // 1. Obtenemos la lista de jugadores del equipo al que le vamos a comprar
+    const equipoVendedor = datosEquipos[vId];
+    
+    // 2. Creamos una lista de texto con los nombres para que el usuario sepa a quién puede elegir
+    let listaNombres = equipoVendedor.jugadores.map(j => j.nombre).join("\n- ");
+    
+    // 3. Pedimos el dinero
+    const dinero = prompt(`¿Cuánto dinero ofreces por ${nombreJ}?`, "0");
     if (dinero === null) return;
 
+    // 4. Pedimos el jugador de intercambio mostrando la lista del rival
+    const intercambio = prompt(`¿A qué jugador de ${equipoVendedor.nombre} pides a cambio?\n\nOpciones disponibles:\n- ${listaNombres}\n\n(Escribe el nombre exacto o 'ninguno')`, "ninguno");
+    
+    if (intercambio === null) return;
+
+    // 5. Guardamos la oferta en la nube
     db.ref('liga/' + vId + '/notificaciones').once('value').then(snap => {
         let notis = snap.val() || [];
         notis.push({
-            deId: idEquipoActual, deNombre: equipoActual.nombre,
-            jugadorDeseado: nombreJ, jugadorDeseadoIdx: jIdx,
-            ofertaDinero: parseFloat(dinero), ofertaJugador: intercambio
+            deId: idEquipoActual,
+            deNombre: equipoActual.nombre,
+            jugadorDeseado: nombreJ,
+            jugadorDeseadoIdx: jIdx,
+            ofertaDinero: parseFloat(dinero),
+            ofertaJugador: intercambio
         });
         return db.ref('liga/' + vId + '/notificaciones').set(notis);
-    }).then(() => alert("Oferta enviada."));
+    }).then(() => {
+        alert("✅ Oferta enviada con éxito.");
+    });
 }
 
 function mostrarNotificaciones() {
