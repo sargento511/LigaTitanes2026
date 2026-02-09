@@ -101,8 +101,6 @@ db.ref('ofertas/').on('value', (snapshot) => {
     todasLasOfertas = snapshot.val() || {};
     if (idActual) dibujarOfertas();
 });
-
-// --- PLANTILLA Y SALDOS ---
 function actualizarTabla() {
     const elSaldo = document.getElementById('saldo-actual');
     const elEstadio = document.getElementById('tipo-estadio');
@@ -119,12 +117,14 @@ function actualizarTabla() {
                 <td>$${j.prima}M</td>
                 <td>${j.contrato}a</td>
                 <td>
-                    <button onclick="renovar(${i})" style="background:green; color:white;">REN</button>
-                    <button onclick="venderAlAnterior(${i})" style="background:orange;">50%</button>
-                    <button onclick="toggleVenta(${i})" style="background:${j.enVenta ? 'red' : 'blue'}; color:white;">VENTA</button>
+                    <button onclick="window.renovar(${i})" style="background:green; color:white;">REN</button>
+                    <button onclick="window.venderAlAnterior(${i})" style="background:orange;">50%</button>
+                    <button onclick="window.toggleVenta(${i})" style="background:${j.enVenta ? 'red' : 'blue'}; color:white;">VENTA</button>
                 </td>
             </tr>`).join('');
     }
+    // Forzamos a que las listas de negociación se actualicen al ver la tabla
+    actualizarListasNegociacion();
 }
 
 // --- CALCULADORA DE FICHAJES ---
@@ -146,10 +146,33 @@ window.calcularFichaje = function() {
 };
 
 window.confirmarCompra = function(n, v, s, p) {
+    // 1. Verificar si el jugador ya está en tu equipo (evita duplicados)
+    const yaExiste = equipoActual.jugadores.some(j => j.nombre.toLowerCase() === n.toLowerCase());
+    
+    if (yaExiste) {
+        alert("¡Error! " + n + " ya está en tu equipo.");
+        document.getElementById('resultado-busqueda').innerHTML = ''; // Limpia el buscador
+        return;
+    }
+
+    // 2. Verificar saldo
     if (equipoActual.saldo < v) return alert("Saldo insuficiente.");
+
+    // 3. Ejecutar la compra
     equipoActual.saldo -= v;
-    equipoActual.jugadores.push({ nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 });
+    equipoActual.jugadores.push({ 
+        nombre: n, 
+        valor: v, 
+        salario: s, 
+        prima: p, 
+        enVenta: false, 
+        contrato: 2 
+    });
+
+    // 4. Guardar y limpiar
     salvar();
+    document.getElementById('resultado-busqueda').innerHTML = ''; 
+    alert(n + " fichado correctamente.");
 };
 
 // --- OFERTAS Y CONTRAOFERTAS ---
