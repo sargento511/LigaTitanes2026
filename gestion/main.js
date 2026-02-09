@@ -61,4 +61,32 @@ function seleccionarEquipo(id) {
     equipoActual = datosEquipos[id];
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    document
+    document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
+    actualizarTabla();
+}
+
+function irInicio() {
+    document.getElementById('pantalla-inicio').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+    cargarMercado();
+}
+
+function actualizarTabla() {
+    document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo.toFixed(1)} MDD`;
+    document.getElementById('tipo-estadio').innerText = equipoActual.estadio;
+
+    const tabla = document.getElementById('body-plantilla');
+    tabla.innerHTML = '';
+
+    equipoActual.jugadores.forEach((j, index) => {
+        const btnVenta = j.enVenta 
+            ? `<button onclick="toggleVenta(${index})" style="background:red; color:white; border:none; padding:4px 8px; cursor:pointer; border-radius:4px; font-size:10px;">QUITAR LISTA</button>`
+            : `<button onclick="toggleVenta(${index})" style="background:blue; color:white; border:none; padding:4px 8px; cursor:pointer; border-radius:4px; font-size:10px;">LISTA VENTAS</button>`;
+
+        const claseContrato = j.contrato <= 1 ? 'contrato-bajo' : 'contrato-ok';
+
+        tabla.innerHTML += `
+            <tr>
+                <td style="${j.enVenta ? 'color: #007bff; font-weight: bold;' : ''}">${j.nombre} ${j.enVenta ? '🔥' : ''}</td>
+                <td>$${j.valor}M</td>
+                <td>$${j.salario}
