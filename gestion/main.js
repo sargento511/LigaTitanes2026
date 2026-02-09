@@ -70,9 +70,9 @@ db.ref('liga/').on('value', (snapshot) => {
         actualizarTabla();
         actualizarListasNegociacion(); // Esto pone el "Solo dinero" en los menús
         
-        // --- ESTO ES LO QUE "DESPIERTA" LAS OFERTAS AL ENTRAR ---
-        // Si ya existen ofertas en la base de datos, el evento 'value' de abajo
-        // las dibujará automáticamente sin que tengas que enviar nada tú.
+actualizarListasNegociacion();
+    dibujarOfertas(); // <-- ESTO DESPIERTA LAS OFERTAS AL CARGAR LA WEB
+}
     }
     
     cargarMercado();
@@ -92,16 +92,18 @@ function seleccionarEquipo(id) {
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     actualizarTabla();
     actualizarListasNegociacion(); 
+actualizarListasNegociacion();
+    dibujarOfertas(); // <-- ESTO LAS DIBUJA APENAS HACES CLIC EN TU BOTÓN
 }
 function irInicio() {
     idActual = "";
     document.getElementById('pantalla-inicio').style.display = 'block';
     document.getElementById('dashboard').style.display = 'none';
 }
-db.ref('ofertas/').on('value', (snapshot) => {
-    todasLasOfertas = snapshot.val() || {};
+// --- NUEVA FUNCIÓN PARA DIBUJAR OFERTAS ---
+function dibujarOfertas() {
     const contenedor = document.getElementById('contenedor-ofertas');
-    if (!contenedor || !idActual) return;
+    if (!contenedor || !idActual) return; // Si no hay equipo, no hace nada
 
     const misOfertas = todasLasOfertas[idActual] || {};
     contenedor.innerHTML = '';
@@ -115,11 +117,18 @@ db.ref('ofertas/').on('value', (snapshot) => {
                 <p style="font-size:14px;">Ofrece: <b>$${o.dinero}M</b> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
                 <div style="display:flex; gap:5px; margin-top:10px;">
                     <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">ACEPTAR</button>
-                   <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; flex:1; padding:8px; cursor:pointer; border-radius:4px;">CONTRAOFERTA</button>
+                    <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; flex:1; padding:8px; cursor:pointer; border-radius:4px;">CONTRAOFERTA</button>
                     <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; flex:1; padding:8px; cursor:pointer; border-radius:4px;">RECHAZAR</button>
                 </div>
             </div>`;
     });
+}
+
+// Escuchador que solo actualiza los datos y manda a dibujar
+db.ref('ofertas/').on('value', (snapshot) => {
+    todasLasOfertas = snapshot.val() || {};
+    dibujarOfertas(); 
+});
 }, (error) => console.error("Error en Firebase:", error));
 function salvar() { db.ref('liga/').set(datosEquipos); }
 
