@@ -60,16 +60,6 @@ db.ref('liga/').on('value', (snapshot) => {
     cargarMercado();
 });
 
-// SINCRONIZACIÓN REAL-TIME
-db.ref('liga/').on('value', (snapshot) => {
-    const data = snapshot.val();
-    datosEquipos = data ? data : DATOS_INICIALES;
-    if (idActual) {
-        equipoActual = datosEquipos[idActual];
-        actualizarTabla();
-    }
-    cargarMercado();
-});
 function seleccionarEquipo(id) {
     idActual = id; 
     equipoActual = datosEquipos[id];
