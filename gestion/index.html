@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión Liga Titanes</title>
+    <title>Liga Titanes 2026</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -25,14 +25,15 @@
 
         <div id="mercado-global">
             <h2>🔥 LISTA DE VENTAS</h2>
-            <div id="lista-mercado-publico"></div>
+            <ul id="lista-mercado"></ul>
         </div>
     </div>
 
     <div id="dashboard" style="display:none;">
         <header>
-            <button onclick="irInicio()" class="btn-volver">⬅ Volver</button>
+            <button onclick="irInicio()">⬅ Volver</button>
             <h2 id="nombre-equipo-titulo"></h2>
+            <button onclick="finalizarTemporada()" style="background:#cc0000;">FINALIZAR TEMPORADA</button>
         </header>
 
         <div class="info-panel">
@@ -41,30 +42,21 @@
         </div>
 
         <div class="buscador-container">
-            <h3>🔍 BUSCADOR / CALCULADOR</h3>
-            <div class="inputs">
-                <input type="text" id="nombre-busqueda" placeholder="Nombre del jugador...">
-                <input type="number" id="valor-busqueda" placeholder="Valor MDD">
-                <button onclick="calcularFichaje()">CALCULAR</button>
-            </div>
+            <h3>🔍 CALCULADOR DE FICHAJES</h3>
+            <input type="text" id="nombre-busqueda" placeholder="Nombre...">
+            <input type="number" id="valor-busqueda" placeholder="Valor MDD">
+            <button onclick="calcularFichaje()">CALCULAR</button>
             <div id="resultado-busqueda"></div>
         </div>
 
-        <div class="tabla-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Jugador</th>
-                        <th>Valor</th>
-                        <th>Salario</th>
-                        <th>Prima</th>
-                        <th>Contrato</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="body-plantilla"></tbody>
-            </table>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Jugador</th><th>Valor</th><th>Salario</th><th>Prima</th><th>Contrato</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="body-plantilla"></tbody>
+        </table>
     </div>
 
     <script src="main.js"></script>
