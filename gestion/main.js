@@ -214,5 +214,31 @@ function confirmarCompra(nombre, valor, salario, prima) {
         actualizarTabla();
     }
 }
+function liberarJugador(index) {
+    const j = equipoActual.jugadores[index];
+    
+    // Si el contrato es 0, la liberación es gratis
+    const costoLiberacion = j.salario * j.contrato;
+    
+    let mensaje = `¿Estás seguro de liberar a ${j.nombre}?`;
+    if (costoLiberacion > 0) {
+        mensaje += `\n\nDeberás pagar una indemnización de $${costoLiberacion.toFixed(1)}M (Salario x años restantes).`;
+    } else {
+        mensaje += `\n\nEl jugador se irá gratis porque no tiene contrato.`;
+    }
+
+    if (confirm(mensaje)) {
+        if (equipoActual.saldo < costoLiberacion) {
+            alert("❌ No tienes saldo suficiente para pagar la indemnización.");
+            return;
+        }
+
+        equipoActual.saldo -= costoLiberacion;
+        equipoActual.jugadores.splice(index, 1); // Lo saca del equipo
+        
+        actualizarTabla();
+        alert(`✅ ${j.nombre} ha sido liberado del equipo.`);
+    }
+}
 
 window.onload = cargarMercado;
