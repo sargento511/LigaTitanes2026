@@ -21,23 +21,23 @@ const datosEquipos = {
 
 let equipoActual = null;
 
-function seleccionarEquipo(idEquipo) {
-    equipoActual = datosEquipos[idEquipo];
+function seleccionarEquipo(id) {
+    equipoActual = datosEquipos[id];
 
-    // Cambiar pantallas
+    // Cambiar de pantalla
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
 
-    // Actualizar Textos
+    // Actualizar datos
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
-    actualizarInterfaz();
+    actualizarTabla();
 }
 
-function actualizarInterfaz() {
+function actualizarTabla() {
     document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo}M`;
     document.getElementById('tipo-estadio').innerText = equipoActual.estadio;
 
-    const tabla = document.getElementById('body-plantilla'); // CORREGIDO: coincide con tu HTML
+    const tabla = document.getElementById('body-plantilla');
     tabla.innerHTML = '';
 
     equipoActual.jugadores.forEach((j, index) => {
@@ -46,16 +46,16 @@ function actualizarInterfaz() {
                 <td>${j.nombre}</td>
                 <td>$${j.valor}M</td>
                 <td>$${j.salario}M</td>
-                <td><button onclick="venderJugador(${index})" style="background:red; width:auto; padding:5px 10px;">VENDER</button></td>
+                <td><button onclick="vender(${index})" style="background:red;">VENDER</button></td>
             </tr>`;
     });
 }
 
-function venderJugador(index) {
-    const jugador = equipoActual.jugadores[index];
-    equipoActual.saldo += jugador.valor; 
-    equipoActual.jugadores.splice(index, 1); 
-    actualizarInterfaz();
+function vender(index) {
+    const j = equipoActual.jugadores[index];
+    equipoActual.saldo += j.valor;
+    equipoActual.jugadores.splice(index, 1);
+    actualizarTabla();
 }
 
 function irInicio() {
@@ -64,8 +64,5 @@ function irInicio() {
 }
 
 function buscarFichaje() {
-    const busqueda = document.getElementById('input-fichaje').value;
-    if(busqueda) {
-        alert("Buscando a: " + busqueda + " en el mercado...");
-    }
+    alert("Función de búsqueda activada. Buscando...");
 }
