@@ -18,17 +18,11 @@ let todasLasOfertas = {};
 
 const DATOS_INICIALES = {
     'Deportivo': {
-        nombre: 'DEPORTIVO FEDERAL',
-        saldo: 147.2,
-        estadio: 'Estadio Federal (Grande)',
-        jugadores: [
-            { nombre: 'Jugador Prueba', valor: 0, salario: 0, prima: 0, enVenta: false, contrato: 2 }
-        ]
+        nombre: 'DEPORTIVO FEDERAL', saldo: 147.2, estadio: 'Estadio Federal (Grande)',
+        jugadores: [{ nombre: 'Jugador Prueba', valor: 0, salario: 0, prima: 0, enVenta: false, contrato: 2 }]
     },
     'Halcones': {
-        nombre: 'HALCONES ROJOS',
-        saldo: 276.4,
-        estadio: 'La Caldera Roja (Gigante)',
+        nombre: 'HALCONES ROJOS', saldo: 276.4, estadio: 'La Caldera Roja (Gigante)',
         jugadores: [
             { nombre: 'Keylor Navas', valor: 0.8, salario: 0.8, prima: 0.4, enVenta: false, contrato: 2 },
             { nombre: 'Puchacz', valor: 1.5, salario: 1.5, prima: 0.7, enVenta: false, contrato: 2 },
@@ -57,7 +51,7 @@ const DATOS_INICIALES = {
     }
 };
 
-// --- LOGICA DE FIREBASE Y BOTONES (ARREGLADA) ---
+// --- SINCRONIZACIÓN Y BOTONES ---
 db.ref('liga/').on('value', (snapshot) => {
     const data = snapshot.val();
     datosEquipos = data ? data : DATOS_INICIALES;
@@ -95,102 +89,107 @@ function irInicio() {
     document.getElementById('dashboard').style.display = 'none';
 }
 
+function salvar() { db.ref('liga/').set(datosEquipos); }
+
+// --- FUNCIONES DE INTERFAZ ---
+function actualizarTabla() {
+    if (!equipoActual) return;
+    document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo.toFixed(1)} MDD`;
+    document.getElementById('tipo-estadio').innerText = equipoActual.estadio;
+    const tabla = document.getElementById('body-plantilla');
+    if (!tabla) return;
+    tabla.innerHTML = '';
+
+    equipoActual.jugadores.forEach((j, index) => {
+        const claseContrato = j.contrato === 0 ? 'contrato-critico' : (j.contrato === 1 ? 'contrato-bajo' : 'contrato-ok');
+        tabla.innerHTML += `
+            <tr>
+                <td>${j.nombre} ${j.enVenta ? '🔥' : ''}</td>
+                <td>$${j.valor}M</td><td>$${j.salario}M</td><td>$${j.prima}M</td>
+                <td class="${claseContrato}">${j.contrato} años</td>
+                <td>
+                    <button onclick="renovar(${index})" style="background:green; color:white;">RENOVAR</button>
+                    <button onclick="venderAlAnterior(${index})" style="background:orange; color:white;">50%</button>
+                    <button onclick="liberarJugador(${index})" style="background:#444; color:white;">LIBERAR</button>
+                    <button onclick="toggleVenta(${index})" style="background:${j.enVenta ? 'red' : 'blue'}; color:white;">
+                        ${j.enVenta ? 'QUITAR' : 'VENTA'}
+                    </button>
+                </td>
+            </tr>`;
+    });
+}
+
 function dibujarOfertas() {
     const contenedor = document.getElementById('contenedor-ofertas');
-    if (!contenedor) return;
-    contenedor.innerHTML = "";
-    const ofertasMiEquipo = todasLasOfertas[idActual] || {};
-    const ids = Object.keys(ofertasMiEquipo);
-    if (ids.length === 0) {
-        contenedor.innerHTML = "<p style='color:gray;'>No tienes ofertas.</p>";
-        return;
-    }
-    ids.forEach(id => {
-        const o = ofertasMiEquipo[id];
-        const div = document.createElement('div');
-        div.style = "background:#e3f2fd; padding:10px; margin-bottom:10px; border-radius:4px; color:#333; border-left:5px solid #2196f3;";
-        div.innerHTML = `
-            <p><strong>De:</strong> ${o.desde}</p>
-            <p><strong>Para:</strong> ${o.jugadorBuscado}</p>
-            <p><strong>Ofrece:</strong> ${o.dinero}M ${o.jugadorOfrecido ? "+ "+o.jugadorOfrecido : ""}</p>
-            <button onclick="aceptarOferta('${id}')" style="background:green; color:white; border:none; padding:5px; cursor:pointer;">Aceptar</button>
-            <button onclick="rechazarOferta('${id}')" style="background:red; color:white; border:none; padding:5px; cursor:pointer;">Rechazar</button>
-        `;
-        contenedor.appendChild(div);
+    if (!contenedor || !idActual) return;
+    const misOfertas = todasLasOfertas[idActual] || {};
+    contenedor.innerHTML = '';
+
+    Object.keys(misOfertas).forEach(key => {
+        const o = misOfertas[key];
+        contenedor.innerHTML += `
+            <div style="background:#222; padding:15px; margin:10px 0; border-radius:8px; border-left:5px solid #007bff; text-align:left;">
+                <p>🚀 <b>${o.desde}</b> propone:</p>
+                <p>Busca a: <b>${o.jugadorBuscado}</b></p>
+                <p>Ofrece: <b>$${o.dinero}M</b> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; flex:1; padding:8px; cursor:pointer;">ACEPTAR</button>
+                    <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; flex:1; padding:8px; cursor:pointer;">RECHAZAR</button>
+                </div>
+            </div>`;
     });
 }
 
-// --- FUNCIONES RESTANTES (TABLA, MERCADO, ETC) ---
-function actualizarTabla() {
-    const cuerpo = document.getElementById('cuerpo-tabla');
-    if (!cuerpo || !equipoActual) return;
-    cuerpo.innerHTML = equipoActual.jugadores.map((j, index) => `
-        <tr>
-            <td>${j.nombre}</td>
-            <td>$${j.valor}M</td>
-            <td>$${j.salario}M</td>
-            <td>$${j.prima}M</td>
-            <td>${j.contrato} años</td>
-            <td><button onclick="ponerEnVenta(${index})" style="background:${j.enVenta ? 'orange' : 'gray'}; color:white; border:none; padding:5px; border-radius:3px; cursor:pointer;">
-                ${j.enVenta ? 'En Venta' : 'Vender'}
-            </button></td>
-        </tr>
-    `).join('');
-    document.getElementById('saldo-actual').innerText = equipoActual.saldo.toFixed(2);
-}
+// --- NEGOCIACIONES Y OFERTAS ---
+function enviarOferta() {
+    const idRival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
+    const jBuscado = document.getElementById('select-jugador-rival').value;
+    const dinero = parseFloat(document.getElementById('oferta-dinero').value) || 0;
+    const jOfrecido = document.getElementById('mi-jugador-cambio').value;
+    const idOferta = "OFERTA_" + Date.now();
 
-function cargarMercado() {
-    const contenedor = document.getElementById('lista-mercado');
-    if (!contenedor) return;
-    contenedor.innerHTML = "";
-    Object.keys(datosEquipos).forEach(equipoId => {
-        if (equipoId === idActual) return;
-        datosEquipos[equipoId].jugadores.forEach(j => {
-            if (j.enVenta) {
-                const card = document.createElement('div');
-                card.className = 'jugador-card';
-                card.innerHTML = `
-                    <p><strong>${j.nombre}</strong> (${datosEquipos[equipoId].nombre})</p>
-                    <p>Precio: $${j.valor}M</p>
-                    <button onclick="abrirNegociacion('${equipoId}', '${j.nombre}', ${j.valor})" style="background:#2196f3; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer;">Negociar</button>
-                `;
-                contenedor.appendChild(card);
-            }
-        });
-    });
-}
-
-function abrirNegociacion(rivalId, jugadorNombre, valor) {
-    document.getElementById('negociacion-panel').style.display = 'block';
-    document.getElementById('negociacion-titulo').innerText = `Negociar por ${jugadorNombre}`;
-    document.getElementById('btn-enviar-oferta').onclick = () => enviarOferta(rivalId, jugadorNombre);
-}
-
-function enviarOferta(rivalId, jugadorBuscado) {
-    const dinero = document.getElementById('oferta-dinero').value;
-    const miJugador = document.getElementById('mi-jugador-cambio').value;
-    if (!dinero) return alert("Pon una cifra");
-    
     const nuevaOferta = {
         desde: equipoActual.nombre,
-        jugadorBuscado: jugadorBuscado,
+        idEmisor: idActual,
+        jugadorBuscado: jBuscado,
         dinero: dinero,
-        jugadorOfrecido: miJugador || null
+        jugadorOfrecido: jOfrecido
     };
-    
-    db.ref(`ofertas/${rivalId}`).push(nuevaOferta);
-    alert("Oferta enviada");
-    document.getElementById('negociacion-panel').style.display = 'none';
+
+    db.ref(`ofertas/${idRival}/${idOferta}`).set(nuevaOferta)
+        .then(() => {
+            alert("✅ ¡Oferta enviada!");
+            document.getElementById('oferta-dinero').value = '';
+        });
 }
 
-function rechazarOferta(idOferta) {
-    db.ref(`ofertas/${idActual}/${idOferta}`).remove();
-}
+function aceptarOferta(idOferta, idEmisor) {
+    const o = todasLasOfertas[idActual][idOferta];
+    const emisor = datosEquipos[idEmisor];
+    const receptor = equipoActual;
+    if (emisor.saldo < o.dinero) return alert("El rival no tiene dinero.");
 
-function ponerEnVenta(index) {
-    equipoActual.jugadores[index].enVenta = !equipoActual.jugadores[index].enVenta;
+    emisor.saldo -= o.dinero;
+    receptor.saldo += o.dinero;
+
+    const idxBuscado = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
+    const jBuscado = receptor.jugadores.splice(idxBuscado, 1)[0];
+    emisor.jugadores.push(jBuscado);
+
+    if (o.jugadorOfrecido) {
+        const idxOfrecido = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
+        const jOfrecido = emisor.jugadores.splice(idxOfrecido, 1)[0];
+        receptor.jugadores.push(jOfrecido);
+    }
+
     db.ref('liga/').set(datosEquipos);
+    db.ref(`ofertas/${idActual}/${idOferta}`).remove();
+    alert("Trato cerrado.");
 }
+
+function rechazarOferta(idOferta) { db.ref(`ofertas/${idActual}/${idOferta}`).remove(); }
+
+function toggleVenta(index) { equipoActual.jugadores[index].enVenta = !equipoActual.jugadores[index].enVenta; salvar(); }
 
 function actualizarListasNegociacion() {
     const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
@@ -198,6 +197,42 @@ function actualizarListasNegociacion() {
     const selectRival = document.getElementById('select-jugador-rival');
     const selectMio = document.getElementById('mi-jugador-cambio');
     if (!selectRival || !selectMio || !rival) return;
+
     selectRival.innerHTML = '<option value="">Solo dinero</option>' + rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
     selectMio.innerHTML = '<option value="">Solo dinero</option>' + equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+}
+
+function cargarMercado() {
+    const lista = document.getElementById('lista-mercado');
+    if (!lista) return;
+    lista.innerHTML = '';
+    for (let eq in datosEquipos) {
+        datosEquipos[eq].jugadores.forEach(j => {
+            if (j.enVenta) lista.innerHTML += `<li><strong>${j.nombre}</strong> (${datosEquipos[eq].nombre})</li>`;
+        });
+    }
+}
+
+function renovar(index) {
+    const j = equipoActual.jugadores[index];
+    if (equipoActual.saldo < j.prima) return alert("Saldo insuficiente.");
+    equipoActual.saldo -= j.prima;
+    j.contrato += 1;
+    salvar();
+}
+
+function liberarJugador(index) {
+    const j = equipoActual.jugadores[index];
+    const costo = j.salario * j.contrato;
+    if (equipoActual.saldo < costo) return alert("Saldo insuficiente.");
+    equipoActual.saldo -= costo;
+    equipoActual.jugadores.splice(index, 1);
+    salvar();
+}
+
+function venderAlAnterior(index) {
+    const j = equipoActual.jugadores[index];
+    equipoActual.saldo += j.valor * 0.5;
+    equipoActual.jugadores.splice(index, 1);
+    salvar();
 }
