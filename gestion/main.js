@@ -284,6 +284,7 @@ function prepararContraoferta(idOferta, idEmisor) {
     // 1. Obtenemos los datos de la oferta original desde la variable global
     const o = todasLasOfertas[idActual][idOferta];
     if (!o) return;
+     document.getElementById('mi-jugador-cambio').value = "";
 
     // 2. Cargamos los datos en el panel de envío para que tú los modifiques
     // El "Jugador buscado" ahora es el que el rival te ofrecía originalmente
@@ -301,6 +302,4 @@ function prepararContraoferta(idOferta, idEmisor) {
     
     // Scroll automático al panel de negociación para que sea rápido
     document.getElementById('select-jugador-rival').scrollIntoView({ behavior: 'smooth' });
-    // Limpiamos el selector para que por defecto sea "Solo dinero"
-    document.getElementById('mi-jugador-cambio').value = "";
 }
