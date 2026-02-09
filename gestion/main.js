@@ -301,4 +301,6 @@ function prepararContraoferta(idOferta, idEmisor) {
     
     // Scroll automático al panel de negociación para que sea rápido
     document.getElementById('select-jugador-rival').scrollIntoView({ behavior: 'smooth' });
+    // Limpiamos el selector para que por defecto sea "Solo dinero"
+    document.getElementById('mi-jugador-cambio').value = "";
 }
