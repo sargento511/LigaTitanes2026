@@ -133,7 +133,7 @@ function calcularFichaje() {
 
 function enviarPropuesta(vId, jIdx, nombreJ) {
     const dinero = prompt("¿Cuánto dinero ofreces? (MDD)", "0");
-    const intercambio = prompt("¿Qué jugador ofreces a cambio? (Nombre o 'ninguno')", "ninguno");
+    const intercambio = prompt("¿Qué jugador ofreces a cambio?", "ninguno");
     
     if (dinero === null) return;
 
@@ -142,4 +142,24 @@ function enviarPropuesta(vId, jIdx, nombreJ) {
         deNombre: equipoActual.nombre,
         jugadorDeseado: nombreJ,
         jugadorDeseadoIdx: jIdx,
-        ofertaDinero: parseFloat
+        ofertaDinero: parseFloat(dinero),
+        ofertaJugador: intercambio
+    };
+
+    // PARCHE DE SEGURIDAD: Si no existen notis, creamos el array vacío primero
+    if (!datosEquipos[vId].notificaciones) {
+        datosEquipos[vId].notificaciones = [];
+    }
+
+    datosEquipos[vId].notificaciones.push(propuesta);
+    
+    // Guardamos en la nube y forzamos la actualización local
+    db.ref('liga/' + vId + '/notificaciones').set(datosEquipos[vId].notificaciones)
+    .then(() => {
+        alert("¡Propuesta enviada con éxito!");
+    })
+    .catch((error) => {
+        console.error("Error al enviar:", error);
+        alert("Error de Firebase: Revisa las reglas de seguridad.");
+    });
+}
