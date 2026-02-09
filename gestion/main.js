@@ -68,7 +68,8 @@ function actualizarTabla() {
             ? `<button onclick="toggleVenta(${index})" style="background:red; color:white;">QUITAR LISTA</button>`
             : `<button onclick="toggleVenta(${index})" style="background:blue; color:white;">LISTA VENTAS</button>`;
 
-        const claseContrato = j.contrato <= 1 ? 'contrato-bajo' : 'contrato-ok';
+        // Dentro de actualizarTabla, antes del innerHTML
+const claseContrato = j.contrato === 0 ? 'contrato-critico' : (j.contrato === 1 ? 'contrato-bajo' : 'contrato-ok');
 
         tabla.innerHTML += `
             <tr>
