@@ -8,21 +8,28 @@
 </head>
 <body>
 
-    <div id="pantalla-inicio" class="container">
-        <h1>GESTIÓN DE EQUIPOS</h1>
-        <div class="selector-equipos">
-            <div class="card" onclick="seleccionarEquipo('Deportivo')">
-                <img src="dep_logo.png" class="logo-equipo">
-                <h2>DEPORTIVO</h2>
-                <button>ENTRAR</button>
-            </div>
-            <div class="card" onclick="seleccionarEquipo('Halcones')">
-                <img src="hal.png" class="logo-equipo">
-                <h2>HALCONES</h2>
-                <button>ENTRAR</button>
-            </div>
+<div id="pantalla-inicio" class="container">
+    <h1>GESTIÓN DE EQUIPOS</h1>
+    <div class="selector-equipos">
+        <div class="card" onclick="seleccionarEquipo('Deportivo')">
+            <img src="dep_logo.png" class="logo-equipo">
+            <h2>DEPORTIVO</h2>
+            <button>ENTRAR</button>
+        </div>
+        <div class="card" onclick="seleccionarEquipo('Halcones')">
+            <img src="hal.png" class="logo-equipo">
+            <h2>HALCONES</h2>
+            <button>ENTRAR</button>
         </div>
     </div>
+
+    <div id="mercado-fichajes" style="margin-top: 30px; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #007bff;">
+        <h3 style="color: #007bff; margin-top: 0;">🔥 MERCADO DE TRANSFERIBLES</h3>
+        <ul id="lista-mercado" style="list-style: none; padding: 0; color: white; text-align: left;">
+            <li>No hay jugadores en venta</li>
+        </ul>
+    </div>
+</div>
 
     <div id="dashboard" class="container" style="display:none;">
         <header style="display: flex; justify-content: space-between; align-items: center;">
