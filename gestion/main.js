@@ -107,4 +107,109 @@ function liberarJugador(index) {
     const j = equipoActual.jugadores[index];
     const costoLiberacion = j.salario * j.contrato;
     
-    let mensaje = `¿Est
+    let mensaje = `¿Estás seguro de liberar a ${j.nombre}?`;
+    if (costoLiberacion > 0) {
+        mensaje += `\n\nIndemnización: $${costoLiberacion.toFixed(1)}M (Salario x años)`;
+    } else {
+        mensaje += `\n\nEl jugador se irá gratis por falta de contrato.`;
+    }
+
+    if (confirm(mensaje)) {
+        if (equipoActual.saldo < costoLiberacion) {
+            alert("❌ Saldo insuficiente.");
+            return;
+        }
+        equipoActual.saldo -= costoLiberacion;
+        equipoActual.jugadores.splice(index, 1);
+        actualizarTabla();
+    }
+}
+
+function finalizarTemporada() {
+    if (!confirm("⚠️ ¿Finalizar temporada? Se restará 1 año de contrato.")) return;
+
+    equipoActual.jugadores.forEach(j => {
+        if (j.contrato > 0) j.contrato -= 1;
+    });
+
+    const vencidos = equipoActual.jugadores.filter(j => j.contrato === 0);
+    if (vencidos.length > 0) {
+        const nombres = vencidos.map(j => j.nombre).join(", ");
+        const borrar = confirm(`🚨 ¡CONTRATOS VENCIDOS!\n[ ${nombres} ]\n\n¿Eliminarlos ahora? (Cancelar para renovar manualmente).`);
+        if (borrar) equipoActual.jugadores = equipoActual.jugadores.filter(j => j.contrato > 0);
+    }
+    actualizarTabla();
+}
+
+function renovar(index) {
+    const j = equipoActual.jugadores[index];
+    if (equipoActual.saldo < j.prima) {
+        alert("Saldo insuficiente.");
+        return;
+    }
+    if (confirm(`¿Renovar a ${j.nombre} por $${j.prima}M?`)) {
+        equipoActual.saldo -= j.prima;
+        j.contrato += 1;
+        actualizarTabla();
+    }
+}
+
+function cargarMercado() {
+    const listaMercado = document.getElementById('lista-mercado');
+    if (!listaMercado) return;
+    listaMercado.innerHTML = '';
+    let hayJugadores = false;
+    for (let eq in datosEquipos) {
+        datosEquipos[eq].jugadores.forEach(j => {
+            if (j.enVenta) {
+                hayJugadores = true;
+                listaMercado.innerHTML += `<li><strong>${j.nombre}</strong> (${datosEquipos[eq].nombre})</li>`;
+            }
+        });
+    }
+    if (!hayJugadores) listaMercado.innerHTML = '<li>No hay jugadores en venta</li>';
+}
+
+function calcularFichaje() {
+    const nombre = document.getElementById('nombre-busqueda').value;
+    const valor = parseFloat(document.getElementById('valor-busqueda').value);
+    const resultadoDiv = document.getElementById('resultado-busqueda');
+
+    if (!nombre || isNaN(valor)) {
+        resultadoDiv.innerHTML = "Escribe datos válidos.";
+        return;
+    }
+
+    let salario = 0, prima = 0;
+    if (valor >= 120) { salario = 22; prima = 7; }
+    else if (valor >= 90) { salario = 18; prima = 5; }
+    else if (valor >= 70) { salario = 14; prima = 4; }
+    else if (valor >= 50) { salario = 11; prima = 3; }
+    else if (valor >= 30) { salario = 8; prima = 2; }
+    else if (valor >= 20) { salario = 5; prima = 1.5; }
+    else if (valor >= 10) { salario = 3; prima = 1; }
+    else if (valor >= 5) { salario = 1.5; prima = 0.7; }
+    else { salario = 0.8; prima = 0.4; }
+
+    resultadoDiv.innerHTML = `
+        <div style="background:#222; padding:10px; border-radius:5px; margin-top:10px; text-align:left;">
+            <p><strong>${nombre.toUpperCase()}</strong></p>
+            <p>Salario: $${salario}M | Prima: $${prima}M</p>
+            <button onclick="confirmarCompra('${nombre}', ${valor}, ${salario}, ${prima})" style="background:green; color:white; width:100%; border:none; padding:8px; border-radius:5px; cursor:pointer;">FICHAR</button>
+        </div>`;
+}
+
+function confirmarCompra(nombre, valor, salario, prima) {
+    if (equipoActual.saldo < valor) {
+        alert("No hay dinero.");
+        return;
+    }
+    if (confirm(`¿Comprar a ${nombre}?`)) {
+        equipoActual.saldo -= valor;
+        equipoActual.jugadores.push({ nombre, valor, salario, prima, enVenta: false, contrato: 2 });
+        document.getElementById('resultado-busqueda').innerHTML = '';
+        actualizarTabla();
+    }
+}
+
+window.onload = cargarMercado;
