@@ -60,6 +60,30 @@ db.ref('liga/').on('value', (snapshot) => {
     cargarMercado();
 });
 
+// SINCRONIZACIÓN LIGA Y OFERTAS AL ENTRAR
+db.ref('liga/').on('value', (snapshot) => {
+    const data = snapshot.val();
+    datosEquipos = data ? data : DATOS_INICIALES;
+    
+    if (idActual) {
+        equipoActual = datosEquipos[idActual];
+        actualizarTabla();
+        actualizarListasNegociacion(); // Esto pone el "Solo dinero" en los menús
+        
+        // --- ESTO ES LO QUE "DESPIERTA" LAS OFERTAS AL ENTRAR ---
+        // Si ya existen ofertas en la base de datos, el evento 'value' de abajo
+        // las dibujará automáticamente sin que tengas que enviar nada tú.
+    }
+    
+    cargarMercado();
+});
+
+// Este bloque (que ya tienes cerca de la línea 87) se encargará de dibujar
+// las ofertas en cuanto el bloque de arriba termine de cargar los datos.
+db.ref('ofertas/').on('value', (snapshot) => {
+    todasLasOfertas = snapshot.val() || {};
+    // ... resto de tu código de dibujo de ofertas ...
+});
 function seleccionarEquipo(id) {
     idActual = id; 
     equipoActual = datosEquipos[id];
