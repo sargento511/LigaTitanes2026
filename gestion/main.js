@@ -97,11 +97,15 @@ db.ref('ofertas/').on('value', (snapshot) => {
     Object.keys(misOfertas).forEach(key => {
         const o = misOfertas[key];
         contenedor.innerHTML += `
-            <div style="background:#222; padding:10px; margin:5px; border-radius:5px; border-left:4px solid gold; text-align:left;">
-                <p><b>${o.desde}</b> ofrece $${o.dinero}M por <b>${o.jugadorBuscado}</b>
-                ${o.jugadorOfrecido ? ' e intercambia a ' + o.jugadorOfrecido : ''}</p>
-                <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:green; color:white; border:none; padding:5px 10px; cursor:pointer;">Aceptar</button>
-                <button onclick="rechazarOferta('${key}')" style="background:red; color:white; border:none; padding:5px 10px; cursor:pointer; margin-left:5px;">Rechazar</button>
+            <div style="background:#222; padding:15px; margin:10px 0; border-radius:8px; border-left:5px solid #007bff; text-align:left; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                <p style="margin:0 0 10px 0;">🚀 <b>${o.desde}</b> propone:</p>
+                <p style="font-size:14px; color:#ccc;">Quiere a: <span style="color:white; font-weight:bold;">${o.jugadorBuscado}</span></p>
+                <p style="font-size:14px; color:#ccc;">Ofrece: <span style="color:white;">$${o.dinero}M</span> ${o.jugadorOfrecido ? ' + ' + o.jugadorOfrecido : ''}</p>
+                <div style="margin-top:10px; display:flex; gap:5px;">
+                    <button onclick="aceptarOferta('${key}', '${o.idEmisor}')" style="background:#28a745; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; flex:1;">ACEPTAR</button>
+                    <button onclick="prepararContraoferta('${key}', '${o.idEmisor}')" style="background:#ffc107; color:black; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; flex:1;">CONTRAOFERTA</button>
+                    <button onclick="rechazarOferta('${key}')" style="background:#dc3545; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; flex:1;">RECHAZAR</button>
+                </div>
             </div>`;
     });
 });
