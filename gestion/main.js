@@ -297,3 +297,31 @@ function cargarMercado() {
         });
     }
 }
+window.finalizarTemporada = function() {
+    // Confirmación para evitar accidentes
+    if (!confirm("¿Deseas finalizar la temporada? Se cobrarán los salarios y se restará 1 año de contrato a todos los jugadores.")) return;
+
+    for (let idEq in datosEquipos) {
+        let equipo = datosEquipos[idEq];
+        let totalSalarios = 0;
+
+        if (equipo.jugadores) {
+            equipo.jugadores.forEach(j => {
+                // 1. Sumamos su salario al gasto total del equipo
+                totalSalarios += j.salario;
+                
+                // 2. Restamos un año de contrato (sin bajar de 0)
+                if (j.contrato > 0) {
+                    j.contrato -= 1;
+                }
+            });
+            
+            // 3. Descontamos el dinero del saldo del equipo
+            equipo.saldo -= totalSalarios;
+        }
+    }
+
+    // Guardamos todos los cambios en Firebase
+    salvar();
+    alert("¡Temporada finalizada! Se han cobrado los salarios de todos los equipos.");
+};
