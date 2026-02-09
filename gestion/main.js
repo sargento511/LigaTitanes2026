@@ -3,7 +3,9 @@ const datosEquipos = {
         nombre: 'DEPORTIVO FEDERAL',
         saldo: 147.2,
         estadio: 'Estadio Federal (Grande)',
-        jugadores: [{ nombre: 'Cargando...', valor: 0, salario: 0, prima: 0 }]
+        jugadores: [
+            { nombre: 'Esperando lista...', valor: 0, salario: 0, prima: 0 }
+        ]
     },
     'Halcones': {
         nombre: 'HALCONES ROJOS',
@@ -40,11 +42,13 @@ const datosEquipos = {
 let equipoActual = null;
 
 function seleccionarEquipo(id) {
-    console.log("Intentando entrar a:", id);
     equipoActual = datosEquipos[id];
     
+    // Ocultar inicio y mostrar dashboard
     document.getElementById('pantalla-inicio').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
+
+    // Poner nombre del equipo
     document.getElementById('nombre-equipo-titulo').innerText = equipoActual.nombre;
     
     actualizarTabla();
@@ -65,4 +69,22 @@ function actualizarTabla() {
                 <td>$${j.salario}M</td>
                 <td>$${j.prima}M</td>
                 <td>
-                    <button onclick="venderAlAnterior(${index})"
+                    <button onclick="venderAlAnterior(${index})" style="background:orange; color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">VENDER (50%)</button>
+                </td>
+            </tr>`;
+    });
+}
+
+function venderAlAnterior(index) {
+    const j = equipoActual.jugadores[index];
+    const pago = j.valor * 0.5; 
+    if(confirm(`¿Vender a ${j.nombre} por $${pago.toFixed(1)} MDD?`)) {
+        equipoActual.saldo += pago;
+        equipoActual.jugadores.splice(index, 1);
+        actualizarTabla();
+    }
+}
+
+function irInicio() {
+    window.location.reload(); // Esto soluciona errores de cache al volver
+}
