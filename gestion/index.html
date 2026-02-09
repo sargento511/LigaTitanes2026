@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión - Liga Titanes</title>
+    <title>Gestión Liga Titanes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="pantalla-inicio" class="container">
         <h1>GESTIÓN DE EQUIPOS</h1>
-        <p>LIGA TITANES VISA 2026</p>
-
         <div class="selector-equipos">
             <div class="card" onclick="seleccionarEquipo('Deportivo')">
                 <img src="dep_logo.png" class="logo-equipo">
                 <h2>DEPORTIVO</h2>
                 <button>ENTRAR</button>
             </div>
-
             <div class="card" onclick="seleccionarEquipo('Halcones')">
                 <img src="hal.png" class="logo-equipo">
                 <h2>HALCONES</h2>
@@ -27,41 +24,29 @@
         </div>
     </div>
 
-    <div id="dashboard" class="container" style="display: none;">
-        <header>
-            <button onclick="irInicio()" class="btn-volver">⬅ Volver</button>
-            <h2 id="nombre-equipo-titulo">Nombre del Equipo</h2>
+    <div id="dashboard" class="container" style="display:none;">
+        <header style="display: flex; justify-content: space-between; align-items: center;">
+            <button onclick="irInicio()">⬅ Volver</button>
+            <h2 id="nombre-equipo-titulo">Equipo</h2>
         </header>
 
-        <section class="info-top">
-            <div class="stat">Saldo: <span id="saldo-actual">$0M</span></div>
+        <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+            <div class="stat">Saldo: <span id="saldo-actual">0</span></div>
             <div class="stat">Estadio: <span id="tipo-estadio">---</span></div>
-        </section>
+        </div>
 
-        <section class="buscador">
-            <input type="text" id="input-fichaje" placeholder="Buscar jugador...">
-            <button onclick="buscarFichaje()">BUSCAR</button>
-        </section>
-
-        <section class="plantilla">
-            <h3>Plantilla Actual</h3>
-            <table>
-    <thead>
-        <tr>
-            <th>Jugador</th>
-            <th>Valor</th>
-            <th>Salario</th>
-            <th>Prima</th>
-            <th>Acción</th>
-        </tr>
-    </thead>
-    <tbody id="body-plantilla">
-        </tbody>
-</table>
-                <tbody id="body-plantilla">
-                    </tbody>
-            </table>
-        </section>
+        <table border="1" style="width:100%; background: #1a1a1a; color: white; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Jugador</th>
+                    <th>Valor</th>
+                    <th>Salario</th>
+                    <th>Prima</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="body-plantilla"></tbody>
+        </table>
     </div>
 
     <script src="main.js"></script>
