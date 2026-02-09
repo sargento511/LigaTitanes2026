@@ -1,99 +1,27 @@
-body {
-    background-color: #0d0d0d;
-    color: white;
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
+body { background: #0a0a0a; color: white; font-family: sans-serif; margin: 0; padding: 20px; text-align: center; }
+#pantalla-inicio { padding: 20px; }
+.contenedor-equipos { display: flex; justify-content: center; gap: 40px; margin: 30px 0; }
+
+.card-equipo { 
+    background: #1a1a1a; padding: 20px; border-radius: 15px; cursor: pointer; 
+    transition: 0.3s; border: 2px solid transparent; 
 }
+.card-equipo:hover { transform: scale(1.05); border-color: gold; }
+.card-equipo img { width: 150px; height: 150px; display: block; margin-bottom: 15px; border-radius: 10px; }
 
-#pantalla-inicio {
-    text-align: center;
-    margin-top: 10vh;
-}
+#mercado-global { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #6f42c1; max-width: 600px; margin: 0 auto; }
+#lista-mercado { list-style: none; padding: 0; }
+#lista-mercado li { background: #222; margin: 5px; padding: 10px; border-radius: 5px; border-left: 4px solid #6f42c1; }
 
-.contenedor-equipos {
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    margin-top: 30px;
-}
+.info-panel { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
+.stat-box { background: #007bff; padding: 10px 20px; border-radius: 8px; font-weight: bold; }
 
-.card-equipo {
-    cursor: pointer;
-    transition: transform 0.3s;
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 15px;
-    border: 2px solid transparent;
-}
+table { width: 100%; border-collapse: collapse; background: #151515; margin-top: 20px; }
+th { background: #333; padding: 12px; }
+td { padding: 10px; border-bottom: 1px solid #222; }
+.contrato-critico { color: #ff4444; font-weight: bold; }
+.contrato-bajo { color: #ffbb33; }
+.contrato-ok { color: #00c851; }
 
-.card-equipo:hover {
-    transform: scale(1.1);
-    border-color: #007bff;
-}
-
-.card-equipo img {
-    width: 150px;
-    height: 150px;
-    display: block;
-    margin-bottom: 15px;
-}
-
-#dashboard {
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.info-panel {
-    display: flex;
-    gap: 20px;
-    margin: 20px 0;
-}
-
-.stat-box {
-    background: #007bff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-.buscador-container {
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-input {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    margin-right: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #1a1a1a;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #333;
-}
-
-th { background: #333; }
-
-button {
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn-renovar { background: #28a745; color: white; }
-.btn-50 { background: #fd7e14; color: white; }
-.btn-liberar { background: #dc3545; color: white; }
-.btn-venta { background: #6f42c1; color: white; }
+input { padding: 8px; border-radius: 5px; border: none; margin: 5px; }
+button { padding: 8px 15px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
