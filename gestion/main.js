@@ -212,4 +212,44 @@ function confirmarCompra(nombre, valor, salario, prima) {
     }
 }
 
+// --- FUNCIONES DE SINCRONIZACIÓN POR CÓDIGO ---
+
+function exportarDatos() {
+    // btoa convierte el texto en un código Base64 (letras y números)
+    const codigo = btoa(JSON.stringify(datosEquipos)); 
+    
+    // Creamos un pequeño truco para copiar al portapapeles automáticamente
+    const tempInput = document.createElement("input");
+    document.body.appendChild(tempInput);
+    tempInput.value = codigo;
+    tempInput.select();
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+
+    alert("✅ ¡CÓDIGO COPIADO!\nEl código de la liga se ha copiado al portapapeles. Pásalo por WhatsApp a los demás.");
+}
+
+function importarDatos() {
+    const codigo = prompt("Pega aquí el código que te pasó el administrador de la liga:");
+    
+    if (codigo) {
+        try {
+            // atob decodifica el código Base64
+            const datosCargados = JSON.parse(atob(codigo));
+            
+            // Actualizamos los datos globales
+            Object.assign(datosEquipos, datosCargados);
+            
+            // Guardamos en el navegador actual para que no se pierda al refrescar
+            localStorage.setItem('LigaTitanes2026', JSON.stringify(datosEquipos));
+            
+            // Refrescamos la pantalla
+            alert("✅ LIGA ACTUALIZADA.\nAhora ves los mismos jugadores y saldos que el administrador.");
+            location.reload(); 
+        } catch (e) {
+            alert("❌ ERROR: El código no es válido o está incompleto.");
+        }
+    }
+}
+
 window.onload = cargarMercado;
