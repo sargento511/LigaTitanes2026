@@ -67,6 +67,8 @@ function actualizarTabla() {
         const btnVenta = j.enVenta 
             ? `<button onclick="toggleVenta(${index})" style="background:red; color:white;">QUITAR LISTA</button>`
             : `<button onclick="toggleVenta(${index})" style="background:blue; color:white;">LISTA VENTAS</button>`;
+        // Añade este botón junto a los otros (Renovar, Vender 50%, etc.)
+            <button onclick="liberarJugador(${index})" style="background:#444; color:white; border:none; padding:4px 8px; margin:2px; cursor:pointer; border-radius:4px; font-size:10px;">LIBERAR</button>
 
         // Dentro de actualizarTabla, antes del innerHTML
 const claseContrato = j.contrato === 0 ? 'contrato-critico' : (j.contrato === 1 ? 'contrato-bajo' : 'contrato-ok');
