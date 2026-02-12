@@ -61,7 +61,7 @@ db.ref('ofertas/').on('value', (snapshot) => {
 
 function salvar() { db.ref('liga/').set(datosEquipos); }
 
-// --- TABLA ---
+// --- TABLA (Con visualización de Bloqueo Estricto) ---
 function actualizarTabla() {
     const elCuerpo = document.getElementById('body-plantilla');
     if (!elCuerpo || !equipoActual) return;
@@ -71,7 +71,7 @@ function actualizarTabla() {
 
     elCuerpo.innerHTML = (equipoActual.jugadores || []).map((j, i) => `
         <tr>
-            <td>${j.nombre} ${j.enVenta ? '🔥' : ''}</td>
+            <td>${j.nombre} ${j.enVenta ? '🔥' : ''} ${j.bloqueado ? '🔒' : ''}</td>
             <td>$${j.valor}M</td>
             <td>$${j.salario}M</td>
             <td>$${j.prima}M</td>
@@ -85,7 +85,7 @@ function actualizarTabla() {
         </tr>`).join('');
 }
 
-// --- FICHAJES (TU CALCULADORA ORIGINAL) ---
+// --- FICHAJES (TU CALCULADORA CON BLOQUEO) ---
 window.calcularFichaje = function() {
     const n = document.getElementById('nombre-busqueda').value;
     const v = parseFloat(document.getElementById('valor-busqueda').value);
@@ -104,121 +104,124 @@ window.calcularFichaje = function() {
 
 window.confirmarCompra = function(n, v, s, p) {
     if (!equipoActual.jugadores) equipoActual.jugadores = [];
-    const yaLoTengo = equipoActual.jugadores.some(j => j.nombre.toLowerCase() === n.trim().toLowerCase());
+    const yaLoTengo = equipoActual.jugadores.some(j => j.nombre.toLowerCase().trim() === n.toLowerCase().trim());
     
-    if (yaLoTengo) return alert("Ya tienes a este jugador.");
+    if (yaLoTengo) return alert("Ya tienes a " + n + " en tu plantilla.");
     if (equipoActual.saldo < v) return alert("Saldo insuficiente.");
 
     equipoActual.saldo -= v;
-    equipoActual.jugadores.push({ nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 });
+    equipoActual.jugadores.push({ 
+        nombre: n, valor: v, salario: s, prima: p, 
+        enVenta: false, contrato: 2, 
+        bloqueado: true // <--- Regla estricta: entra bloqueado
+    });
+
     salvar();
     document.getElementById('resultado-busqueda').innerHTML = ''; 
-    alert(n + " fichado.");
+    alert(n + " fichado. No puede salir hasta la otra temporada.");
 };
-
-// ... (Mantenemos tu configuración de Firebase y variables globales igual)
 
 // --- EL BOTÓN SI (REPARADO PARA INTERCAMBIOS) ---
 window.aceptarOferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
 
-    // Usamos los datos globales para asegurar que están actualizados
     const emisor = datosEquipos[idE];
-    const receptor = datosEquipos[idActual];
+    const receptor = equipoActual; // Es idActual
 
-    if (!emisor || !receptor) return;
+    // Verificación de seguridad para el intercambio de jugadores
+    let indexReceptor = -1;
+    if (o.jugadorBuscado) {
+        indexReceptor = receptor.jugadores.findIndex(j => j.nombre.trim() === o.jugadorBuscado.trim());
+        if (indexReceptor === -1) return alert("Error: El jugador buscado ya no está en tu equipo.");
+    }
 
-    // 1. Intercambio de dinero
+    let indexEmisor = -1;
+    if (o.jugadorOfrecido) {
+        indexEmisor = emisor.jugadores.findIndex(j => j.nombre.trim() === o.jugadorOfrecido.trim());
+        if (indexEmisor === -1) return alert("Error: El jugador ofrecido ya no está en el equipo rival.");
+    }
+
+    // Si llegamos aquí, los jugadores existen. Procedemos al intercambio:
     emisor.saldo -= o.dinero;
     receptor.saldo += o.dinero;
 
-    // 2. Mover jugador que TÚ entregas (receptor -> emisor)
-    if (o.jugadorBuscado) {
-        // Limpiamos espacios para que la búsqueda sea exacta
-        const nombreBuscado = o.jugadorBuscado.trim();
-        const idxB = receptor.jugadores.findIndex(j => j.nombre.trim() === nombreBuscado);
-        
-        if (idxB !== -1) {
-            let p = receptor.jugadores.splice(idxB, 1)[0];
-            p.enVenta = false;
-            if (!emisor.jugadores) emisor.jugadores = [];
-            emisor.jugadores.push(p);
-        }
+    // Mover jugador de TI hacia el RIVAL
+    if (indexReceptor !== -1) {
+        let p = receptor.jugadores.splice(indexReceptor, 1)[0];
+        p.enVenta = false;
+        p.bloqueado = true; // Se bloquea en el nuevo equipo
+        if (!emisor.jugadores) emisor.jugadores = [];
+        emisor.jugadores.push(p);
     }
 
-    // 3. Mover jugador que EL RIVAL te da (emisor -> receptor)
-    if (o.jugadorOfrecido) {
-        const nombreOfrecido = o.jugadorOfrecido.trim();
-        const idxO = emisor.jugadores.findIndex(j => j.nombre.trim() === nombreOfrecido);
-        
-        if (idxO !== -1) {
-            let p = emisor.jugadores.splice(idxO, 1)[0];
-            p.enVenta = false;
-            if (!receptor.jugadores) receptor.jugadores = [];
-            receptor.jugadores.push(p);
-        }
+    // Mover jugador del RIVAL hacia TI
+    if (indexEmisor !== -1) {
+        let p = emisor.jugadores.splice(indexEmisor, 1)[0];
+        p.enVenta = false;
+        p.bloqueado = true; // Se bloquea en tu equipo
+        receptor.jugadores.push(p);
     }
 
-    // 4. Guardar todo en Firebase de una sola vez
+    // Guardar todo de golpe
     db.ref('liga/').set(datosEquipos).then(() => {
         db.ref(`ofertas/${idActual}/${idO}`).remove();
-        alert("¡Intercambio de jugadores realizado!");
+        alert("¡Intercambio realizado con éxito y jugadores bloqueados!");
     });
 };
 
-// --- BOTÓN CONTRA (MANTENIDO) ---
-window.prepararContraoferta = function(idO, idE) {
-    const o = todasLasOfertas[idActual][idO];
-    if (!o) return;
-    
-    // Rellena los campos automáticamente para que solo cambies lo que quieras
-    document.getElementById('select-jugador-rival').value = o.jugadorOfrecido || "";
-    document.getElementById('oferta-dinero').value = o.dinero;
-    document.getElementById('mi-jugador-cambio').value = o.jugadorBuscado || "";
-    
-    // Borra la oferta vieja para limpiar el panel
-    db.ref(`ofertas/${idActual}/${idO}`).remove();
-    alert("Datos cargados en el buscador. ¡Haz tu contraoferta!");
-};
-// ... (El resto de tus funciones: calcularFichaje, renovar, etc., se quedan igual)
-window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
-
-// --- DIBUJAR OFERTAS (CON BOTÓN CONTRA) ---
-function dibujarOfertas() {
-    const contenedor = document.getElementById('contenedor-ofertas');
-    if (!contenedor) return;
-    const misOfertas = todasLasOfertas[idActual] || {};
-    contenedor.innerHTML = '';
-    Object.keys(misOfertas).forEach(key => {
-        const o = misOfertas[key];
-        contenedor.innerHTML += `
-            <div style="background:#222; padding:10px; margin:5px 0; border-left:4px solid #007bff;">
-                <p><b>${o.desde}</b> quiere a ${o.jugadorBuscado}</p>
-                <p>Ofrece $${o.dinero}M ${o.jugadorOfrecido ? '+ ' + o.jugadorOfrecido : ''}</p>
-                <button onclick="window.aceptarOferta('${key}','${o.idEmisor}')" style="background:green; color:white;">SI</button>
-                <button onclick="window.prepararContraoferta('${key}','${o.idEmisor}')" style="background:orange;">CONTRA</button>
-                <button onclick="window.rechazarOferta('${key}')" style="background:red; color:white;">NO</button>
-            </div>`;
-    });
-}
-
-// --- RESTO DE FUNCIONES ---
+// --- BOTONES DE SALIDA (VALIDAN BLOQUEO) ---
 window.venderAlAnterior = function(i) {
-    equipoActual.saldo += equipoActual.jugadores[i].valor * 0.5;
+    const j = equipoActual.jugadores[i];
+    if (j.bloqueado) return alert("🔒 Este jugador es un fichaje reciente. Debes esperar a la próxima temporada.");
+    
+    equipoActual.saldo += j.valor * 0.5;
     equipoActual.jugadores.splice(i, 1);
     salvar();
 };
 
 window.liberarJugador = function(i) {
     const j = equipoActual.jugadores[i];
+    if (j.bloqueado) return alert("🔒 No puedes liberar a un jugador recién llegado.");
+    
     const coste = j.contrato * j.salario;
     if (!confirm(`¿Liberar? Coste: $${coste.toFixed(1)}M`)) return;
-    if (equipoActual.saldo < coste) return alert("Sin saldo.");
+    if (equipoActual.saldo < coste) return alert("Saldo insuficiente.");
     equipoActual.saldo -= coste;
     equipoActual.jugadores.splice(i, 1);
     salvar();
 };
+
+// --- FINALIZAR TEMPORADA (QUITA BLOQUEOS) ---
+window.finalizarTemporada = function() {
+    if (!confirm("¿Finalizar temporada? Se cobrarán salarios y se desbloquearán fichajes.")) return;
+    for (let idEq in datosEquipos) {
+        let eq = datosEquipos[idEq];
+        let gasto = 0;
+        if (eq.jugadores) {
+            eq.jugadores.forEach(j => {
+                gasto += j.salario;
+                if (j.contrato > 0) j.contrato -= 1;
+                j.bloqueado = false; // <--- SE DESBLOQUEAN AQUÍ
+            });
+            eq.saldo -= gasto;
+        }
+    }
+    salvar();
+    alert("Temporada finalizada. Los candados han sido retirados.");
+};
+
+// --- OTROS BOTONES (CONTRA, RECHAZAR, ENVIAR) ---
+window.prepararContraoferta = function(idO, idE) {
+    const o = todasLasOfertas[idActual][idO];
+    if (!o) return;
+    document.getElementById('select-jugador-rival').value = o.jugadorOfrecido || "";
+    document.getElementById('oferta-dinero').value = o.dinero;
+    document.getElementById('mi-jugador-cambio').value = o.jugadorBuscado || "";
+    db.ref(`ofertas/${idActual}/${idO}`).remove();
+};
+
+window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
 
 window.enviarOferta = function() {
     const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
@@ -231,20 +234,4 @@ window.enviarOferta = function() {
     alert("Oferta enviada.");
 };
 
-function actualizarListasNegociacion() {
-    const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
-    const rival = datosEquipos[rivalId];
-    const sR = document.getElementById('select-jugador-rival'), sM = document.getElementById('mi-jugador-cambio');
-    if (sR && rival && rival.jugadores) sR.innerHTML = '<option value="">Solo $</option>' + rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
-    if (sM && equipoActual.jugadores) sM.innerHTML = '<option value="">Solo $</option>' + equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
-}
-
-function cargarMercado() {
-    const lista = document.getElementById('lista-mercado');
-    if (!lista) return; lista.innerHTML = '';
-    for (let eq in datosEquipos) {
-        if (datosEquipos[eq].jugadores) {
-            datosEquipos[eq].jugadores.forEach(j => { if (j.enVenta) lista.innerHTML += `<li>${j.nombre} (${datosEquipos[eq].nombre})</li>`; });
-        }
-    }
-}
+// --- FUNCIONES VIS
