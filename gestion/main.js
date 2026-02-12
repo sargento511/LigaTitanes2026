@@ -116,57 +116,76 @@ window.confirmarCompra = function(n, v, s, p) {
     alert(n + " fichado.");
 };
 
-// --- EL BOTÓN SI (ARREGLADO) ---
+// ... (Mantenemos tu configuración de Firebase y variables globales igual)
+
+// --- EL BOTÓN SI (REPARADO PARA QUE SIEMPRE FUNCIONE) ---
 window.aceptarOferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
 
+    // Obtenemos los datos más recientes de los equipos directamente del objeto global
     const emisor = datosEquipos[idE];
-    const receptor = equipoActual;
+    const receptor = datosEquipos[idActual];
 
-    // Intercambio de dinero
+    if (!emisor || !receptor) return;
+
+    // 1. Intercambio de dinero
     emisor.saldo -= o.dinero;
     receptor.saldo += o.dinero;
 
-    // Mover jugador del receptor al emisor
+    // 2. Mover jugador del receptor al emisor (Jugador Buscado)
     if (o.jugadorBuscado) {
-        const idx = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
-        if (idx !== -1) {
-            let p = receptor.jugadores.splice(idx, 1)[0];
-            p.enVenta = false;
+        const idxB = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
+        if (idxB !== -1) {
+            let transferido = receptor.jugadores.splice(idxB, 1)[0];
+            transferido.enVenta = false; // Se quita de la lista de ventas al moverse
             if (!emisor.jugadores) emisor.jugadores = [];
-            emisor.jugadores.push(p);
+            emisor.jugadores.push(transferido);
         }
     }
 
-    // Mover jugador del emisor al receptor
+    // 3. Mover jugador del emisor al receptor (Jugador Ofrecido)
     if (o.jugadorOfrecido) {
-        const idx = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
-        if (idx !== -1) {
-            let p = emisor.jugadores.splice(idx, 1)[0];
-            p.enVenta = false;
+        const idxO = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
+        if (idxO !== -1) {
+            let recibido = emisor.jugadores.splice(idxO, 1)[0];
+            recibido.enVenta = false;
             if (!receptor.jugadores) receptor.jugadores = [];
-            receptor.jugadores.push(p);
+            receptor.jugadores.push(recibido);
         }
     }
 
-    // Guardado simultáneo para evitar errores de duplicado
+    // 4. GUARDADO SIMULTÁNEO: Actualizamos toda la liga de una vez para evitar errores
     db.ref('liga/').set(datosEquipos).then(() => {
+        // Solo borramos la oferta si el intercambio en la liga fue exitoso
         db.ref(`ofertas/${idActual}/${idO}`).remove();
-        alert("¡Trato hecho!");
+        alert("¡Intercambio realizado con éxito!");
+    }).catch(error => {
+        console.error("Error al procesar el trato:", error);
+        alert("Hubo un problema con la base de datos.");
     });
 };
 
-// --- BOTÓN CONTRA (RESTABLECIDO) ---
+// --- BOTÓN CONTRA (MANTENIDO) ---
 window.prepararContraoferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
-    document.getElementById('select-jugador-rival').value = o.jugadorOfrecido || "";
-    document.getElementById('oferta-dinero').value = o.dinero;
-    document.getElementById('mi-jugador-cambio').value = o.jugadorBuscado || "";
+    
+    // Carga los datos de la oferta en el formulario de envío
+    const selRival = document.getElementById('select-jugador-rival');
+    const selMio = document.getElementById('mi-jugador-cambio');
+    const inputDinero = document.getElementById('oferta-dinero');
+
+    if (selRival) selRival.value = o.jugadorOfrecido || "";
+    if (inputDinero) inputDinero.value = o.dinero;
+    if (selMio) selMio.value = o.jugadorBuscado || "";
+    
+    // Borra la oferta original para que no se duplique
     db.ref(`ofertas/${idActual}/${idO}`).remove();
+    alert("Datos cargados. Modifica lo que quieras y dale a ENVIAR.");
 };
 
+// ... (El resto de tus funciones: calcularFichaje, renovar, etc., se quedan igual)
 window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
 
 // --- DIBUJAR OFERTAS (CON BOTÓN CONTRA) ---
