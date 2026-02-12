@@ -24,11 +24,11 @@ let todasLasOfertas = {};
 const DATOS_INICIALES = {
     'Deportivo': {
         nombre: 'DEPORTIVO FEDERAL', saldo: 147.2, estadio: 'Estadio Federal (Grande)',
-        jugadores: [{ nombre: 'Jugador Prueba', valor: 0, salario: 0, prima: 0, enVenta: false, contrato: 2 }]
+        jugadores: [{}]
     },
     'Halcones': {
         nombre: 'HALCONES ROJOS', saldo: 276.4, estadio: 'La Caldera Roja (Gigante)',
-        jugadores: [{ nombre: 'Keylor Navas', valor: 0.8, salario: 0.8, prima: 0.4, enVenta: false, contrato: 2 }]
+        jugadores: [{}]
     }
 };
 
