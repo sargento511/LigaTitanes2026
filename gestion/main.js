@@ -20,7 +20,6 @@ let equipoActual = null;
 let idActual = "";
 let todasLasOfertas = {};
 
-// DATOS POR SI FIREBASE ESTÁ VACÍO
 const DATOS_INICIALES = {
     'Deportivo': {
         nombre: 'DEPORTIVO FEDERAL', saldo: 147.2, estadio: 'Estadio Federal (Grande)',
@@ -125,7 +124,7 @@ window.calcularFichaje = function() {
         <div style="background:#222; padding:10px; margin-top:10px; border-radius:5px;">
             <p><b>${n.toUpperCase()}</b></p>
             <p>Salario: $${s}M | Prima: $${p}M</p>
-            <button onclick="confirmarCompra('${n}',${v},${s},${p})" style="background:green; color:white; width:100%; padding:5px;">FICHAR</button>
+            <button onclick="window.confirmarCompra('${n}',${v},${s},${p})" style="background:green; color:white; width:100%; padding:5px;">FICHAR</button>
         </div>`;
 };
 
@@ -172,7 +171,7 @@ window.liberarJugador = function(i) {
     salvar();
 };
 
-// --- NEGOCIACIONES ---
+// --- NEGOCIACIONES Y OFERTAS ---
 function actualizarListasNegociacion() {
     const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
     const rival = datosEquipos[rivalId];
@@ -224,12 +223,15 @@ function dibujarOfertas() {
 window.aceptarOferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
-    const emisor = datosEquipos[idE], receptor = equipoActual;
+
+    const emisor = datosEquipos[idE];
+    const receptor = equipoActual;
 
     // 1. Dinero
-    emisor.saldo -= o.dinero; receptor.saldo += o.dinero;
+    emisor.saldo -= o.dinero;
+    receptor.saldo += o.dinero;
 
-    // 2. Mover jugador buscado (sale de tu equipo)
+    // 2. Mover jugador que tú tienes y el rival quiere
     const idxB = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
     if (idxB !== -1) {
         let p = receptor.jugadores.splice(idxB, 1)[0];
@@ -237,7 +239,8 @@ window.aceptarOferta = function(idO, idE) {
         if (!emisor.jugadores) emisor.jugadores = [];
         emisor.jugadores.push(p);
     }
-    // 3. Mover jugador ofrecido (entra a tu equipo)
+
+    // 3. Mover jugador que el rival te ofreció
     if (o.jugadorOfrecido) {
         const idxO = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
         if (idxO !== -1) {
@@ -246,10 +249,11 @@ window.aceptarOferta = function(idO, idE) {
             receptor.jugadores.push(p);
         }
     }
-    // 4. Guardar y limpiar
+
+    // 4. Guardar en Firebase y borrar la oferta
     db.ref('liga/').set(datosEquipos).then(() => {
         db.ref(`ofertas/${idActual}/${idO}`).remove();
-        alert("¡Intercambio realizado!");
+        alert("¡Trato aceptado!");
     });
 };
 
