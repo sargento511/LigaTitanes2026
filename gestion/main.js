@@ -1,4 +1,4 @@
-// CONFIGURACIÓN DE FIREBASE (Tus credenciales se mantienen iguales)
+// CONFIGURACIÓN DE FIREBASE (Tus credenciales originales)
 const firebaseConfig = {
     apiKey: "AIzaSyBVPj0mlp5ThkbaRb0XClwhmLPjrpTtlSk",
     authDomain: "ligatitanes-5e005.firebaseapp.com",
@@ -44,12 +44,11 @@ function actualizarTodo() {
     dibujarOfertas();
 }
 
-// --- LISTENERS (Sincronización Total) ---
+// --- LISTENERS ---
 db.ref('liga/').on('value', (snapshot) => {
     datosEquipos = snapshot.val();
     if (idActual && datosEquipos) {
         equipoActual = datosEquipos[idActual];
-        // Forzamos actualización visual inmediata
         actualizarTodo();
     }
     cargarMercado();
@@ -62,7 +61,7 @@ db.ref('ofertas/').on('value', (snapshot) => {
 
 function salvar() { db.ref('liga/').set(datosEquipos); }
 
-// --- TABLA DE PLANTILLA ---
+// --- TABLA ---
 function actualizarTabla() {
     const elCuerpo = document.getElementById('body-plantilla');
     if (!elCuerpo || !equipoActual) return;
@@ -70,10 +69,7 @@ function actualizarTabla() {
     document.getElementById('saldo-actual').innerText = `$${equipoActual.saldo.toFixed(1)} MDD`;
     document.getElementById('tipo-estadio').innerText = equipoActual.estadio;
 
-    // Aseguramos que jugadores sea un array
-    const listaJugadores = equipoActual.jugadores || [];
-
-    elCuerpo.innerHTML = listaJugadores.map((j, i) => `
+    elCuerpo.innerHTML = (equipoActual.jugadores || []).map((j, i) => `
         <tr>
             <td>${j.nombre} ${j.enVenta ? '🔥' : ''}</td>
             <td>$${j.valor}M</td>
@@ -89,13 +85,12 @@ function actualizarTabla() {
         </tr>`).join('');
 }
 
-// --- FICHAJES (CALCULADORA ORIGINAL CORREGIDA) ---
+// --- FICHAJES (TU CALCULADORA ORIGINAL) ---
 window.calcularFichaje = function() {
     const n = document.getElementById('nombre-busqueda').value;
     const v = parseFloat(document.getElementById('valor-busqueda').value);
     if (!n || isNaN(v)) return;
 
-    // Tu lógica de salarios original
     let s = v >= 120 ? 22 : (v >= 90 ? 18 : (v >= 70 ? 14 : (v >= 50 ? 11 : (v >= 30 ? 8 : (v >= 20 ? 5 : (v >= 10 ? 3 : (v >= 5 ? 1.5 : 0.8)))))));
     let p = v >= 120 ? 7 : (v >= 90 ? 5 : (v >= 70 ? 4 : (v >= 50 ? 3 : (v >= 30 ? 2 : (v >= 20 ? 1.5 : (v >= 10 ? 1 : (v >= 5 ? 0.7 : 0.4)))))));
 
@@ -109,29 +104,19 @@ window.calcularFichaje = function() {
 
 window.confirmarCompra = function(n, v, s, p) {
     if (!equipoActual.jugadores) equipoActual.jugadores = [];
+    const yaLoTengo = equipoActual.jugadores.some(j => j.nombre.toLowerCase() === n.trim().toLowerCase());
     
-    // CORRECCIÓN: Buscamos solo por nombre exacto y limpio
-    const nombreLimpio = n.trim().toLowerCase();
-    const yaLoTengo = equipoActual.jugadores.some(j => j.nombre.trim().toLowerCase() === nombreLimpio);
-    
-    if (yaLoTengo) {
-        alert("Ya tienes a " + n + " en tu plantilla.");
-        return;
-    }
-
+    if (yaLoTengo) return alert("Ya tienes a este jugador.");
     if (equipoActual.saldo < v) return alert("Saldo insuficiente.");
 
     equipoActual.saldo -= v;
-    equipoActual.jugadores.push({ 
-        nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 
-    });
-
+    equipoActual.jugadores.push({ nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 });
     salvar();
     document.getElementById('resultado-busqueda').innerHTML = ''; 
-    alert(n + " fichado correctamente.");
+    alert(n + " fichado.");
 };
 
-// --- EL BOTÓN "SI" (INTERCAMBIOS) ---
+// --- EL BOTÓN SI (ARREGLADO) ---
 window.aceptarOferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
@@ -139,72 +124,52 @@ window.aceptarOferta = function(idO, idE) {
     const emisor = datosEquipos[idE];
     const receptor = equipoActual;
 
-    // 1. Mover Dinero
+    // Intercambio de dinero
     emisor.saldo -= o.dinero;
     receptor.saldo += o.dinero;
 
-    // 2. Mover jugador del receptor al emisor
+    // Mover jugador del receptor al emisor
     if (o.jugadorBuscado) {
-        const idxB = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
-        if (idxB !== -1) {
-            let p = receptor.jugadores.splice(idxB, 1)[0];
+        const idx = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
+        if (idx !== -1) {
+            let p = receptor.jugadores.splice(idx, 1)[0];
             p.enVenta = false;
             if (!emisor.jugadores) emisor.jugadores = [];
             emisor.jugadores.push(p);
         }
     }
 
-    // 3. Mover jugador del emisor al receptor
+    // Mover jugador del emisor al receptor
     if (o.jugadorOfrecido) {
-        const idxO = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
-        if (idxO !== -1) {
-            let p = emisor.jugadores.splice(idxO, 1)[0];
+        const idx = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
+        if (idx !== -1) {
+            let p = emisor.jugadores.splice(idx, 1)[0];
             p.enVenta = false;
             if (!receptor.jugadores) receptor.jugadores = [];
             receptor.jugadores.push(p);
         }
     }
 
-    // 4. GUARDADO ATÓMICO (Evita que se bloqueen los jugadores)
+    // Guardado simultáneo para evitar errores de duplicado
     db.ref('liga/').set(datosEquipos).then(() => {
         db.ref(`ofertas/${idActual}/${idO}`).remove();
-        alert("Intercambio exitoso.");
+        alert("¡Trato hecho!");
     });
 };
 
-// --- GESTIÓN DE JUGADORES (Venta/Liberar) ---
-window.venderAlAnterior = function(i) {
-    const j = equipoActual.jugadores[i];
-    equipoActual.saldo += j.valor * 0.5;
-    equipoActual.jugadores.splice(i, 1);
-    // IMPORTANTE: Al salvar aquí, Firebase limpia el nombre de tu equipo inmediatamente
-    salvar();
+// --- BOTÓN CONTRA (RESTABLECIDO) ---
+window.prepararContraoferta = function(idO, idE) {
+    const o = todasLasOfertas[idActual][idO];
+    if (!o) return;
+    document.getElementById('select-jugador-rival').value = o.jugadorOfrecido || "";
+    document.getElementById('oferta-dinero').value = o.dinero;
+    document.getElementById('mi-jugador-cambio').value = o.jugadorBuscado || "";
+    db.ref(`ofertas/${idActual}/${idO}`).remove();
 };
 
-window.liberarJugador = function(i) {
-    const j = equipoActual.jugadores[i];
-    const coste = j.contrato * j.salario;
-    if (!confirm(`¿Liberar a ${j.nombre}? Coste: $${coste.toFixed(1)}M`)) return;
-    if (equipoActual.saldo < coste) return alert("Saldo insuficiente.");
-    equipoActual.saldo -= coste;
-    equipoActual.jugadores.splice(i, 1);
-    salvar();
-};
+window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
 
-// --- OFERTAS ---
-window.enviarOferta = function() {
-    const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
-    const nueva = {
-        desde: equipoActual.nombre,
-        idEmisor: idActual,
-        jugadorBuscado: document.getElementById('select-jugador-rival').value,
-        dinero: parseFloat(document.getElementById('oferta-dinero').value) || 0,
-        jugadorOfrecido: document.getElementById('mi-jugador-cambio').value
-    };
-    db.ref(`ofertas/${rivalId}`).push(nueva);
-    alert("Oferta enviada.");
-};
-
+// --- DIBUJAR OFERTAS (CON BOTÓN CONTRA) ---
 function dibujarOfertas() {
     const contenedor = document.getElementById('contenedor-ofertas');
     if (!contenedor) return;
@@ -217,22 +182,38 @@ function dibujarOfertas() {
                 <p><b>${o.desde}</b> quiere a ${o.jugadorBuscado}</p>
                 <p>Ofrece $${o.dinero}M ${o.jugadorOfrecido ? '+ ' + o.jugadorOfrecido : ''}</p>
                 <button onclick="window.aceptarOferta('${key}','${o.idEmisor}')" style="background:green; color:white;">SI</button>
+                <button onclick="window.prepararContraoferta('${key}','${o.idEmisor}')" style="background:orange;">CONTRA</button>
                 <button onclick="window.rechazarOferta('${key}')" style="background:red; color:white;">NO</button>
             </div>`;
     });
 }
 
-window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
-
-window.renovar = function(i) {
-    const j = equipoActual.jugadores[i];
-    if (equipoActual.saldo < j.prima) return alert("Sin saldo.");
-    equipoActual.saldo -= j.prima; j.contrato += 1; salvar();
+// --- RESTO DE FUNCIONES ---
+window.venderAlAnterior = function(i) {
+    equipoActual.saldo += equipoActual.jugadores[i].valor * 0.5;
+    equipoActual.jugadores.splice(i, 1);
+    salvar();
 };
 
-window.toggleVenta = function(i) {
-    equipoActual.jugadores[i].enVenta = !equipoActual.jugadores[i].enVenta;
+window.liberarJugador = function(i) {
+    const j = equipoActual.jugadores[i];
+    const coste = j.contrato * j.salario;
+    if (!confirm(`¿Liberar? Coste: $${coste.toFixed(1)}M`)) return;
+    if (equipoActual.saldo < coste) return alert("Sin saldo.");
+    equipoActual.saldo -= coste;
+    equipoActual.jugadores.splice(i, 1);
     salvar();
+};
+
+window.enviarOferta = function() {
+    const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
+    db.ref(`ofertas/${rivalId}`).push({
+        desde: equipoActual.nombre, idEmisor: idActual,
+        jugadorBuscado: document.getElementById('select-jugador-rival').value,
+        dinero: parseFloat(document.getElementById('oferta-dinero').value) || 0,
+        jugadorOfrecido: document.getElementById('mi-jugador-cambio').value
+    });
+    alert("Oferta enviada.");
 };
 
 function actualizarListasNegociacion() {
