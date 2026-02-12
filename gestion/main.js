@@ -27,7 +27,7 @@ const DATOS_INICIALES = {
         jugadores: [{}]
     },
     'Halcones': {
-        nombre: 'HALCONES ROJOS', saldo: 276.4, estadio: 'La Caldera Roja (Gigante)',
+        nombre: 'HALCONES ROJOS', saldo: 385.4, estadio: 'La Caldera Roja (Gigante)',
         jugadores: [{}]
     }
 };
