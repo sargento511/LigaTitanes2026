@@ -118,12 +118,12 @@ window.confirmarCompra = function(n, v, s, p) {
 
 // ... (Mantenemos tu configuración de Firebase y variables globales igual)
 
-// --- EL BOTÓN SI (REPARADO PARA QUE SIEMPRE FUNCIONE) ---
+// --- EL BOTÓN SI (REPARADO PARA INTERCAMBIOS) ---
 window.aceptarOferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
 
-    // Obtenemos los datos más recientes de los equipos directamente del objeto global
+    // Usamos los datos globales para asegurar que están actualizados
     const emisor = datosEquipos[idE];
     const receptor = datosEquipos[idActual];
 
@@ -133,36 +133,37 @@ window.aceptarOferta = function(idO, idE) {
     emisor.saldo -= o.dinero;
     receptor.saldo += o.dinero;
 
-    // 2. Mover jugador del receptor al emisor (Jugador Buscado)
+    // 2. Mover jugador que TÚ entregas (receptor -> emisor)
     if (o.jugadorBuscado) {
-        const idxB = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
+        // Limpiamos espacios para que la búsqueda sea exacta
+        const nombreBuscado = o.jugadorBuscado.trim();
+        const idxB = receptor.jugadores.findIndex(j => j.nombre.trim() === nombreBuscado);
+        
         if (idxB !== -1) {
-            let transferido = receptor.jugadores.splice(idxB, 1)[0];
-            transferido.enVenta = false; // Se quita de la lista de ventas al moverse
+            let p = receptor.jugadores.splice(idxB, 1)[0];
+            p.enVenta = false;
             if (!emisor.jugadores) emisor.jugadores = [];
-            emisor.jugadores.push(transferido);
+            emisor.jugadores.push(p);
         }
     }
 
-    // 3. Mover jugador del emisor al receptor (Jugador Ofrecido)
+    // 3. Mover jugador que EL RIVAL te da (emisor -> receptor)
     if (o.jugadorOfrecido) {
-        const idxO = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
+        const nombreOfrecido = o.jugadorOfrecido.trim();
+        const idxO = emisor.jugadores.findIndex(j => j.nombre.trim() === nombreOfrecido);
+        
         if (idxO !== -1) {
-            let recibido = emisor.jugadores.splice(idxO, 1)[0];
-            recibido.enVenta = false;
+            let p = emisor.jugadores.splice(idxO, 1)[0];
+            p.enVenta = false;
             if (!receptor.jugadores) receptor.jugadores = [];
-            receptor.jugadores.push(recibido);
+            receptor.jugadores.push(p);
         }
     }
 
-    // 4. GUARDADO SIMULTÁNEO: Actualizamos toda la liga de una vez para evitar errores
+    // 4. Guardar todo en Firebase de una sola vez
     db.ref('liga/').set(datosEquipos).then(() => {
-        // Solo borramos la oferta si el intercambio en la liga fue exitoso
         db.ref(`ofertas/${idActual}/${idO}`).remove();
-        alert("¡Intercambio realizado con éxito!");
-    }).catch(error => {
-        console.error("Error al procesar el trato:", error);
-        alert("Hubo un problema con la base de datos.");
+        alert("¡Intercambio de jugadores realizado!");
     });
 };
 
@@ -171,20 +172,15 @@ window.prepararContraoferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
     
-    // Carga los datos de la oferta en el formulario de envío
-    const selRival = document.getElementById('select-jugador-rival');
-    const selMio = document.getElementById('mi-jugador-cambio');
-    const inputDinero = document.getElementById('oferta-dinero');
-
-    if (selRival) selRival.value = o.jugadorOfrecido || "";
-    if (inputDinero) inputDinero.value = o.dinero;
-    if (selMio) selMio.value = o.jugadorBuscado || "";
+    // Rellena los campos automáticamente para que solo cambies lo que quieras
+    document.getElementById('select-jugador-rival').value = o.jugadorOfrecido || "";
+    document.getElementById('oferta-dinero').value = o.dinero;
+    document.getElementById('mi-jugador-cambio').value = o.jugadorBuscado || "";
     
-    // Borra la oferta original para que no se duplique
+    // Borra la oferta vieja para limpiar el panel
     db.ref(`ofertas/${idActual}/${idO}`).remove();
-    alert("Datos cargados. Modifica lo que quieras y dale a ENVIAR.");
+    alert("Datos cargados en el buscador. ¡Haz tu contraoferta!");
 };
-
 // ... (El resto de tus funciones: calcularFichaje, renovar, etc., se quedan igual)
 window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
 
