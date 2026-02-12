@@ -123,6 +123,20 @@ function actualizarTabla() {
                 </td>
             </tr>`).join('');
     }
+    
+    window.liberarJugador = function(i) {
+    const j = equipoActual.jugadores[i];
+    const coste = j.contrato * j.salario;
+
+    if (!confirm(`¿Liberar a ${j.nombre}? Coste de rescisión: $${coste.toFixed(1)}M`)) return;
+
+    if (equipoActual.saldo < coste) return alert("Saldo insuficiente para pagar la rescisión.");
+
+    equipoActual.saldo -= coste;
+    equipoActual.jugadores.splice(i, 1);
+    salvar();
+    alert(j.nombre + " ha sido liberado.");
+};
     // Forzamos a que las listas de negociación se actualicen al ver la tabla
     actualizarListasNegociacion();
 }
@@ -243,18 +257,40 @@ window.toggleVenta = function(i) {
 
 window.aceptarOferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
-    const emisor = datosEquipos[idE], receptor = equipoActual;
-    emisor.saldo -= o.dinero; receptor.saldo += o.dinero;
-    const idxB = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
-    if(idxB !== -1) emisor.jugadores.push(receptor.jugadores.splice(idxB, 1)[0]);
-    if(o.jugadorOfrecido) {
-        const idxO = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
-        if(idxO !== -1) receptor.jugadores.push(emisor.jugadores.splice(idxO, 1)[0]);
-    }
-    db.ref('liga/').set(datosEquipos);
-    db.ref(`ofertas/${idActual}/${idO}`).remove();
-};
+    if (!o) return;
 
+    const emisor = datosEquipos[idE];
+    const receptor = equipoActual;
+
+    // 1. Transferencia de dinero
+    emisor.saldo -= o.dinero;
+    receptor.saldo += o.dinero;
+
+    // 2. Mover el jugador que el rival quería (sale de tu equipo)
+    const idxB = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
+    if (idxB !== -1) {
+        let jugadorTransferido = receptor.jugadores.splice(idxB, 1)[0];
+        jugadorTransferido.enVenta = false; // Se quita el fuego 🔥
+        if (!emisor.jugadores) emisor.jugadores = [];
+        emisor.jugadores.push(jugadorTransferido);
+    }
+
+    // 3. Mover el jugador que el rival te ofreció (entra a tu equipo)
+    if (o.jugadorOfrecido) {
+        const idxO = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
+        if (idxO !== -1) {
+            let jugadorRecibido = emisor.jugadores.splice(idxO, 1)[0];
+            jugadorRecibido.enVenta = false;
+            receptor.jugadores.push(jugadorRecibido);
+        }
+    }
+
+    // 4. Guardar todo y borrar la oferta
+    db.ref('liga/').set(datosEquipos).then(() => {
+        db.ref(`ofertas/${idActual}/${idO}`).remove();
+        alert("¡Trato aceptado y jugadores movidos!");
+    });
+};
 window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
 
 function actualizarListasNegociacion() {
