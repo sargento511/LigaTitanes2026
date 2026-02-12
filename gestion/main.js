@@ -20,7 +20,7 @@ let equipoActual = null;
 let idActual = "";
 let todasLasOfertas = {};
 
-// DATOS INICIALES
+// DATOS POR SI FIREBASE ESTÁ VACÍO
 const DATOS_INICIALES = {
     'Deportivo': {
         nombre: 'DEPORTIVO FEDERAL', saldo: 147.2, estadio: 'Estadio Federal (Grande)',
@@ -34,29 +34,15 @@ const DATOS_INICIALES = {
             { nombre: 'Kimpembe', valor: 4, salario: 8, prima: 2, enVenta: false, contrato: 2 },
             { nombre: 'Yan Couto', valor: 20, salario: 5, prima: 1.5, enVenta: false, contrato: 2 },
             { nombre: 'David Raum', valor: 20, salario: 5, prima: 1.5, enVenta: false, contrato: 2 },
-            { nombre: 'DeAndre Yedlin', valor: 1, salario: 1, prima: 0.4, enVenta: false, contrato: 2 },
-            { nombre: 'Yeray Álvarez', valor: 1, salario: 1, prima: 0.4, enVenta: false, contrato: 2 },
             { nombre: 'Unai Simón', valor: 25, salario: 8, prima: 2, enVenta: false, contrato: 2 },
-            { nombre: 'Luis Alberto', valor: 5, salario: 5, prima: 0.7, enVenta: false, contrato: 2 },
-            { nombre: 'Pape Cissé', valor: 1, salario: 1, prima: 0.4, enVenta: false, contrato: 2 },
-            { nombre: 'Granit Xhaka', valor: 10, salario: 5, prima: 1.5, enVenta: false, contrato: 2 },
             { nombre: 'Trindade', valor: 28, salario: 8, prima: 2, enVenta: false, contrato: 2 },
-            { nombre: 'Tomáš Souček', valor: 12, salario: 5, prima: 1.5, enVenta: false, contrato: 2 },
-            { nombre: 'Gilberto Mora', valor: 10, salario: 5, prima: 1.5, enVenta: false, contrato: 2 },
-            { nombre: 'Paul Pogba', valor: 5, salario: 6, prima: 2, enVenta: false, contrato: 2 },
-            { nombre: 'Daniel James', valor: 14, salario: 14, prima: 4, enVenta: false, contrato: 2 },
-            { nombre: 'Samuel Chukwueze', valor: 10, salario: 5, prima: 1.5, enVenta: false, contrato: 2 },
             { nombre: 'Kaoru Mitoma', valor: 30, salario: 11, prima: 3, enVenta: false, contrato: 2 },
-            { nombre: 'Antonio Nusa', valor: 32, salario: 11, prima: 3, enVenta: false, contrato: 2 },
-            { nombre: 'Takefusa Kubo', valor: 30, salario: 11, prima: 3, enVenta: false, contrato: 2 },
-            { nombre: 'Youssoufa Moukoko', valor: 7, salario: 5, prima: 1.5, enVenta: false, contrato: 2 },
-            { nombre: 'Victor Osimhen', valor: 10, salario: 15, prima: 5, enVenta: false, contrato: 2 },
-            { nombre: 'Aymeric Laporte', valor: 9, salario: 7, prima: 2, enVenta: false, contrato: 2 }
+            { nombre: 'Victor Osimhen', valor: 10, salario: 15, prima: 5, enVenta: false, contrato: 2 }
         ]
     }
 };
 
-// --- NAVEGACIÓN Y CONTROL ---
+// --- NAVEGACIÓN ---
 window.seleccionarEquipo = function(id) {
     idActual = id;
     if (datosEquipos && datosEquipos[id]) {
@@ -146,20 +132,11 @@ window.calcularFichaje = function() {
 window.confirmarCompra = function(n, v, s, p) {
     if (!equipoActual.jugadores) equipoActual.jugadores = [];
     const yaExiste = equipoActual.jugadores.some(j => j.nombre.toLowerCase() === n.toLowerCase());
-    
-    if (yaExiste) {
-        alert("¡Error! " + n + " ya está en tu equipo.");
-        document.getElementById('resultado-busqueda').innerHTML = ''; 
-        return;
-    }
-
+    if (yaExiste) { alert("¡Error! " + n + " ya está en tu equipo."); return; }
     if (equipoActual.saldo < v) return alert("Saldo insuficiente.");
 
     equipoActual.saldo -= v;
-    equipoActual.jugadores.push({ 
-        nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 
-    });
-
+    equipoActual.jugadores.push({ nombre: n, valor: v, salario: s, prima: p, enVenta: false, contrato: 2 });
     salvar();
     document.getElementById('resultado-busqueda').innerHTML = ''; 
     alert(n + " fichado correctamente.");
@@ -188,15 +165,14 @@ window.toggleVenta = function(i) {
 window.liberarJugador = function(i) {
     const j = equipoActual.jugadores[i];
     const coste = j.contrato * j.salario;
-    if (!confirm(`¿Liberar a ${j.nombre}? Coste de rescisión: $${coste.toFixed(1)}M`)) return;
+    if (!confirm(`¿Liberar a ${j.nombre}? Coste: $${coste.toFixed(1)}M`)) return;
     if (equipoActual.saldo < coste) return alert("Saldo insuficiente.");
     equipoActual.saldo -= coste;
     equipoActual.jugadores.splice(i, 1);
     salvar();
-    alert(j.nombre + " ha sido liberado.");
 };
 
-// --- NEGOCIACIONES Y OFERTAS ---
+// --- NEGOCIACIONES ---
 function actualizarListasNegociacion() {
     const rivalId = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
     const rival = datosEquipos[rivalId];
@@ -204,29 +180,21 @@ function actualizarListasNegociacion() {
     const selMio = document.getElementById('mi-jugador-cambio');
     
     if (selRival) {
-        if (rival && rival.jugadores && rival.jugadores.length > 0) {
-            selRival.innerHTML = '<option value="">Solo $</option>' + 
-                rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
-        } else {
-            selRival.innerHTML = '<option value="">Rival sin jugadores</option>';
-        }
+        if (rival && rival.jugadores) {
+            selRival.innerHTML = '<option value="">Solo $</option>' + rival.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+        } else { selRival.innerHTML = '<option value="">Rival sin jugadores</option>'; }
     }
-    
     if (selMio) {
-        if (equipoActual && equipoActual.jugadores && equipoActual.jugadores.length > 0) {
-            selMio.innerHTML = '<option value="">Solo $</option>' + 
-                equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
-        } else {
-            selMio.innerHTML = '<option value="">No tienes jugadores</option>';
-        }
+        if (equipoActual && equipoActual.jugadores) {
+            selMio.innerHTML = '<option value="">Solo $</option>' + equipoActual.jugadores.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+        } else { selMio.innerHTML = '<option value="">No tienes jugadores</option>'; }
     }
 }
 
 window.enviarOferta = function() {
     const rival = idActual === 'Deportivo' ? 'Halcones' : 'Deportivo';
     const nueva = {
-        desde: equipoActual.nombre,
-        idEmisor: idActual,
+        desde: equipoActual.nombre, idEmisor: idActual,
         jugadorBuscado: document.getElementById('select-jugador-rival').value,
         dinero: parseFloat(document.getElementById('oferta-dinero').value) || 0,
         jugadorOfrecido: document.getElementById('mi-jugador-cambio').value
@@ -257,26 +225,31 @@ window.aceptarOferta = function(idO, idE) {
     const o = todasLasOfertas[idActual][idO];
     if (!o) return;
     const emisor = datosEquipos[idE], receptor = equipoActual;
+
+    // 1. Dinero
     emisor.saldo -= o.dinero; receptor.saldo += o.dinero;
 
+    // 2. Mover jugador buscado (sale de tu equipo)
     const idxB = receptor.jugadores.findIndex(j => j.nombre === o.jugadorBuscado);
     if (idxB !== -1) {
-        let transferido = receptor.jugadores.splice(idxB, 1)[0];
-        transferido.enVenta = false;
+        let p = receptor.jugadores.splice(idxB, 1)[0];
+        p.enVenta = false;
         if (!emisor.jugadores) emisor.jugadores = [];
-        emisor.jugadores.push(transferido);
+        emisor.jugadores.push(p);
     }
+    // 3. Mover jugador ofrecido (entra a tu equipo)
     if (o.jugadorOfrecido) {
         const idxO = emisor.jugadores.findIndex(j => j.nombre === o.jugadorOfrecido);
         if (idxO !== -1) {
-            let recibido = emisor.jugadores.splice(idxO, 1)[0];
-            recibido.enVenta = false;
-            receptor.jugadores.push(recibido);
+            let p = emisor.jugadores.splice(idxO, 1)[0];
+            p.enVenta = false;
+            receptor.jugadores.push(p);
         }
     }
+    // 4. Guardar y limpiar
     db.ref('liga/').set(datosEquipos).then(() => {
         db.ref(`ofertas/${idActual}/${idO}`).remove();
-        alert("Intercambio realizado.");
+        alert("¡Intercambio realizado!");
     });
 };
 
@@ -291,13 +264,12 @@ window.prepararContraoferta = function(idO, idE) {
 
 window.rechazarOferta = function(id) { db.ref(`ofertas/${idActual}/${id}`).remove(); };
 
-// --- MERCADO Y TEMPORADA ---
 function cargarMercado() {
     const lista = document.getElementById('lista-mercado');
     if (!lista) return;
     lista.innerHTML = '';
     for (let eq in datosEquipos) {
-        if (datosEquipos[eq].jugadores) {
+        if(datosEquipos[eq].jugadores) {
             datosEquipos[eq].jugadores.forEach(j => {
                 if (j.enVenta) lista.innerHTML += `<li>${j.nombre} (${datosEquipos[eq].nombre})</li>`;
             });
@@ -306,16 +278,12 @@ function cargarMercado() {
 }
 
 window.finalizarTemporada = function() {
-    if (!confirm("¿Deseas finalizar la temporada? Cobro de salarios y -1 año contrato.")) return;
+    if (!confirm("¿Finalizar temporada? Cobro de salarios y -1 año contrato.")) return;
     for (let idEq in datosEquipos) {
-        let equipo = datosEquipos[idEq];
-        let totalSalarios = 0;
-        if (equipo.jugadores) {
-            equipo.jugadores.forEach(j => {
-                totalSalarios += j.salario;
-                if (j.contrato > 0) j.contrato -= 1;
-            });
-            equipo.saldo -= totalSalarios;
+        let eq = datosEquipos[idEq]; let gasto = 0;
+        if (eq.jugadores) {
+            eq.jugadores.forEach(j => { gasto += j.salario; if (j.contrato > 0) j.contrato -= 1; });
+            eq.saldo -= gasto;
         }
     }
     salvar();
