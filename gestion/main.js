@@ -118,28 +118,56 @@ function liberarProceso() {
     }
 }
 
-function venderJugadorAlCincuenta() {
-    const id = document.getElementById('select-jugador-gestion').value;
-    if (!id) return alert("Selecciona un jugador para vender.");
+// --- FUNCIÓN NUEVA: VENDER AL 50% ---
+function venderJugadorMitad() {
+    const idJugador = document.getElementById('select-jugador-gestion').value;
+    if (!idJugador) return alert("Selecciona un jugador");
 
-    if (confirm("¿Vender jugador al 50% de su valor? Se sumará a tu presupuesto y el jugador quedará libre.")) {
-        db.ref(`equipos/${equipoActualID}`).once('value', snap => {
-            const equipo = snap.val();
-            const jugador = equipo.jugadores[id];
-            
-            // Cálculo del 50% del valor del jugador
-            const ganancia = (jugador.valor * 0.5);
-            const nuevoPresupuesto = (equipo.presupuesto || 0) + ganancia;
+    const refEquipo = db.ref('equipos/' + equipoActualID);
+    refEquipo.once('value', snapshot => {
+        const data = snapshot.val();
+        const jugador = data.jugadores[idJugador];
+        const valorVenta = parseFloat(jugador.valor) * 0.5;
 
-            // 1. Actualizar el presupuesto en Firebase
-            db.ref(`equipos/${equipoActualID}/presupuesto`).set(nuevoPresupuesto);
-            
-            // 2. Eliminar al jugador de la plantilla
-            db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
-            
-            alert(`Vendido por ${ganancia} MDD. ¡Presupuesto actualizado!`);
+        if (!confirm(`¿Vender a ${jugador.nombre} por ${valorVenta} MDD (50% de su valor)?`)) return;
+
+        const nuevoPresupuesto = (parseFloat(data.presupuesto) || 0) + valorVenta;
+        let jugadoresActualizados = { ...data.jugadores };
+        delete jugadoresActualizados[idJugador];
+
+        refEquipo.update({
+            presupuesto: nuevoPresupuesto,
+            jugadores: jugadoresActualizados
+        }).then(() => alert("Venta completada"));
+    });
+}
+
+// --- FUNCIÓN NUEVA: FINALIZAR TEMPORADA (RESTAR 1 AÑO) ---
+function finalizarTemporada() {
+    if (!confirm("¿Finalizar temporada? Se restará 1 año de contrato a todos.")) return;
+
+    const refEquipo = db.ref('equipos/' + equipoActualID);
+    refEquipo.once('value', snapshot => {
+        const data = snapshot.val();
+        if (!data || !data.jugadores) return;
+
+        let jugadoresActualizados = { ...data.jugadores };
+        let mensajes = [];
+
+        Object.keys(jugadoresActualizados).forEach(id => {
+            let j = jugadoresActualizados[id];
+            j.contrato = parseInt(j.contrato) - 1;
+
+            if (j.contrato <= 0) {
+                mensajes.push(`❌ ${j.nombre} quedó libre.`);
+                delete jugadoresActualizados[id];
+            }
         });
-    }
+
+        refEquipo.update({ jugadores: jugadoresActualizados }).then(() => {
+            alert("Temporada cerrada.\n" + (mensajes.join("\n") || "Todos los contratos actualizados."));
+        });
+    });
 }
 
 // MERCADO
