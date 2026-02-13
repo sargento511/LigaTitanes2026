@@ -35,28 +35,30 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-   // Escuchar ofertas (Corregido para evitar bloqueos)
+   // Escuchar ofertas (VERSIÓN SEGURA)
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         if (of) {
             ofertaRecibida = of;
-            document.getElementById('modal-oferta').classList.remove('hidden');
+            const modal = document.getElementById('modal-oferta');
+            const content = document.getElementById('oferta-content');
             
-            // Verificamos de forma segura si hay un jugador en el intercambio
-            let textoIntercambio = "";
-            if (of.jugadorOfrecidoNombre) {
-                textoIntercambio = ` + <b>${of.jugadorOfrecidoNombre}</b>`;
+            if (modal && content) {
+                modal.classList.remove('hidden');
+                
+                // Si no hay jugador ofrecido, ponemos texto vacío en lugar de romper el código
+                let textoIntercambio = (of.jugadorOfrecidoNombre) ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
+                
+                content.innerHTML = `
+                    <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
+                    <p>Ofrece: <b>${of.monto} MDD</b>${textoIntercambio}</p>
+                `;
             }
-            
-            document.getElementById('oferta-content').innerHTML = `
-                <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b>${textoIntercambio}</p>
-            `;
         } else {
-            document.getElementById('modal-oferta').classList.add('hidden');
+            const modal = document.getElementById('modal-oferta');
+            if (modal) modal.classList.add('hidden');
         }
     });
-
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
