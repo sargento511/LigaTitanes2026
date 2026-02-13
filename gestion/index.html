@@ -62,8 +62,12 @@
         </section>
 
         <section class="stadium-config">
-            <h3>Configuración de Sede</h3>
+            <h3>Configuración de Sede y Presupuesto</h3>
             <div class="config-grid">
+                <div class="input-group">
+                    <label>Presupuesto Total ($)</label>
+                    <input type="number" id="input-presupuesto" placeholder="Ej: 100000000">
+                </div>
                 <div class="input-group">
                     <label>Nombre del Estadio</label>
                     <input type="text" id="input-estadio" placeholder="Ej: Santiago Bernabéu">
@@ -96,67 +100,64 @@
                             <th>Contrato</th>
                         </tr>
                     </thead>
-                    <tbody id="lista-jugadores">
-                        </tbody>
+                    <tbody id="lista-jugadores"></tbody>
                 </table>
             </div>
         </section>
     </div>
 
-    <script src="main.js"></script>
-
     <div id="phone-container" class="phone-hidden">
-    <button id="phone-toggle" onclick="togglePhone()">📱 Menú Pro</button>
-    
-    <div class="phone-screen">
-        <div class="phone-header">Gestión de Liga</div>
-        
-        <div class="phone-tabs">
-            <button onclick="openTab('tab-calc')">🧮</button>
-            <button onclick="openTab('tab-reno')">✍️</button>
-            <button onclick="openTab('tab-nego')">🤝</button>
-        </div>
-
-        <div id="tab-calc" class="phone-tab active">
-            <h4>Fichar / Calcular</h4>
-            <input type="text" id="calc-nombre" placeholder="Nombre del jugador">
-            <input type="number" id="calc-valor" placeholder="Valor de mercado" oninput="actualizarCalculos()">
-            <div class="calc-preview">
-                <p>Salario/Año: <span id="res-salario">$0</span></p>
-                <p>Prima: <span id="res-prima">$0</span></p>
+        <button id="phone-toggle" onclick="togglePhone()">📱 Menú Pro</button>
+        <div class="phone-screen">
+            <div class="phone-header">Gestión de Liga</div>
+            <div class="phone-tabs">
+                <button onclick="openTab('tab-calc')">🧮</button>
+                <button onclick="openTab('tab-reno')">✍️</button>
+                <button onclick="openTab('tab-nego')">🤝</button>
             </div>
-            <input type="number" id="calc-contrato" placeholder="Años de contrato">
-            <button class="btn-action" onclick="contratarJugador()">CONTRATAR</button>
-        </div>
 
-        <div id="tab-reno" class="phone-tab">
-            <h4>Renovar / Liberar</h4>
-            <select id="select-jugador-gestion"></select>
-            <input type="number" id="reno-anos" placeholder="Años a sumar">
-            <button class="btn-action" onclick="renovacionProceso()">RENOVAR</button>
-            <hr>
-            <button class="btn-danger" onclick="liberarProceso()">LIBERAR JUGADOR</button>
-        </div>
+            <div id="tab-calc" class="phone-tab active">
+                <h4>Fichar / Calcular</h4>
+                <input type="text" id="calc-nombre" placeholder="Nombre del jugador">
+                <input type="number" id="calc-valor" placeholder="Valor de mercado" oninput="actualizarCalculos()">
+                <div class="calc-preview">
+                    <p>Salario/Año: <span id="res-salario">$0</span></p>
+                    <p>Prima: <span id="res-prima">$0</span></p>
+                </div>
+                <input type="number" id="calc-contrato" placeholder="Años de contrato">
+                <button class="btn-action" onclick="contratarJugador()">CONTRATAR</button>
+            </div>
 
-        <div id="tab-nego" class="phone-tab">
-            <h4>Negociación Realtime</h4>
-            <select id="select-jugador-rival"></select>
-            <input type="number" id="nego-oferta" placeholder="Dinero ofertado">
-            <input type="text" id="nego-cambio" placeholder="Jugador a cambio">
-            <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
+            <div id="tab-reno" class="phone-tab">
+                <h4>Renovar / Liberar</h4>
+                <select id="select-jugador-gestion"></select>
+                <input type="number" id="reno-anos" placeholder="Años a sumar">
+                <button class="btn-action" onclick="renovacionProceso()">RENOVAR</button>
+                <hr>
+                <button class="btn-danger" onclick="liberarProceso()">LIBERAR JUGADOR</button>
+            </div>
+
+            <div id="tab-nego" class="phone-tab">
+                <h4>Negociación Realtime</h4>
+                <select id="select-jugador-rival"></select>
+                <input type="number" id="nego-oferta" placeholder="Dinero ofertado">
+                <input type="text" id="nego-cambio" placeholder="Jugador a cambio">
+                <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="modal-oferta" class="hidden">
-    <div class="modal-box">
-        <h3>🚨 ¡Oferta de Negociación!</h3>
-        <div id="oferta-content"></div>
-        <div class="modal-actions">
-            <button class="btn-action" onclick="responderOferta('aceptada')">Aceptar</button>
-            <button class="btn-danger" onclick="responderOferta('rechazada')">Rechazar</button>
+    <div id="modal-oferta" class="hidden">
+        <div class="modal-box">
+            <h3>🚨 ¡Oferta de Negociación!</h3>
+            <div id="oferta-content"></div>
+            <div class="modal-actions">
+                <button class="btn-action" onclick="responderOferta('aceptada')">Aceptar</button>
+                <button class="btn-danger" onclick="responderOferta('rechazada')">Rechazar</button>
+            </div>
         </div>
     </div>
-</div>
+
+    <script src="main.js"></script>
 </body>
 </html>
