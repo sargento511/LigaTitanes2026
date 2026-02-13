@@ -35,21 +35,27 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-    // Escuchar ofertas
+   // Escuchar ofertas (Corregido para evitar bloqueos)
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         if (of) {
             ofertaRecibida = of;
             document.getElementById('modal-oferta').classList.remove('hidden');
+            
+            // Verificamos de forma segura si hay un jugador en el intercambio
+            let textoIntercambio = "";
+            if (of.jugadorOfrecidoNombre) {
+                textoIntercambio = ` + <b>${of.jugadorOfrecidoNombre}</b>`;
+            }
+            
             document.getElementById('oferta-content').innerHTML = `
                 <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b></p>
+                <p>Ofrece: <b>${of.monto} MDD</b>${textoIntercambio}</p>
             `;
         } else {
             document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
-}
 
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
@@ -227,36 +233,41 @@ function enviarPropuesta() {
 
 function aceptarOferta() {
     const of = ofertaRecibida;
-    const comprador = of.de; // El que envió la oferta
-    const vendedor = equipoActualID; // El que está aceptando (tú)
+    const comprador = of.de;
+    const vendedor = equipoActualID;
 
     db.ref(`equipos/${vendedor}`).once('value', snapV => {
         const dataV = snapV.val();
+        if (!dataV || !dataV.jugadores[of.jugadorID]) return alert("El jugador ya no está disponible.");
+        
         const jVendido = dataV.jugadores[of.jugadorID];
 
         db.ref(`equipos/${comprador}`).once('value', snapC => {
             const dataC = snapC.val();
+            if (!dataC) return;
 
-            // Validar si el que compra tiene el dinero
-            if (dataC.presupuesto < of.monto) return alert("El rival ya no tiene dinero suficiente.");
+            if (dataC.presupuesto < of.monto) return alert("El rival no tiene dinero suficiente.");
 
-            // 1. Mover jugador vendido al comprador
+            // 1. Mover jugador que tú vendes al comprador
             db.ref(`equipos/${comprador}/jugadores`).push(jVendido);
             db.ref(`equipos/${vendedor}/jugadores/${of.jugadorID}`).remove();
 
-            // 2. Si hay intercambio: Mover jugador ofrecido al vendedor
-            if (of.jugadorOfrecidoID) {
+            // 2. Si hubo intercambio de jugador, moverlo hacia ti
+            if (of.jugadorOfrecidoID && dataC.jugadores && dataC.jugadores[of.jugadorOfrecidoID]) {
                 const jOfrecido = dataC.jugadores[of.jugadorOfrecidoID];
                 db.ref(`equipos/${vendedor}/jugadores`).push(jOfrecido);
                 db.ref(`equipos/${comprador}/jugadores/${of.jugadorOfrecidoID}`).remove();
             }
 
-            // 3. Ajustar presupuestos en Firebase
-            db.ref(`equipos/${comprador}/presupuesto`).set(dataC.presupuesto - of.monto);
-            db.ref(`equipos/${vendedor}/presupuesto`).set(dataV.presupuesto + of.monto);
+            // 3. Ajustar los presupuestos
+            const nuevoPresuComprador = parseFloat(dataC.presupuesto) - parseFloat(of.monto);
+            const nuevoPresuVendedor = parseFloat(dataV.presupuesto) + parseFloat(of.monto);
+
+            db.ref(`equipos/${comprador}/presupuesto`).set(nuevoPresuComprador);
+            db.ref(`equipos/${vendedor}/presupuesto`).set(nuevoPresuVendedor);
 
             cerrarOferta();
-            alert("¡Trato cerrado con intercambio!");
+            alert("¡Trato cerrado con éxito!");
         });
     });
 }
