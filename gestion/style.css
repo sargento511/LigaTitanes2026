@@ -18,130 +18,61 @@ body {
 
 /* Selección de Equipo */
 #selection-screen { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    height: 100vh; 
-    text-align: center; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; 
 }
-
 .main-title { font-size: 2.5rem; letter-spacing: 2px; margin-bottom: 5px; }
 .subtitle { color: #888; margin-bottom: 40px; }
 .team-grid { display: flex; gap: 30px; justify-content: center; }
 
 .team-card {
-    background: var(--card-color);
-    padding: 30px;
-    border-radius: 20px;
-    width: 250px;
-    cursor: pointer;
-    transition: 0.3s;
-    border: 2px solid transparent;
+    background: var(--card-color); padding: 30px; border-radius: 20px; width: 250px; cursor: pointer; transition: 0.3s; border: 2px solid transparent;
 }
-
 .team-card:hover { transform: translateY(-10px); border-color: var(--accent-color); }
 .logo-wrapper img { width: 120px; height: 120px; object-fit: contain; margin-bottom: 15px; }
 
-.btn-select {
-    background: var(--accent-color);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
 /* Dashboard */
 .top-nav {
-    background: #161b22;
-    padding: 15px 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background: #161b22; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
 }
-
 .current-team-info { display: flex; align-items: center; gap: 15px; }
 #header-logo { width: 40px; }
-
-.btn-exit {
-    background: transparent;
-    border: 1px solid #444;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-}
+.btn-exit { background: transparent; border: 1px solid #444; color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; }
 
 /* Overview */
-.overview-cards { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-    gap: 20px; 
-    padding: 20px; 
-}
-
+.overview-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 20px; }
 .stat-card { background: var(--card-color); padding: 20px; border-radius: 15px; text-align: center; }
 .label { color: #888; font-size: 0.8rem; text-transform: uppercase; }
 
-/* Configuración Sede */
+/* Configuración */
 .stadium-config { background: var(--card-color); margin: 20px; padding: 20px; border-radius: 15px; }
 .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: flex-end; }
 .input-group label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
 .input-group input { width: 100%; padding: 10px; background: #0b0e14; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
-
 .btn-save { background: var(--success); color: white; border: none; padding: 11px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
 /* Tabla */
 .player-list-section { padding: 20px; }
-.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .table-container { background: var(--card-color); border-radius: 15px; overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; min-width: 600px; }
 th { background: #21262d; color: var(--accent-color); text-align: left; padding: 15px; }
 td { padding: 15px; border-bottom: 1px solid #30363d; }
 
-/* Celular Flotante */
+/* Celular */
 #phone-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 280px;
-    height: 450px;
-    background: #000;
-    border: 6px solid #333;
-    border-radius: 30px;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 1000;
-    overflow: hidden;
+    position: fixed; bottom: 20px; right: 20px; width: 280px; height: 450px; background: #000; border: 6px solid #333; border-radius: 30px; transition: 0.4s; z-index: 1000; overflow: hidden;
 }
-
 .phone-hidden { transform: translateY(400px); }
-
-#phone-toggle {
-    width: 100%;
-    padding: 10px;
-    background: var(--accent-color);
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-}
-
+#phone-toggle { width: 100%; padding: 10px; background: var(--accent-color); border: none; font-weight: bold; cursor: pointer; }
 .phone-screen { padding: 15px; color: white; height: 100%; }
-.phone-header { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 10px; }
-
 .phone-tabs { display: flex; justify-content: space-around; margin-bottom: 15px; }
 .phone-tabs button { background: #222; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; width: 30%; }
-
 .phone-tab { display: none; }
 .phone-tab.active { display: block; }
+.phone-tab input, .phone-tab select { width: 100%; margin-bottom: 10px; padding: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
+.calc-preview { background: #111; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem; }
+.btn-action { width: 100%; background: var(--accent-color); color: black; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+.btn-danger { width: 100%; background: #ff4444; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
 
-.calc-preview { background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9rem; }
-.btn-action { width: 100%; background: var(--accent-color); color: black; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-.btn-danger { width: 100%; background: #ff4444; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
-
-/* Modales */
+/* Modal */
 #modal-oferta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; }
 .modal-box { background: var(--card-color); padding: 30px; border-radius: 20px; text-align: center; border: 2px solid var(--accent-color); }
