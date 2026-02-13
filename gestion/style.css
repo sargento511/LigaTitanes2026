@@ -7,29 +7,38 @@
     --danger: #ff4444;
     --warning: #f39c12;
 }
+
 body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; margin: 0; }
 .hidden { display: none !important; }
+
+/* Selección */
 #selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
 .team-grid { display: flex; gap: 20px; }
 .team-card { background: var(--card-color); padding: 25px; border-radius: 15px; cursor: pointer; text-align: center; border: 2px solid transparent; transition: 0.3s; width: 180px; }
 .team-card:hover { border-color: var(--accent-color); transform: translateY(-5px); }
 .logo-wrapper img { width: 100px; height: 100px; object-fit: contain; }
+
+/* Dashboard */
 .top-nav { background: #161b22; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index:99; }
 .nav-actions { display: flex; gap: 10px; }
 .btn-season { background: var(--warning); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 .btn-exit { background: #444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-#header-logo { width: 35px; }
+
 .overview-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; padding: 20px; }
 .stat-card { background: var(--card-color); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
-.stadium-config { background: var(--card-color); margin: 0 20px 20px 20px; padding: 20px; border-radius: 12px; }
+.stadium-config { background: var(--card-color); margin: 0 20px; padding: 20px; border-radius: 12px; }
 .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: flex-end; }
+
 input, select { background: #0b0e14; border: 1px solid #333; color: white; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; }
 .btn-save, .btn-action { background: var(--success); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 .btn-warning { background: var(--warning); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
 .btn-danger { background: var(--danger); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.player-list-section { padding: 0 20px; margin-bottom: 100px; }
+
+.player-list-section { padding: 20px; margin-bottom: 100px; }
 table { width: 100%; border-collapse: collapse; background: var(--card-color); border-radius: 10px; overflow: hidden; }
 th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+
+/* Celular */
 #phone-container { position: fixed; bottom: 20px; right: 20px; width: 270px; height: 480px; background: #000; border: 5px solid #333; border-radius: 30px; z-index: 1000; overflow: hidden; transition: 0.4s; }
 .phone-hidden { transform: translateY(435px); }
 #phone-toggle { width: 100%; padding: 12px; background: var(--accent-color); border: none; font-weight: bold; cursor: pointer; color: black; }
@@ -39,6 +48,8 @@ th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
 .phone-tab { display: none; }
 .phone-tab.active { display: block; }
 .calc-preview { background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.75rem; border-left: 3px solid var(--accent-color); }
+
+/* Modal */
 #modal-oferta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; }
 .modal-box { background: var(--card-color); padding: 25px; border-radius: 20px; text-align: center; border: 2px solid var(--accent-color); width: 85%; max-width: 320px; }
 .modal-grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
