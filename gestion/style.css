@@ -9,27 +9,29 @@ body { background-color: var(--bg-color); color: var(--text-color); font-family:
 .hidden { display: none !important; }
 #selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
 .team-grid { display: flex; gap: 20px; }
-.team-card { background: var(--card-color); padding: 25px; border-radius: 15px; cursor: pointer; text-align: center; border: 2px solid transparent; transition: 0.3s; }
+.team-card { background: var(--card-color); padding: 25px; border-radius: 15px; cursor: pointer; text-align: center; border: 2px solid transparent; transition: 0.3s; width: 200px;}
 .team-card:hover { border-color: var(--accent-color); transform: translateY(-5px); }
 .logo-wrapper img { width: 100px; height: 100px; object-fit: contain; }
 .top-nav { background: #161b22; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; }
 #header-logo { width: 35px; }
-.overview-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; padding: 20px; }
+.overview-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
 .stat-card { background: var(--card-color); padding: 15px; border-radius: 12px; text-align: center; }
-.stadium-config { background: var(--card-color); margin: 20px; padding: 20px; border-radius: 12px; }
+.stadium-config { background: var(--card-color); margin: 0 20px 20px 20px; padding: 20px; border-radius: 12px; }
 .config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: flex-end; }
-input, select { background: #0b0e14; border: 1px solid #333; color: white; padding: 8px; border-radius: 5px; width: 100%; box-sizing: border-box; }
-.btn-save, .btn-action { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-.player-list-section { padding: 20px; }
+input, select { background: #0b0e14; border: 1px solid #333; color: white; padding: 8px; border-radius: 5px; width: 100%; box-sizing: border-box; margin-bottom: 5px;}
+.btn-save, .btn-action { background: var(--success); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;}
+.player-list-section { padding: 0 20px; }
 table { width: 100%; border-collapse: collapse; background: var(--card-color); border-radius: 10px; overflow: hidden; }
 th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
-#phone-container { position: fixed; bottom: 20px; right: 20px; width: 260px; height: 400px; background: #000; border: 4px solid #333; border-radius: 25px; z-index: 1000; overflow: hidden; }
-.phone-hidden { transform: translateY(360px); }
-#phone-toggle { width: 100%; padding: 10px; background: var(--accent-color); border: none; font-weight: bold; }
-.phone-screen { padding: 10px; }
+#phone-container { position: fixed; bottom: 20px; right: 20px; width: 260px; height: 450px; background: #000; border: 4px solid #333; border-radius: 25px; z-index: 1000; overflow: hidden; transition: 0.4s;}
+.phone-hidden { transform: translateY(410px); }
+#phone-toggle { width: 100%; padding: 10px; background: var(--accent-color); border: none; font-weight: bold; cursor: pointer;}
+.phone-screen { padding: 15px; height: 100%; box-sizing: border-box;}
 .phone-tabs { display: flex; justify-content: space-around; margin-bottom: 10px; }
-.phone-tabs button { background: #222; border: none; color: white; padding: 8px; border-radius: 5px; cursor: pointer; }
+.phone-tabs button { background: #222; border: none; color: white; padding: 8px; border-radius: 5px; cursor: pointer; width: 30%;}
 .phone-tab { display: none; }
 .phone-tab.active { display: block; }
-.calc-preview { background: #111; padding: 8px; border-radius: 5px; margin: 10px 0; font-size: 0.85rem; }
-.btn-danger { background: #ff4444; color: white; border: none; width: 100%; padding: 8px; border-radius: 5px; margin-top: 10px; }
+.calc-preview { background: #111; padding: 8px; border-radius: 5px; margin: 10px 0; font-size: 0.8rem; }
+.btn-danger { background: #ff4444; color: white; border: none; width: 100%; padding: 8px; border-radius: 5px; margin-top: 5px; cursor: pointer;}
+#modal-oferta { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.modal-box { background: var(--card-color); padding: 20px; border-radius: 15px; text-align: center; border: 1px solid var(--accent-color); }
