@@ -58,7 +58,7 @@
         </section>
 
         <section class="player-list-section">
-            <div class="section-header"><h3>Plantilla</h3><span id="player-count">0 Jugadores</span></div>
+            <div class="section-header"><h3>Plantilla Actual</h3><span id="player-count">0 Jugadores</span></div>
             <div class="table-container">
                 <table>
                     <thead>
@@ -71,7 +71,7 @@
     </div>
 
     <div id="phone-container" class="phone-hidden">
-        <button id="phone-toggle" onclick="togglePhone()">📱 Menú Gestión</button>
+        <button id="phone-toggle" onclick="togglePhone()">📱 Menú de Gestión</button>
         <div class="phone-screen">
             <div class="phone-tabs">
                 <button onclick="openTab('tab-calc')">🧮</button>
@@ -80,11 +80,12 @@
             </div>
 
             <div id="tab-calc" class="phone-tab active">
-                <h4>Fichar</h4>
+                <h4>Fichar Jugador</h4>
                 <input type="text" id="calc-nombre" placeholder="Nombre">
                 <input type="number" id="calc-valor" placeholder="Valor MDD" oninput="actualizarCalculos()">
                 <div class="calc-preview">
-                    <p>Sueldo: <span id="res-salario">0</span> MDD | Prima: <span id="res-prima">0</span></p>
+                    <p>Sueldo: <span id="res-salario">0</span> MDD</p>
+                    <p>Prima: <span id="res-prima">0</span> MDD</p>
                 </div>
                 <input type="number" id="calc-contrato" placeholder="Años">
                 <button class="btn-action" onclick="contratarJugador()">CONTRATAR</button>
@@ -100,7 +101,7 @@
             </div>
 
             <div id="tab-nego" class="phone-tab">
-                <h4>Negociar con Rival</h4>
+                <h4>Oferta a Rival</h4>
                 <select id="select-jugador-rival"></select>
                 <input type="number" id="nego-oferta" placeholder="MDD Ofrecidos">
                 <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
