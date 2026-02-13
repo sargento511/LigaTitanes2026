@@ -258,6 +258,7 @@ function actualizarSelectRival() {
     });
 }
 
+// --- FINALIZAR TEMPORADA (ÚNICA VERSIÓN CORRECTA) ---
 function finalizarTemporada() {
     if (!confirm("¿Finalizar temporada? Se cobrarán salarios y se restará 1 año de contrato.")) return;
 
@@ -272,14 +273,11 @@ function finalizarTemporada() {
 
         Object.keys(jugadoresActualizados).forEach(id => {
             let j = jugadoresActualizados[id];
-            
-            // Sumar salario anual
             totalSalarios += parseFloat(j.salario || 0);
-            // Restar año
             j.contrato = parseInt(j.contrato) - 1;
 
             if (j.contrato <= 0) {
-                mensajes.push(`❌ ${j.nombre} terminó contrato.`);
+                mensajes.push(`❌ ${j.nombre} quedó libre.`);
                 delete jugadoresActualizados[id];
             }
         });
