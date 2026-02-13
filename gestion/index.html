@@ -3,26 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liga Titanes 2026 - Gestión MDD</title>
+    <title>Liga Titanes 2026 - Gestión</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
 
-    <div id="selection-screen" class="fade-in">
+    <div id="selection-screen">
         <h1 class="main-title">LIGA TITANES 2026</h1>
-        <p class="subtitle">Selecciona tu equipo (Valores en MDD)</p>
         <div class="team-grid">
             <div class="team-card" onclick="entrarEquipo('HALCONES ROJOS', 'hal.png')">
-                <div class="logo-wrapper"><img src="hal.png" alt="Halcones Rojos"></div>
+                <div class="logo-wrapper"><img src="hal.png"></div>
                 <h2>HALCONES ROJOS</h2>
-                <button class="btn-select">Gestionar</button>
+                <button class="btn-select">ENTRAR</button>
             </div>
             <div class="team-card" onclick="entrarEquipo('DEPORTIVO FEDERAL', 'dep_logo.png')">
-                <div class="logo-wrapper"><img src="dep_logo.png" alt="Deportivo Federal"></div>
+                <div class="logo-wrapper"><img src="dep_logo.png"></div>
                 <h2>DEPORTIVO FEDERAL</h2>
-                <button class="btn-select">Gestionar</button>
+                <button class="btn-select">ENTRAR</button>
             </div>
         </div>
     </div>
@@ -30,39 +29,26 @@
     <div id="dashboard" class="hidden">
         <header class="top-nav">
             <div class="current-team-info">
-                <img id="header-logo" src="" alt="Logo">
+                <img id="header-logo" src="" style="height: 40px; width: 40px; object-fit: contain;">
                 <h2 id="header-name"></h2>
             </div>
             <div class="nav-actions">
-                <button class="btn-season" onclick="avanzarTemporada()">🗓️ Terminar Temporada</button>
+                <button class="btn-warning" onclick="avanzarTemporada()">🗓️ Fin Temporada</button>
                 <button class="btn-exit" onclick="location.reload()">Salir</button>
             </div>
         </header>
 
         <section class="overview-cards">
-            <div class="stat-card"><span class="label">Presupuesto</span><h3 id="info-presupuesto">0 MDD</h3></div>
-            <div class="stat-card"><span class="label">Estadio</span><h3 id="info-estadio">-</h3></div>
-            <div class="stat-card"><span class="label">Capacidad</span><h3 id="info-capacidad">0</h3></div>
-            <div class="stat-card"><span class="label">Tamaño</span><h3 id="info-tamano">-</h3></div>
-        </section>
-
-        <section class="stadium-config">
-            <h3>Sede y Club</h3>
-            <div class="config-grid">
-                <div class="input-group"><label>Presupuesto (MDD)</label><input type="number" id="input-presupuesto"></div>
-                <div class="input-group"><label>Estadio</label><input type="text" id="input-estadio"></div>
-                <div class="input-group"><label>Capacidad</label><input type="number" id="input-capacidad"></div>
-                <div class="input-group"><label>Tamaño</label><input type="text" id="input-tamano"></div>
-                <button class="btn-save" onclick="guardarConfiguracion()">Guardar</button>
-            </div>
+            <div class="stat-card"><span>Presupuesto</span><h3 id="info-presupuesto">0 MDD</h3></div>
+            <div class="stat-card"><span>Estadio</span><h3 id="info-estadio">-</h3></div>
+            <div class="stat-card"><span>Plantilla</span><h3 id="player-count">0</h3></div>
         </section>
 
         <section class="player-list-section">
-            <div class="section-header"><h3>Plantilla Actual</h3><span id="player-count">0 Jugadores</span></div>
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Nombre</th><th>Valor</th><th>Sueldo</th><th>Prima</th><th>Contrato</th></tr>
+                        <tr><th>Jugador</th><th>Valor</th><th>Sueldo</th><th>Contrato</th></tr>
                     </thead>
                     <tbody id="lista-jugadores"></tbody>
                 </table>
@@ -71,39 +57,32 @@
     </div>
 
     <div id="phone-container" class="phone-hidden">
-        <button id="phone-toggle" onclick="togglePhone()">📱 Menú de Gestión</button>
+        <button id="phone-toggle" onclick="togglePhone()">📱 MENÚ DE GESTIÓN</button>
         <div class="phone-screen">
             <div class="phone-tabs">
-                <button onclick="openTab('tab-calc')">🧮</button>
-                <button onclick="openTab('tab-reno')">✍️</button>
-                <button onclick="openTab('tab-nego')">🤝</button>
+                <button onclick="openTab('tab-fichar')">Fichar</button>
+                <button onclick="openTab('tab-contrato')">Contrato</button>
+                <button onclick="openTab('tab-nego')">Tratos</button>
             </div>
 
-            <div id="tab-calc" class="phone-tab active">
-                <h4>Fichar Jugador</h4>
+            <div id="tab-fichar" class="phone-tab active">
                 <input type="text" id="calc-nombre" placeholder="Nombre">
                 <input type="number" id="calc-valor" placeholder="Valor MDD" oninput="actualizarCalculos()">
-                <div class="calc-preview">
-                    <p>Sueldo: <span id="res-salario">0</span> MDD</p>
-                    <p>Prima: <span id="res-prima">0</span> MDD</p>
-                </div>
+                <div class="calc-preview">Sueldo: <span id="res-salario">0</span> | Prima: <span id="res-prima">0</span></div>
                 <input type="number" id="calc-contrato" placeholder="Años">
-                <button class="btn-action" onclick="contratarJugador()">CONTRATAR</button>
+                <button class="btn-action" onclick="contratarJugador()">FICHAR</button>
             </div>
 
-            <div id="tab-reno" class="phone-tab">
-                <h4>Contratos</h4>
+            <div id="tab-contrato" class="phone-tab">
                 <select id="select-jugador-gestion"></select>
-                <input type="number" id="reno-anos-input" placeholder="Años a sumar" style="margin-top:10px">
-                <button class="btn-action" onclick="renovarJugador()" style="margin-top:5px">RENOVAR</button>
-                <hr style="margin: 15px 0; border: 0.5px solid #333;">
-                <button class="btn-danger" onclick="liberarProceso()">DESPEDIR (Pagar contrato)</button>
+                <input type="number" id="reno-anos" placeholder="Años a sumar" style="margin-top:10px">
+                <button class="btn-action" onclick="renovarJugador()">RENOVAR</button>
+                <button class="btn-danger" onclick="liberarJugador()" style="margin-top:10px">DESPEDIR (Pagar Indemnización)</button>
             </div>
 
             <div id="tab-nego" class="phone-tab">
-                <h4>Oferta a Rival</h4>
                 <select id="select-jugador-rival"></select>
-                <input type="number" id="nego-oferta" placeholder="MDD Ofrecidos">
+                <input type="number" id="nego-oferta" placeholder="MDD a ofrecer">
                 <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
             </div>
         </div>
@@ -111,7 +90,7 @@
 
     <div id="modal-oferta" class="hidden">
         <div class="modal-box">
-            <h3>🚨 Oferta Recibida</h3>
+            <h3>📩 Nueva Oferta</h3>
             <div id="oferta-content"></div>
             <div class="modal-grid-btns">
                 <button class="btn-action" onclick="aceptarOferta()">Aceptar</button>
