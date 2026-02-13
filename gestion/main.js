@@ -10,37 +10,30 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-
 let equipoActualID = "";
 
-// 1. Lógica de la Tabla de Salarios y Primas (Según tu imagen)
-function calcularFinanzas(valor) {
-    let v = parseFloat(valor) || 0;
-    let m = 1000000; // Millón
-    let salario = 0;
-    let prima = 0;
-
-    if (v >= 120 * m) { salario = 22 * m; prima = 7 * m; }
-    else if (v >= 90 * m) { salario = 18 * m; prima = 5 * m; }
-    else if (v >= 70 * m) { salario = 14 * m; prima = 4 * m; }
-    else if (v >= 50 * m) { salario = 11 * m; prima = 3 * m; }
-    else if (v >= 30 * m) { salario = 8 * m; prima = 2 * m; }
-    else if (v >= 20 * m) { salario = 5 * m; prima = 1.5 * m; }
-    else if (v >= 10 * m) { salario = 3 * m; prima = 1 * m; }
-    else if (v >= 5 * m) { salario = 1.5 * m; prima = 0.7 * m; }
-    else { salario = 0.8 * m; prima = 0.4 * m; }
-
+// Lógica de la tabla (Valores en MDD)
+function calcularFinanzas(v) {
+    let salario = 0; let prima = 0;
+    if (v >= 120) { salario = 22; prima = 7; }
+    else if (v >= 90) { salario = 18; prima = 5; }
+    else if (v >= 70) { salario = 14; prima = 4; }
+    else if (v >= 50) { salario = 11; prima = 3; }
+    else if (v >= 30) { salario = 8; prima = 2; }
+    else if (v >= 20) { salario = 5; prima = 1.5; }
+    else if (v >= 10) { salario = 3; prima = 1; }
+    else if (v >= 5) { salario = 1.5; prima = 0.7; }
+    else { salario = 0.8; prima = 0.4; }
     return { salario, prima };
 }
 
 function actualizarCalculos() {
-    let val = document.getElementById('calc-valor').value;
+    let val = parseFloat(document.getElementById('calc-valor').value) || 0;
     let res = calcularFinanzas(val);
-    document.getElementById('res-salario').innerText = `$${res.salario.toLocaleString()}`;
-    document.getElementById('res-prima').innerText = `$${res.prima.toLocaleString()}`;
+    document.getElementById('res-salario').innerText = res.salario;
+    document.getElementById('res-prima').innerText = res.prima;
 }
 
-// 2. Gestión de Pantallas y Datos
 function entrarEquipo(nombreEquipo, logo) {
     equipoActualID = nombreEquipo;
     document.getElementById('selection-screen').classList.add('hidden');
@@ -51,67 +44,58 @@ function entrarEquipo(nombreEquipo, logo) {
     db.ref('equipos/' + nombreEquipo).on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            document.getElementById('info-presupuesto').innerText = `$${(data.presupuesto || 0).toLocaleString()}`;
-            document.getElementById('info-estadio').innerText = data.estadio || "Sin nombre";
-            document.getElementById('info-capacidad').innerText = (data.capacidad || 0).toLocaleString();
-            document.getElementById('info-tamano').innerText = data.tamano || "No definido";
-
-            // Sincronizar Inputs de Edición (Incluyendo Presupuesto)
+            document.getElementById('info-presupuesto').innerText = `${data.presupuesto || 0} MDD`;
+            document.getElementById('info-estadio').innerText = data.estadio || "-";
+            document.getElementById('info-capacidad').innerText = data.capacidad || 0;
+            document.getElementById('info-tamano').innerText = data.tamano || "-";
+            
             document.getElementById('input-presupuesto').value = data.presupuesto || 0;
             document.getElementById('input-estadio').value = data.estadio || "";
             document.getElementById('input-capacidad').value = data.capacidad || 0;
             document.getElementById('input-tamano').value = data.tamano || "";
-
+            
             renderizarJugadores(data.jugadores);
             actualizarSelects(data.jugadores);
         }
     });
-    activarEscuchaNegociaciones();
 }
 
 function guardarConfiguracion() {
-    if (!equipoActualID) return;
-    const pres = parseInt(document.getElementById('input-presupuesto').value) || 0;
-    const est = document.getElementById('input-estadio').value;
-    const cap = parseInt(document.getElementById('input-capacidad').value) || 0;
-    const tam = document.getElementById('input-tamano').value;
-
+    const pres = parseFloat(document.getElementById('input-presupuesto').value) || 0;
     db.ref('equipos/' + equipoActualID).update({
         presupuesto: pres,
-        estadio: est,
-        capacidad: cap,
-        tamano: tam
-    }).then(() => alert("✅ Datos actualizados"));
+        estadio: document.getElementById('input-estadio').value,
+        capacidad: document.getElementById('input-capacidad').value,
+        tamano: document.getElementById('input-tamano').value
+    }).then(() => alert("✅ Club actualizado en MDD"));
 }
 
 function renderizarJugadores(jugadores) {
     const tbody = document.getElementById('lista-jugadores');
-    tbody.innerHTML = "";
-    let count = 0;
+    tbody.innerHTML = ""; let count = 0;
     if (jugadores) {
         Object.keys(jugadores).forEach(key => {
             const j = jugadores[key]; count++;
-            tbody.innerHTML += `<tr><td>${j.nombre}</td><td>$${j.valor.toLocaleString()}</td><td>$${j.salario.toLocaleString()}</td><td>$${j.prima.toLocaleString()}</td><td>${j.contrato} años</td></tr>`;
+            tbody.innerHTML += `<tr><td>${j.nombre}</td><td>${j.valor}</td><td>${j.salario}</td><td>${j.prima}</td><td>${j.contrato} años</td></tr>`;
         });
     }
     document.getElementById('player-count').innerText = `${count} Jugadores`;
 }
 
-// 3. Funciones del Celular
 function contratarJugador() {
     let nombre = document.getElementById('calc-nombre').value;
     let valor = parseFloat(document.getElementById('calc-valor').value);
     let años = parseInt(document.getElementById('calc-contrato').value);
     let res = calcularFinanzas(valor);
 
-    if (equipoActualID && nombre && valor > 0) {
+    if (nombre && valor > 0) {
         db.ref('equipos/' + equipoActualID).transaction((data) => {
             if (data && data.presupuesto >= valor) {
                 data.presupuesto -= valor;
                 if (!data.jugadores) data.jugadores = {};
                 data.jugadores[Date.now()] = { nombre, valor, salario: res.salario, prima: res.prima, contrato: años };
                 return data;
-            } else { alert("Presupuesto insuficiente"); return; }
+            } else { alert("Sin presupuesto MDD suficiente"); return; }
         });
     }
 }
@@ -127,18 +111,15 @@ function liberarProceso() {
     });
 }
 
-// UI Helpers
 function togglePhone() { document.getElementById('phone-container').classList.toggle('phone-hidden'); }
 function openTab(id) {
     document.querySelectorAll('.phone-tab').forEach(t => t.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
-
 function actualizarSelects(jugadores) {
     const sel = document.getElementById('select-jugador-gestion');
-    if (!sel) return; sel.innerHTML = "";
-    if (jugadores) Object.keys(jugadores).forEach(id => sel.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`);
+    if (sel) {
+        sel.innerHTML = "";
+        if (jugadores) Object.keys(jugadores).forEach(id => sel.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`);
+    }
 }
-
-function enviarPropuesta() { /* Lógica de negociación pendiente */ alert("Oferta enviada"); }
-function activarEscuchaNegociaciones() { /* Lógica de escucha pendiente */ }
