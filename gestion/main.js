@@ -80,18 +80,46 @@ function contratarJugador() {
     const contrato = parseInt(document.getElementById('calc-contrato').value) || 0;
     const f = calcularFinanzas(valor);
 
+    // Validación básica de campos
     if (!nombre || valor <= 0 || contrato <= 0) return alert("Llena todo");
 
-    const nuevoJugador = {
-        nombre, valor, contrato, 
-        salario: f.salario, 
-        prima: f.prima
-    };
+    // Referencia al equipo actual para verificar presupuesto
+    const refEquipo = db.ref(`equipos/${equipoActualID}`);
+    
+    refEquipo.once('value', snap => {
+        const equipo = snap.val();
+        const presupuestoActual = equipo.presupuesto || 0;
 
-    db.ref(`equipos/${equipoActualID}/jugadores`).push(nuevoJugador);
-    alert("Fichado!");
+        // 1. Validar si el equipo tiene dinero suficiente para pagar el VALOR del jugador
+        if (presupuestoActual < valor) {
+            return alert(`❌ Fondos insuficientes. El jugador cuesta ${valor} MDD y tu presupuesto actual es de ${presupuestoActual} MDD.`);
+        }
+
+        // 2. Preparar el objeto del nuevo jugador
+        const nuevoJugador = {
+            nombre, 
+            valor, 
+            contrato, 
+            salario: f.salario, 
+            prima: f.prima
+        };
+
+        // 3. Calcular el nuevo presupuesto tras la compra
+        const nuevoPresupuesto = presupuestoActual - valor;
+
+        // 4. Actualizar Firebase: Restar dinero y luego agregar jugador
+        refEquipo.update({
+            presupuesto: nuevoPresupuesto
+        }).then(() => {
+            // Una vez descontado el dinero, se añade el jugador a la lista
+            refEquipo.child('jugadores').push(nuevoJugador);
+            alert(`✅ ¡Fichaje completado!\n⚽ Jugador: ${nombre}\n💰 Costo: ${valor} MDD\n📉 Nuevo Presupuesto: ${nuevoPresupuesto} MDD`);
+        }).catch(error => {
+            console.error("Error en el fichaje:", error);
+            alert("Hubo un error al procesar el fichaje.");
+        });
+    });
 }
-
 function renovarJugador() {
     const id = document.getElementById('select-jugador-gestion').value;
     const masAnos = parseInt(document.getElementById('reno-anos-input').value) || 0;
