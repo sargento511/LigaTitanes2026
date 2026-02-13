@@ -258,7 +258,7 @@ function actualizarSelectRival() {
     });
 }
 
-// --- FINALIZAR TEMPORADA (ÚNICA VERSIÓN CORRECTA) ---
+// --- FINALIZAR TEMPORADA (VERSIÓN DEFINITIVA) ---
 function finalizarTemporada() {
     if (!confirm("¿Finalizar temporada? Se cobrarán salarios y se restará 1 año de contrato.")) return;
 
@@ -273,56 +273,31 @@ function finalizarTemporada() {
 
         Object.keys(jugadoresActualizados).forEach(id => {
             let j = jugadoresActualizados[id];
+            
+            // 1. Sumar salario para cobrarlo
             totalSalarios += parseFloat(j.salario || 0);
+            
+            // 2. Restar año de contrato
             j.contrato = parseInt(j.contrato) - 1;
 
             if (j.contrato <= 0) {
-                mensajes.push(`❌ ${j.nombre} quedó libre.`);
+                mensajes.push(`❌ ${j.nombre} terminó contrato.`);
                 delete jugadoresActualizados[id];
             }
         });
 
+        // 3. Calcular nuevo presupuesto restando salarios
         const nuevoPresupuesto = (data.presupuesto || 0) - totalSalarios;
 
+        // 4. Guardar todo (Presupuesto, Jugadores y Configuración de Estadio)
         refEquipo.update({
             presupuesto: nuevoPresupuesto,
+            estadio: document.getElementById('input-estadio').value || data.estadio,
+            capacidad: document.getElementById('input-capacidad').value || data.capacidad,
             jugadores: jugadoresActualizados
         }).then(() => {
             alert(`✅ Temporada cerrada.\n💰 Salarios pagados: ${totalSalarios} MDD.\n📉 Nuevo presupuesto: ${nuevoPresupuesto} MDD.`);
             if (mensajes.length > 0) alert("Resumen: " + mensajes.join("\n"));
-        });
-    });
-}
-        // 3. Calculamos el nuevo presupuesto restando los salarios
-        const presupuestoActual = parseFloat(data.presupuesto) || 0;
-        const nuevoPresupuesto = presupuestoActual - totalSalarios;
-
-        // Guardar cambios en Firebase
-        refEquipo.update({
-            presupuesto: nuevoPresupuesto,
-            estadio: document.getElementById('input-estadio').value || data.estadio,
-            capacidad: document.getElementById('input-capacidad').value || data.capacidad,
-            jugadores: jugadoresActualizados
-        }).then(() => {
-            let resumen = `✅ Temporada finalizada.\n💰 Salarios pagados: ${totalSalarios} MDD.\n📉 Nuevo presupuesto: ${nuevoPresupuesto} MDD.`;
-            if (mensajes.length > 0) resumen += "\n\n" + mensajes.join("\n");
-            alert(resumen);
-        });
-    });
-}
-
-        // Guardar cambios en Firebase
-        refEquipo.update({
-            presupuesto: parseFloat(document.getElementById('input-presupuesto').value) || data.presupuesto,
-            estadio: document.getElementById('input-estadio').value || data.estadio,
-            capacidad: document.getElementById('input-capacidad').value || data.capacidad,
-            jugadores: jugadoresActualizados
-        }).then(() => {
-            if (mensajes.length > 0) {
-                alert("Resumen de temporada:\n\n" + mensajes.join("\n"));
-            } else {
-                alert("Temporada finalizada con éxito.");
-            }
         });
     });
 }
