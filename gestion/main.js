@@ -118,6 +118,30 @@ function liberarProceso() {
     }
 }
 
+function venderJugadorAlCincuenta() {
+    const id = document.getElementById('select-jugador-gestion').value;
+    if (!id) return alert("Selecciona un jugador para vender.");
+
+    if (confirm("¿Vender jugador al 50% de su valor? Se sumará a tu presupuesto y el jugador quedará libre.")) {
+        db.ref(`equipos/${equipoActualID}`).once('value', snap => {
+            const equipo = snap.val();
+            const jugador = equipo.jugadores[id];
+            
+            // Cálculo del 50% del valor del jugador
+            const ganancia = (jugador.valor * 0.5);
+            const nuevoPresupuesto = (equipo.presupuesto || 0) + ganancia;
+
+            // 1. Actualizar el presupuesto en Firebase
+            db.ref(`equipos/${equipoActualID}/presupuesto`).set(nuevoPresupuesto);
+            
+            // 2. Eliminar al jugador de la plantilla
+            db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
+            
+            alert(`Vendido por ${ganancia} MDD. ¡Presupuesto actualizado!`);
+        });
+    }
+}
+
 // MERCADO
 function enviarPropuesta() {
     const jugadorID = document.getElementById('select-jugador-rival').value;
