@@ -3,32 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liga Titanes 2026 - Gestión</title>
+    <title>Liga Titanes - Gestión Profesional</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
 
+<div id="setup-screen">
+    <h1>LIGA TITANES 2026</h1>
+    <p>Selecciona tu equipo para gestionar:</p>
+    <div class="selector-container">
+        <div class="card" onclick="initApp('HALCONES ROJOS', 'hal.png')">
+            <img src="hal.png" alt="Halcones">
+            <h3>HALCONES ROJOS</h3>
+        </div>
+        <div class="card" onclick="initApp('DEPORTIVO FEDERAL', 'dep_logo.png')">
+            <img src="dep_logo.png" alt="Deportivo">
+            <h3>DEPORTIVO FEDERAL</h3>
+        </div>
+    </div>
+</div>
+
+<main id="main-app" class="hidden">
     <header>
-        <nav id="team-selector">
-            <div class="team-card" onclick="selectTeam('halcones')">
-                <img src="hal.png" alt="Halcones Rojos">
-                <span>Halcones Rojos</span>
-            </div>
-            <div class="team-card" onclick="selectTeam('deportivo')">
-                <img src="dep_logo.png" alt="Deportivo Federal">
-                <span>Deportivo Federal</span>
-            </div>
-        </nav>
+        <div class="team-brand">
+            <img id="current-logo" src="" alt="Logo">
+            <h2 id="current-team-name"></h2>
+        </div>
+        <div class="stats-bar">
+            <span>Presupuesto: <b id="display-budget">$0</b></span>
+            <span>Estadio: <b id="display-stadium">-</b> (<span id="display-cap">0</span>)</span>
+        </div>
     </header>
 
-    <main id="app-content" class="hidden">
-        <section id="team-info">
-            </section>
-
-        <section id="player-list">
-            <h3>Plantilla</h3>
+    <section class="player-section">
+        <h3>Plantilla Actual</h3>
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
@@ -39,27 +50,72 @@
                         <th>Contrato</th>
                     </tr>
                 </thead>
-                <tbody id="players-table-body"></tbody>
+                <tbody id="player-table"></tbody>
             </table>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <div id="mobile-menu" class="mobile-container closed">
-        <button id="toggle-phone" onclick="togglePhone()">📱</button>
-        <div class="phone-screen">
-            <div class="phone-header">Gestión Pro</div>
-            <div class="phone-content">
-                <button onclick="showModule('renovacion')">Renovación</button>
-                <button onclick="showModule('liberar')">Liberar</button>
-                <button onclick="showModule('calculadora')">Calculadora/Fichar</button>
-                <button onclick="showModule('negociacion')">Negociación ⚡</button>
-                
-                <div id="module-container">
+    <div id="phone-wrapper" class="phone-closed">
+        <button id="phone-trigger" onclick="togglePhone()">📱 Menú de Gestión</button>
+        <div class="phone-body">
+            <div class="phone-screen">
+                <div class="phone-nav">
+                    <button onclick="switchTab('tab-calc')">Fichar</button>
+                    <button onclick="switchTab('tab-reno')">Renovar</button>
+                    <button onclick="switchTab('tab-nego')">Negociar ⚡</button>
+                    <button onclick="switchTab('tab-conf')">Config</button>
+                </div>
+
+                <div id="tab-calc" class="tab active">
+                    <h4>Calculadora de Fichaje</h4>
+                    <input type="text" id="new-name" placeholder="Nombre del jugador">
+                    <input type="number" id="new-value" placeholder="Valor mercado" oninput="updateCalculations()">
+                    <div class="calc-res">
+                        <p>Sueldo/Año: <span id="res-salary">$0</span></p>
+                        <p>Prima: <span id="res-bonus">$0</span></p>
                     </div>
+                    <input type="number" id="new-years" placeholder="Años de contrato">
+                    <button class="btn-action" onclick="ficharJugador()">CONTRATAR</button>
+                </div>
+
+                <div id="tab-reno" class="tab">
+                    <h4>Renovaciones / Bajas</h4>
+                    <select id="select-player-action"></select>
+                    <input type="number" id="reno-years" placeholder="Años extra">
+                    <button class="btn-action" onclick="renovarJugador()">RENOVAR</button>
+                    <hr>
+                    <button class="btn-danger" onclick="liberarJugador()">LIBERAR JUGADOR</button>
+                </div>
+
+                <div id="tab-nego" class="tab">
+                    <h4>Negociar con Rival</h4>
+                    <select id="select-target-player"></select>
+                    <input type="number" id="nego-money" placeholder="Dinero a ofrecer">
+                    <input type="text" id="nego-exchange" placeholder="Jugador a cambio (Opcional)">
+                    <button class="btn-action" onclick="enviarOferta()">ENVIAR OFERTA</button>
+                </div>
+
+                <div id="tab-conf" class="tab">
+                    <h4>Estadio</h4>
+                    <input type="text" id="conf-stadium" placeholder="Nombre Estadio">
+                    <input type="number" id="conf-cap" placeholder="Capacidad">
+                    <button class="btn-action" onclick="updateStadium()">GUARDAR</button>
+                </div>
             </div>
         </div>
     </div>
+</main>
 
-    <script src="main.js"></script>
+<div id="offer-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3>🚨 ¡OFERTA RECIBIDA!</h3>
+        <div id="offer-details"></div>
+        <div class="modal-btns">
+            <button class="btn-action" onclick="responderOferta('aceptada')">Aceptar</button>
+            <button class="btn-danger" onclick="responderOferta('rechazada')">Rechazar</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
