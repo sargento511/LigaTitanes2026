@@ -164,34 +164,6 @@ function venderJugadorMitad() {
     });
 }
 
-// --- FUNCIÓN NUEVA: FINALIZAR TEMPORADA (RESTAR 1 AÑO) ---
-function finalizarTemporada() {
-    if (!confirm("¿Finalizar temporada? Se restará 1 año de contrato a todos.")) return;
-
-    const refEquipo = db.ref('equipos/' + equipoActualID);
-    refEquipo.once('value', snapshot => {
-        const data = snapshot.val();
-        if (!data || !data.jugadores) return;
-
-        let jugadoresActualizados = { ...data.jugadores };
-        let mensajes = [];
-
-        Object.keys(jugadoresActualizados).forEach(id => {
-            let j = jugadoresActualizados[id];
-            j.contrato = parseInt(j.contrato) - 1;
-
-            if (j.contrato <= 0) {
-                mensajes.push(`❌ ${j.nombre} quedó libre.`);
-                delete jugadoresActualizados[id];
-            }
-        });
-
-        refEquipo.update({ jugadores: jugadoresActualizados }).then(() => {
-            alert("Temporada cerrada.\n" + (mensajes.join("\n") || "Todos los contratos actualizados."));
-        });
-    });
-}
-
 // MERCADO
 function enviarPropuesta() {
     const jugadorID = document.getElementById('select-jugador-rival').value;
