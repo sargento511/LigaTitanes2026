@@ -12,7 +12,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 let equipoActualID = "";
 
-// 1. Tabla de Salarios y Primas (MDD)
+// Lógica de MDD (Basada en tu tabla)
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
     if (v >= 120) { salario = 22; prima = 7; }
@@ -34,7 +34,6 @@ function actualizarCalculos() {
     document.getElementById('res-prima').innerText = res.prima;
 }
 
-// 2. Entrada al Equipo y Sincronización
 function entrarEquipo(nombreEquipo, logo) {
     equipoActualID = nombreEquipo;
     document.getElementById('selection-screen').classList.add('hidden');
@@ -84,58 +83,61 @@ function renderizarJugadores(jugadores) {
     document.getElementById('player-count').innerText = `${count} Jugadores`;
 }
 
-// 3. Botones del Celular (Funcionalidades)
+// FUNCIONES DEL CELULAR
 function contratarJugador() {
     let nombre = document.getElementById('calc-nombre').value;
     let valor = parseFloat(document.getElementById('calc-valor').value);
     let años = parseInt(document.getElementById('calc-contrato').value);
-    let res = calcularFinanzas(valor);
+    let finanzas = calcularFinanzas(valor);
 
     if (nombre && valor > 0 && años > 0) {
         db.ref('equipos/' + equipoActualID).transaction((data) => {
             if (data && data.presupuesto >= valor) {
                 data.presupuesto -= valor;
                 if (!data.jugadores) data.jugadores = {};
-                data.jugadores[Date.now()] = { nombre, valor, salario: res.salario, prima: res.prima, contrato: años };
+                data.jugadores[Date.now()] = { 
+                    nombre, valor, salario: finanzas.salario, prima: finanzas.prima, contrato: años 
+                };
                 return data;
-            } else { alert("Saldo insuficiente"); return; }
+            } else { alert("Error: Presupuesto insuficiente"); return; }
         });
     }
 }
 
 function renovarJugador() {
     let id = document.getElementById('select-jugador-gestion').value;
-    let extra = parseInt(document.getElementById('reno-anos').value) || 0;
+    let extra = parseInt(document.getElementById('reno-anos-input').value) || 0;
     if (id && extra > 0) {
         db.ref(`equipos/${equipoActualID}/jugadores/${id}/contrato`).transaction(val => (val || 0) + extra);
-        alert("Contrato renovado");
+        alert("¡Contrato extendido!");
     }
 }
 
 function liberarProceso() {
     let id = document.getElementById('select-jugador-gestion').value;
     if (!id) return;
-    db.ref('equipos/' + equipoActualID).once('value', snap => {
-        let data = snap.val();
-        let jug = data.jugadores[id];
-        let reembolso = (jug.salario * jug.contrato); // Devuelve los salarios no pagados
-        db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
-        db.ref(`equipos/${equipoActualID}/presupuesto`).set(data.presupuesto + reembolso);
-        alert("Jugador liberado y presupuesto recuperado");
-    });
+    if (confirm("¿Estás seguro de liberar al jugador? Recuperarás los salarios restantes.")) {
+        db.ref('equipos/' + equipoActualID).once('value', snap => {
+            let data = snap.val();
+            let jug = data.jugadores[id];
+            let reembolso = jug.salario * jug.contrato;
+            db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
+            db.ref(`equipos/${equipoActualID}/presupuesto`).set(data.presupuesto + reembolso);
+        });
+    }
 }
 
 function enviarPropuesta() {
     let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
-    let targetSelect = document.getElementById('select-jugador-rival');
+    let target = document.getElementById('select-jugador-rival');
     let oferta = {
-        jugador: targetSelect.options[targetSelect.selectedIndex].text,
-        dinero: document.getElementById('nego-oferta').value,
-        cambio: document.getElementById('nego-cambio').value,
-        de: equipoActualID
+        de: equipoActualID,
+        jugador: target.options[target.selectedIndex].text,
+        monto: document.getElementById('nego-oferta').value,
+        cambio: document.getElementById('nego-cambio').value || "Ninguno"
     };
     db.ref('negociaciones/' + rival).set(oferta);
-    alert("Oferta enviada al rival");
+    alert("🚀 Oferta enviada al rival");
 }
 
 function escucharNegociaciones() {
@@ -144,8 +146,9 @@ function escucharNegociaciones() {
         if (of) {
             document.getElementById('modal-oferta').classList.remove('hidden');
             document.getElementById('oferta-content').innerHTML = `
-                <p>El equipo <b>${of.de}</b> quiere a <b>${of.jugador}</b></p>
-                <p>Ofrecen: <b>${of.dinero} MDD</b> y a <b>${of.cambio || 'nadie'}</b></p>
+                <p><b>${of.de}</b> quiere a <b>${of.jugador}</b></p>
+                <p>Ofrece: <b>${of.monto} MDD</b></p>
+                <p>Cambio: <b>${of.cambio}</b></p>
             `;
         }
     });
@@ -163,18 +166,19 @@ function openTab(id) {
     document.getElementById(id).classList.add('active');
 }
 function actualizarSelects(jugadores) {
-    const sel = document.getElementById('select-jugador-gestion');
+    const selGesto = document.getElementById('select-jugador-gestion');
     const selRival = document.getElementById('select-jugador-rival');
-    if (sel) {
-        sel.innerHTML = "";
-        if (jugadores) Object.keys(jugadores).forEach(id => sel.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`);
+    if (selGesto) {
+        selGesto.innerHTML = "";
+        if (jugadores) Object.keys(jugadores).forEach(id => {
+            selGesto.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`;
+        });
     }
-    // Cargar nombres del rival para negociar
     let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
     db.ref(`equipos/${rival}/jugadores`).once('value', snap => {
         if (selRival) {
             selRival.innerHTML = "";
-            snap.forEach(child => { selRival.innerHTML += `<option value="${child.key}">${child.val().nombre}</option>`; });
+            snap.forEach(c => { selRival.innerHTML += `<option value="${c.key}">${c.val().nombre}</option>`; });
         }
     });
 }
