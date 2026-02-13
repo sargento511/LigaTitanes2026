@@ -42,22 +42,13 @@
                 <span class="label">Presupuesto</span>
                 <h3 id="info-presupuesto">0 MDD</h3>
             </div>
-            <div class="stat-card">
-                <span class="label">Estadio</span>
-                <h3 id="info-estadio">-</h3>
-            </div>
-            <div class="stat-card">
-                <span class="label">Capacidad</span>
-                <h3 id="info-capacidad">0</h3>
-            </div>
-            <div class="stat-card">
-                <span class="label">Tamaño</span>
-                <h3 id="info-tamano">-</h3>
-            </div>
+            <div class="stat-card"><span class="label">Estadio</span><h3 id="info-estadio">-</h3></div>
+            <div class="stat-card"><span class="label">Capacidad</span><h3 id="info-capacidad">0</h3></div>
+            <div class="stat-card"><span class="label">Tamaño</span><h3 id="info-tamano">-</h3></div>
         </section>
 
         <section class="stadium-config">
-            <h3>Configuración de Club (Valores en MDD)</h3>
+            <h3>Configuración de Club (MDD)</h3>
             <div class="config-grid">
                 <div class="input-group">
                     <label>Presupuesto Total (MDD)</label>
@@ -65,7 +56,7 @@
                 </div>
                 <div class="input-group">
                     <label>Nombre del Estadio</label>
-                    <input type="text" id="input-estadio" placeholder="Ej: Estadio Azteca">
+                    <input type="text" id="input-estadio">
                 </div>
                 <div class="input-group">
                     <label>Capacidad</label>
@@ -111,9 +102,9 @@
             </div>
 
             <div id="tab-calc" class="phone-tab active">
-                <h4>Fichar (en MDD)</h4>
+                <h4>Fichar Jugador</h4>
                 <input type="text" id="calc-nombre" placeholder="Nombre">
-                <input type="number" id="calc-valor" placeholder="Valor MDD (Ej: 50)" oninput="actualizarCalculos()">
+                <input type="number" id="calc-valor" placeholder="Valor MDD" oninput="actualizarCalculos()">
                 <div class="calc-preview">
                     <p>Sueldo: <span id="res-salario">0</span> MDD</p>
                     <p>Prima: <span id="res-prima">0</span> MDD</p>
@@ -125,15 +116,27 @@
             <div id="tab-reno" class="phone-tab">
                 <h4>Renovar / Liberar</h4>
                 <select id="select-jugador-gestion"></select>
-                <button class="btn-danger" onclick="liberarProceso()">LIBERAR (Recuperar Salarios)</button>
+                <input type="number" id="reno-anos" placeholder="Años a sumar">
+                <button class="btn-action" onclick="renovarJugador()">RENOVAR</button>
+                <hr>
+                <button class="btn-danger" onclick="liberarProceso()">LIBERAR (Recuperar Sueldos)</button>
             </div>
 
             <div id="tab-nego" class="phone-tab">
                 <h4>Negociación</h4>
                 <select id="select-jugador-rival"></select>
                 <input type="number" id="nego-oferta" placeholder="MDD Ofrecidos">
+                <input type="text" id="nego-cambio" placeholder="Jugador a cambio">
                 <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
             </div>
+        </div>
+    </div>
+
+    <div id="modal-oferta" class="hidden">
+        <div class="modal-box">
+            <h3>🚨 Oferta Recibida</h3>
+            <div id="oferta-content"></div>
+            <button class="btn-action" onclick="cerrarOferta()">Entendido</button>
         </div>
     </div>
 
