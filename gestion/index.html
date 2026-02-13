@@ -13,7 +13,6 @@
     <div id="selection-screen" class="fade-in">
         <h1 class="main-title">LIGA TITANES 2026</h1>
         <p class="subtitle">Selecciona tu equipo (Valores en MDD)</p>
-        
         <div class="team-grid">
             <div class="team-card" onclick="entrarEquipo('HALCONES ROJOS', 'hal.png')">
                 <div class="logo-wrapper"><img src="hal.png" alt="Halcones Rojos"></div>
@@ -38,10 +37,7 @@
         </header>
 
         <section class="overview-cards">
-            <div class="stat-card">
-                <span class="label">Presupuesto</span>
-                <h3 id="info-presupuesto">0 MDD</h3>
-            </div>
+            <div class="stat-card"><span class="label">Presupuesto</span><h3 id="info-presupuesto">0 MDD</h3></div>
             <div class="stat-card"><span class="label">Estadio</span><h3 id="info-estadio">-</h3></div>
             <div class="stat-card"><span class="label">Capacidad</span><h3 id="info-capacidad">0</h3></div>
             <div class="stat-card"><span class="label">Tamaño</span><h3 id="info-tamano">-</h3></div>
@@ -50,41 +46,20 @@
         <section class="stadium-config">
             <h3>Configuración de Club (MDD)</h3>
             <div class="config-grid">
-                <div class="input-group">
-                    <label>Presupuesto Total (MDD)</label>
-                    <input type="number" id="input-presupuesto" placeholder="Ej: 150">
-                </div>
-                <div class="input-group">
-                    <label>Nombre del Estadio</label>
-                    <input type="text" id="input-estadio">
-                </div>
-                <div class="input-group">
-                    <label>Capacidad</label>
-                    <input type="number" id="input-capacidad">
-                </div>
-                <div class="input-group">
-                    <label>Tamaño</label>
-                    <input type="text" id="input-tamano">
-                </div>
+                <div class="input-group"><label>Presupuesto Total (MDD)</label><input type="number" id="input-presupuesto"></div>
+                <div class="input-group"><label>Nombre del Estadio</label><input type="text" id="input-estadio"></div>
+                <div class="input-group"><label>Capacidad</label><input type="number" id="input-capacidad"></div>
+                <div class="input-group"><label>Tamaño</label><input type="text" id="input-tamano"></div>
                 <button class="btn-save" onclick="guardarConfiguracion()">Guardar Cambios</button>
             </div>
         </section>
 
         <section class="player-list-section">
-            <div class="section-header">
-                <h3>Plantilla de Jugadores</h3>
-                <span id="player-count">0 Jugadores</span>
-            </div>
+            <div class="section-header"><h3>Plantilla de Jugadores</h3><span id="player-count">0 Jugadores</span></div>
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Valor (MDD)</th>
-                            <th>Salario (MDD)</th>
-                            <th>Prima (MDD)</th>
-                            <th>Contrato</th>
-                        </tr>
+                        <tr><th>Nombre</th><th>Valor (MDD)</th><th>Salario (MDD)</th><th>Prima (MDD)</th><th>Contrato</th></tr>
                     </thead>
                     <tbody id="lista-jugadores"></tbody>
                 </table>
@@ -102,7 +77,7 @@
             </div>
 
             <div id="tab-calc" class="phone-tab active">
-                <h4>Fichar Jugador</h4>
+                <h4>Fichar (en MDD)</h4>
                 <input type="text" id="calc-nombre" placeholder="Nombre">
                 <input type="number" id="calc-valor" placeholder="Valor MDD" oninput="actualizarCalculos()">
                 <div class="calc-preview">
@@ -116,10 +91,10 @@
             <div id="tab-reno" class="phone-tab">
                 <h4>Renovar / Liberar</h4>
                 <select id="select-jugador-gestion"></select>
-                <input type="number" id="reno-anos" placeholder="Años a sumar">
-                <button class="btn-action" onclick="renovarJugador()">RENOVAR</button>
-                <hr>
-                <button class="btn-danger" onclick="liberarProceso()">LIBERAR (Recuperar Sueldos)</button>
+                <input type="number" id="reno-anos-input" placeholder="Años a sumar" style="margin-top:10px">
+                <button class="btn-action" onclick="renovarJugador()" style="margin-top:5px">RENOVAR</button>
+                <hr style="margin: 15px 0; border: 0.5px solid #333;">
+                <button class="btn-danger" onclick="liberarProceso()">LIBERAR (Recuperar Salarios)</button>
             </div>
 
             <div id="tab-nego" class="phone-tab">
