@@ -93,12 +93,34 @@ function contratarJugador() {
 function renovarJugador() {
     const id = document.getElementById('select-jugador-gestion').value;
     const masAnos = parseInt(document.getElementById('reno-anos-input').value) || 0;
-    if (!id || masAnos <= 0) return;
+    
+    if (!id || masAnos <= 0) return alert("Selecciona un jugador y los años a sumar.");
 
-    db.ref(`equipos/${equipoActualID}/jugadores/${id}`).once('value', snap => {
-        const actual = snap.val().contrato;
-        db.ref(`equipos/${equipoActualID}/jugadores/${id}`).update({ contrato: actual + masAnos });
-        alert("Contrato extendido");
+    // Referencia al equipo para obtener presupuesto y datos del jugador
+    db.ref(`equipos/${equipoActualID}`).once('value', snap => {
+        const equipo = snap.val();
+        const jugador = equipo.jugadores[id];
+        
+        // Calculamos la prima según el valor actual del jugador (usando tu lógica de finanzas)
+        const f = calcularFinanzas(jugador.valor);
+        const costoPrimaUnica = f.prima; // Se cobra solo una vez por renovación
+
+        // Validar si el equipo tiene dinero suficiente para pagar la prima
+        if (equipo.presupuesto < costoPrimaUnica) {
+            return alert(`Presupuesto insuficiente. Necesitas ${costoPrimaUnica} MDD para pagar la prima de renovación.`);
+        }
+
+        // Calcular nuevos valores
+        const nuevoContrato = parseInt(jugador.contrato) + masAnos;
+        const nuevoPresupuesto = equipo.presupuesto - costoPrimaUnica;
+
+        // Actualizar Firebase: restamos la prima del presupuesto y sumamos los años
+        db.ref(`equipos/${equipoActualID}`).update({
+            presupuesto: nuevoPresupuesto,
+            [`jugadores/${id}/contrato`]: nuevoContrato
+        }).then(() => {
+            alert(`✅ Renovación exitosa: ${jugador.nombre}\n💰 Prima pagada: ${costoPrimaUnica} MDD\n📅 Nuevo contrato: ${nuevoContrato} años`);
+        });
     });
 }
 
