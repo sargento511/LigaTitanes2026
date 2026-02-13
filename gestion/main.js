@@ -34,3 +34,68 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 }
+let equipoActualID = ""; // Variable global para saber qué equipo editamos
+
+function entrarEquipo(nombreEquipo, logo) {
+    equipoActualID = nombreEquipo;
+    document.getElementById('selection-screen').classList.add('hidden');
+    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('header-name').innerText = nombreEquipo;
+    document.getElementById('header-logo').src = logo;
+
+    // Escuchar datos del equipo y jugadores
+    db.ref('equipos/' + nombreEquipo).on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            // Actualizar Overview
+            document.getElementById('info-presupuesto').innerText = `$${data.presupuesto.toLocaleString()}`;
+            document.getElementById('info-estadio').innerText = data.estadio || "Sin nombre";
+            document.getElementById('info-capacidad').innerText = (data.capacidad || 0).toLocaleString();
+            
+            // Llenar los inputs de configuración por si quiere editarlos
+            document.getElementById('input-estadio').value = data.estadio || "";
+            document.getElementById('input-capacidad').value = data.capacidad || 0;
+            document.getElementById('input-tamano').value = data.tamano || "";
+
+            // Cargar Tabla de Jugadores
+            renderizarJugadores(data.jugadores);
+        }
+    });
+}
+
+function guardarConfiguracion() {
+    const est = document.getElementById('input-estadio').value;
+    const cap = parseInt(document.getElementById('input-capacidad').value);
+    const tam = document.getElementById('input-tamano').value;
+
+    db.ref('equipos/' + equipoActualID).update({
+        estadio: est,
+        capacidad: cap,
+        tamano: tam
+    }).then(() => {
+        alert("¡Configuración de sede actualizada!");
+    });
+}
+
+function renderizarJugadores(jugadores) {
+    const tbody = document.getElementById('lista-jugadores');
+    tbody.innerHTML = "";
+    let count = 0;
+
+    if (jugadores) {
+        Object.keys(jugadores).forEach(key => {
+            const j = jugadores[key];
+            count++;
+            tbody.innerHTML += `
+                <tr>
+                    <td>${j.nombre}</td>
+                    <td>$${j.valor.toLocaleString()}</td>
+                    <td>$${j.salario.toLocaleString()}</td>
+                    <td>$${j.prima.toLocaleString()}</td>
+                    <td>${j.contrato} años</td>
+                </tr>
+            `;
+        });
+    }
+    document.getElementById('player-count').innerText = `${count} Jugadores`;
+}
