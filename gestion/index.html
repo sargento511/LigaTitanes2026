@@ -30,63 +30,65 @@
     <div id="dashboard" class="hidden">
         <nav class="top-nav">
             <div class="nav-left">
-                <img id="header-logo" src="" alt="Logo">
+                <img id="header-logo" src="" alt="logo">
                 <h2 id="header-name"></h2>
             </div>
             <div class="nav-actions">
-                <button class="btn-nav" onclick="location.reload()">Cerrar Sesión</button>
+                <button class="btn-save" onclick="guardarConfiguracion()">💾 GUARDAR</button>
+                <button class="btn-danger" onclick="location.reload()">🚪 SALIR</button>
             </div>
         </nav>
 
-        <header class="overview-cards">
-            <div class="card">
-                <p>Presupuesto</p>
-                <h3 id="info-presupuesto">0 MDD</h3>
+        <div class="main-content">
+            <div class="overview-cards">
+                <div class="card">
+                    <p>Presupuesto</p>
+                    <h3 id="info-presupuesto">0 MDD</h3>
+                    <input type="number" id="input-presupuesto" placeholder="Editar presupuesto..." style="width: 80%; font-size: 0.7rem;">
+                </div>
+                <div class="card">
+                    <p>Estadio</p>
+                    <input type="text" id="input-estadio" placeholder="Nombre Estadio">
+                    <input type="number" id="input-capacidad" placeholder="Capacidad">
+                </div>
+                <div class="card">
+                    <p>Plantilla</p>
+                    <h3 id="player-count">0 Jugadores</h3>
+                </div>
             </div>
-            <div class="card">
-                <p>Estadio</p>
-                <h3 id="info-estadio">-</h3>
-                <small id="info-capacidad"></small>
-            </div>
-            <div class="card">
-                <p>Plantilla</p>
-                <h3 id="player-count">0 Jugadores</h3>
-            </div>
-        </header>
 
-        <main class="player-list-section">
-            <div class="table-header">
-                <h3>Plantilla Actual</h3>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Jugador</th>
-                        <th>Valor (MDD)</th>
-                        <th>Salario</th>
-                        <th>Prima</th>
-                        <th>Contrato</th>
-                    </tr>
-                </thead>
-                <tbody id="lista-jugadores"></tbody>
-            </table>
-        </main>
+            <section class="player-list-section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Jugador</th>
+                            <th>Valor</th>
+                            <th>Sueldo</th>
+                            <th>Prima</th>
+                            <th>Contrato</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-jugadores"></tbody>
+                </table>
+            </section>
+        </div>
 
         <div id="phone-container" class="phone-hidden">
-            <button id="phone-toggle" onclick="togglePhone()">📱 GESTIÓN EQUIPO</button>
+            <button id="phone-toggle" onclick="togglePhone()">📱 MERCADO & CONTRATOS</button>
             <div class="phone-screen">
                 <div class="phone-tabs">
-                    <button onclick="openTab('tab-calc')">💰</button>
-                    <button onclick="openTab('tab-reno')">📄</button>
+                    <button onclick="openTab('tab-calc')">💸</button>
+                    <button onclick="openTab('tab-reno')">✍️</button>
                     <button onclick="openTab('tab-nego')">🤝</button>
                 </div>
 
                 <div id="tab-calc" class="phone-tab active">
-                    <h4>Calculadora / Alta</h4>
-                    <input type="text" id="calc-nombre" placeholder="Nombre Jugador">
-                    <input type="number" id="calc-valor" placeholder="Valor MDD" oninput="previsualizarFinanzas()">
-                    <div id="preview-box" class="calc-preview">
-                        Ingresa valor para ver Salario/Prima
+                    <h4>Fichar (MDD)</h4>
+                    <input type="text" id="calc-nombre" placeholder="Nombre">
+                    <input type="number" id="calc-valor" placeholder="Valor MDD" oninput="actualizarCalculos()">
+                    <div class="calc-preview">
+                        <p>Sueldo: <span id="res-salario">0</span> MDD</p>
+                        <p>Prima: <span id="res-prima">0</span> MDD</p>
                     </div>
                     <input type="number" id="calc-contrato" placeholder="Años">
                     <button class="btn-action" onclick="contratarJugador()">CONTRATAR</button>
@@ -96,7 +98,7 @@
                     <h4>Contratos</h4>
                     <select id="select-jugador-gestion"></select>
                     <input type="number" id="reno-anos-input" placeholder="Años a sumar" style="margin-top:10px">
-                    <button class="btn-action" onclick="renovarJugador()">RENOVAR</button>
+                    <button class="btn-action" onclick="renovarJugador()" style="margin-top:5px">RENOVAR</button>
                     <hr style="margin: 15px 0; border: 0.5px solid #333;">
                     <button class="btn-danger" onclick="liberarProceso()">DESPEDIR (Pagar contrato)</button>
                 </div>
@@ -104,25 +106,4 @@
                 <div id="tab-nego" class="phone-tab">
                     <h4>Oferta a Rival</h4>
                     <select id="select-jugador-rival"></select>
-                    <input type="number" id="nego-oferta" placeholder="MDD Ofrecidos">
-                    <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-oferta" class="hidden">
-        <div class="modal-box">
-            <h3>🚨 Oferta Recibida</h3>
-            <div id="oferta-content"></div>
-            <div class="modal-grid-btns">
-                <button class="btn-action" onclick="aceptarOferta()">Aceptar</button>
-                <button class="btn-warning" onclick="contraofertar()">Contraoferta</button>
-                <button class="btn-danger" onclick="cerrarOferta()">Rechazar</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="main.js"></script>
-</body>
-</html>
+                    <input type="number" id="nego-oferta" placeholder="MDD Of
