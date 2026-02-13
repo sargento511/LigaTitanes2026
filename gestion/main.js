@@ -13,175 +13,38 @@ const db = firebase.database();
 let equipoActualID = "";
 let ofertaRecibida = null;
 
-// ENTRAR AL EQUIPO
-function entrarEquipo(nombreEquipo, logo) {
-    equipoActualID = nombreEquipo;
+function entrarEquipo(nombre, logo) {
+    equipoActualID = nombre;
     document.getElementById('selection-screen').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
-    document.getElementById('header-name').innerText = nombreEquipo;
+    document.getElementById('header-name').innerText = nombre;
     document.getElementById('header-logo').src = logo;
 
-    // Escucha datos propios en tiempo real
-    db.ref('equipos/' + nombreEquipo).on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            document.getElementById('info-presupuesto').innerText = `${data.presupuesto || 0} MDD`;
-            document.getElementById('info-estadio').innerText = data.estadio || "-";
-            document.getElementById('info-capacidad').innerText = data.capacidad || 0;
-            document.getElementById('info-tamano').innerText = data.tamano || "-";
-            
-            document.getElementById('input-presupuesto').value = data.presupuesto || 0;
-            document.getElementById('input-estadio').value = data.estadio || "";
-            document.getElementById('input-capacidad').value = data.capacidad || 0;
-            document.getElementById('input-tamano').value = data.tamano || "";
-            
-            renderizarJugadores(data.jugadores);
+    // Escuchar mis datos
+    db.ref('equipos/' + nombre).on('value', snap => {
+        const data = snap.val();
+        if(data) {
+            document.getElementById('info-presupuesto').innerText = `${data.presupuesto} MDD`;
+            document.getElementById('info-estadio').innerText = data.estadio || "Estadio Municipal";
+            renderizarTabla(data.jugadores);
             actualizarSelectPropio(data.jugadores);
         }
     });
 
-    escucharJugadoresRival();
-    escucharNegociaciones();
-}
-
-// ESCUCHA RIVAL EN TIEMPO REAL (Fekir/Kubo solución)
-function escucharJugadoresRival() {
+    // Escuchar al RIVAL en vivo para ver sus jugadores nuevos
     let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
     db.ref(`equipos/${rival}/jugadores`).on('value', snap => {
-        const selRival = document.getElementById('select-jugador-rival');
-        if (selRival) {
-            selRival.innerHTML = "";
-            snap.forEach(child => {
-                selRival.innerHTML += `<option value="${child.key}">${child.val().nombre}</option>`;
-            });
-        }
-    });
-}
-
-// RENOVACIÓN DE CONTRATO
-function renovarJugador() {
-    const id = document.getElementById('select-jugador-gestion').value;
-    const extra = parseInt(document.getElementById('reno-anos-input').value);
-    
-    if (!id) return alert("Selecciona un jugador");
-    if (isNaN(extra) || extra <= 0) return alert("Ingresa años válidos");
-
-    db.ref(`equipos/${equipoActualID}/jugadores/${id}/contrato`).transaction(c => (c || 0) + extra)
-    .then(() => {
-        alert("✍️ Contrato renovado");
-        document.getElementById('reno-anos-input').value = "";
-    });
-}
-
-// CONTRAOFERTA (Flujo corregido)
-function contraofertar() {
-    if (!ofertaRecibida) return;
-    
-    // 1. Borrar la oferta de Firebase para que no se repita el modal
-    db.ref('negociaciones/' + equipoActualID).remove();
-    
-    // 2. Cerrar modal y abrir celular
-    document.getElementById('modal-oferta').classList.add('hidden');
-    if (document.getElementById('phone-container').classList.contains('phone-hidden')) togglePhone();
-    
-    // 3. Ir a pestaña de negociación
-    openTab('tab-nego');
-    alert("Prepara tu respuesta en el menú de negociación.");
-}
-
-// LÓGICA FINANCIERA
-function calcularFinanzas(v) {
-    let salario = 0; let prima = 0;
-    if (v >= 120) { salario = 22; prima = 7; }
-    else if (v >= 90) { salario = 18; prima = 5; }
-    else if (v >= 70) { salario = 14; prima = 4; }
-    else if (v >= 50) { salario = 11; prima = 3; }
-    else if (v >= 30) { salario = 8; prima = 2; }
-    else if (v >= 20) { salario = 5; prima = 1.5; }
-    else if (v >= 10) { salario = 3; prima = 1; }
-    else if (v >= 5) { salario = 1.5; prima = 0.7; }
-    else { salario = 0.8; prima = 0.4; }
-    return { salario, prima };
-}
-
-function actualizarCalculos() {
-    let val = parseFloat(document.getElementById('calc-valor').value) || 0;
-    let res = calcularFinanzas(val);
-    document.getElementById('res-salario').innerText = res.salario;
-    document.getElementById('res-prima').innerText = res.prima;
-}
-
-// ACCIONES PLANTILLA
-function contratarJugador() {
-    let n = document.getElementById('calc-nombre').value;
-    let v = parseFloat(document.getElementById('calc-valor').value);
-    let a = parseInt(document.getElementById('calc-contrato').value);
-    let f = calcularFinanzas(v);
-    if (n && v > 0 && a > 0) {
-        db.ref('equipos/' + equipoActualID).transaction(d => {
-            if (d && d.presupuesto >= v) {
-                d.presupuesto -= v;
-                if (!d.jugadores) d.jugadores = {};
-                d.jugadores[Date.now()] = { nombre: n, valor: v, salario: f.salario, prima: f.prima, contrato: a };
-                return d;
-            }
+        const sel = document.getElementById('select-jugador-rival');
+        sel.innerHTML = '<option value="">-- Seleccionar Objetivo --</option>';
+        snap.forEach(child => {
+            sel.innerHTML += `<option value="${child.key}">${child.val().nombre}</option>`;
         });
-    }
-}
-
-function liberarProceso() {
-    let id = document.getElementById('select-jugador-gestion').value;
-    if (!id) return;
-    db.ref('equipos/' + equipoActualID).once('value', snap => {
-        let data = snap.val();
-        let j = data.jugadores[id];
-        let coste = j.salario * j.contrato;
-        if (confirm(`Despedir a ${j.nombre} cuesta ${coste} MDD. ¿Confirmar?`)) {
-            if (data.presupuesto >= coste) {
-                db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
-                db.ref(`equipos/${equipoActualID}/presupuesto`).set(data.presupuesto - coste);
-            } else alert("Presupuesto insuficiente.");
-        }
     });
-}
 
-function avanzarTemporada() {
-    if (!confirm("¿Terminar temporada? Los contratos restan 1 año.")) return;
-    db.ref('equipos').once('value', snap => {
-        let equipos = snap.val();
-        Object.keys(equipos).forEach(eKey => {
-            let jList = equipos[eKey].jugadores;
-            if (jList) {
-                Object.keys(jList).forEach(jKey => {
-                    let c = jList[jKey].contrato - 1;
-                    if (c <= 0) db.ref(`equipos/${eKey}/jugadores/${jKey}`).remove();
-                    else db.ref(`equipos/${eKey}/jugadores/${jKey}/contrato`).set(c);
-                });
-            }
-        });
-        alert("🗓️ Temporada actualizada.");
-    });
-}
-
-// NEGOCIACIÓN
-function enviarPropuesta() {
-    let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
-    let sel = document.getElementById('select-jugador-rival');
-    if (!sel.value) return alert("Selecciona un jugador rival");
-    let oferta = {
-        de: equipoActualID,
-        jugadorID: sel.value,
-        jugadorNombre: sel.options[sel.selectedIndex].text,
-        monto: parseFloat(document.getElementById('nego-oferta').value) || 0
-    };
-    db.ref('negociaciones/' + rival).set(oferta);
-    alert("🚀 Oferta enviada.");
-}
-
-function escucharNegociaciones() {
+    // Escuchar ofertas entrantes
     db.ref('negociaciones/' + equipoActualID).on('value', snap => {
         ofertaRecibida = snap.val();
-        if (ofertaRecibida) {
+        if(ofertaRecibida) {
             document.getElementById('modal-oferta').classList.remove('hidden');
             document.getElementById('oferta-content').innerHTML = `
                 <p><b>${ofertaRecibida.de}</b> ofrece <b>${ofertaRecibida.monto} MDD</b></p>
@@ -191,25 +54,93 @@ function escucharNegociaciones() {
     });
 }
 
-function aceptarOferta() {
-    if (!ofertaRecibida) return;
-    const { de: comprador, jugadorID, monto } = ofertaRecibida;
-    const vendedor = equipoActualID;
+function calcularFinanzas(v) {
+    let s=0, p=0;
+    if(v>=120){s=22;p=7}else if(v>=90){s=18;p=5}else if(v>=70){s=14;p=4}else if(v>=50){s=11;p=3}else if(v>=30){s=8;p=2}else if(v>=20){s=5;p=1.5}else if(v>=10){s=3;p=1}else if(v>=5){s=1.5;p=0.7}else{s=0.8;p=0.4}
+    return {salario:s, prima:p};
+}
 
+function actualizarCalculos() {
+    let v = parseFloat(document.getElementById('calc-valor').value) || 0;
+    let r = calcularFinanzas(v);
+    document.getElementById('res-salario').innerText = r.salario;
+    document.getElementById('res-prima').innerText = r.prima;
+}
+
+function contratarJugador() {
+    let n = document.getElementById('calc-nombre').value;
+    let v = parseFloat(document.getElementById('calc-valor').value);
+    let a = parseInt(document.getElementById('calc-contrato').value);
+    let f = calcularFinanzas(v);
+    
+    if(n && v > 0 && a > 0) {
+        db.ref('equipos/'+equipoActualID).transaction(d => {
+            if(d && d.presupuesto >= v) {
+                d.presupuesto -= v;
+                if(!d.jugadores) d.jugadores = {};
+                d.jugadores[Date.now()] = { nombre:n, valor:v, salario:f.salario, prima:f.prima, contrato:a };
+                return d;
+            }
+        }).then(() => {
+            alert("Fichaje Exitoso");
+            document.getElementById('calc-nombre').value = "";
+        });
+    }
+}
+
+function liberarJugador() {
+    let id = document.getElementById('select-jugador-gestion').value;
+    if(!id) return;
+    db.ref(`equipos/${equipoActualID}`).once('value', snap => {
+        let d = snap.val();
+        let j = d.jugadores[id];
+        let coste = j.salario * j.contrato;
+        if(confirm(`El despido cuesta ${coste} MDD. ¿Proceder?`)) {
+            if(d.presupuesto >= coste) {
+                db.ref(`equipos/${equipoActualID}/presupuesto`).set(d.presupuesto - coste);
+                db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
+            } else alert("Presupuesto insuficiente");
+        }
+    });
+}
+
+function enviarPropuesta() {
+    let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
+    let sel = document.getElementById('select-jugador-rival');
+    let monto = parseFloat(document.getElementById('nego-oferta').value);
+    if(!sel.value || isNaN(monto)) return alert("Datos incompletos");
+
+    db.ref('negociaciones/' + rival).set({
+        de: equipoActualID,
+        jugadorID: sel.value,
+        jugadorNombre: sel.options[sel.selectedIndex].text,
+        monto: monto
+    });
+    alert("Oferta enviada");
+}
+
+function aceptarOferta() {
+    const { de: comprador, jugadorID, monto } = ofertaRecibida;
     db.ref(`equipos/${comprador}`).once('value', sComp => {
         let dComp = sComp.val();
-        if (dComp.presupuesto >= monto) {
-            db.ref(`equipos/${vendedor}/jugadores/${jugadorID}`).once('value', sJug => {
-                let datosJ = sJug.val();
-                db.ref(`equipos/${vendedor}/jugadores/${jugadorID}`).remove();
-                db.ref(`equipos/${vendedor}/presupuesto`).transaction(p => p + monto);
-                db.ref(`equipos/${comprador}/jugadores/${jugadorID}`).set(datosJ);
+        if(dComp.presupuesto >= monto) {
+            db.ref(`equipos/${equipoActualID}/jugadores/${jugadorID}`).once('value', sJug => {
+                let jData = sJug.val();
+                db.ref(`equipos/${equipoActualID}/jugadores/${jugadorID}`).remove();
+                db.ref(`equipos/${equipoActualID}/presupuesto`).transaction(p => p + monto);
+                db.ref(`equipos/${comprador}/jugadores/${jugadorID}`).set(jData);
                 db.ref(`equipos/${comprador}/presupuesto`).set(dComp.presupuesto - monto);
                 cerrarOferta();
-                alert("🤝 Trato cerrado!");
             });
-        } else alert("El comprador no tiene dinero.");
+        }
     });
+}
+
+function contraofertar() {
+    db.ref('negociaciones/' + equipoActualID).remove();
+    document.getElementById('modal-oferta').classList.add('hidden');
+    if(document.getElementById('phone-container').classList.contains('phone-hidden')) togglePhone();
+    openTab('tab-nego');
 }
 
 function cerrarOferta() {
@@ -217,34 +148,38 @@ function cerrarOferta() {
     document.getElementById('modal-oferta').classList.add('hidden');
 }
 
-// HELPERS
+function avanzarTemporada() {
+    if(!confirm("¿Avanzar de año? Restará 1 año de contrato.")) return;
+    db.ref('equipos').once('value', snap => {
+        let eqs = snap.val();
+        Object.keys(eqs).forEach(e => {
+            let js = eqs[e].jugadores;
+            if(js) Object.keys(js).forEach(k => {
+                let nc = js[k].contrato - 1;
+                if(nc <= 0) db.ref(`equipos/${e}/jugadores/${k}`).remove();
+                else db.ref(`equipos/${e}/jugadores/${k}/contrato`).set(nc);
+            });
+        });
+    });
+}
+
+// UI HELPERS
 function togglePhone() { document.getElementById('phone-container').classList.toggle('phone-hidden'); }
 function openTab(id) {
     document.querySelectorAll('.phone-tab').forEach(t => t.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
-function renderizarJugadores(jugadores) {
-    const tbody = document.getElementById('lista-jugadores');
-    tbody.innerHTML = "";
-    if (jugadores) {
-        Object.keys(jugadores).forEach(k => {
-            let j = jugadores[k];
-            tbody.innerHTML += `<tr><td>${j.nombre}</td><td>${j.valor}</td><td>${j.salario}</td><td>${j.prima}</td><td>${j.contrato}a</td></tr>`;
-        });
-    }
+function renderizarTabla(js) {
+    const b = document.getElementById('lista-jugadores');
+    b.innerHTML = ""; let c = 0;
+    if(js) Object.keys(js).forEach(k => {
+        let j = js[k]; c++;
+        b.innerHTML += `<tr><td>${j.nombre}</td><td>${j.valor}</td><td>${j.salario}</td><td>${j.contrato}a</td></tr>`;
+    });
+    document.getElementById('player-count').innerText = c;
 }
-function actualizarSelectPropio(jugadores) {
-    const sel = document.getElementById('select-jugador-gestion');
-    if (sel) {
-        sel.innerHTML = "";
-        if (jugadores) Object.keys(jugadores).forEach(id => sel.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`);
-    }
-}
-function guardarConfiguracion() {
-    db.ref('equipos/' + equipoActualID).update({
-        presupuesto: parseFloat(document.getElementById('input-presupuesto').value) || 0,
-        estadio: document.getElementById('input-estadio').value,
-        capacidad: document.getElementById('input-capacidad').value,
-        tamano: document.getElementById('input-tamano').value
-    }).then(() => alert("✅ Guardado"));
+function actualizarSelectPropio(js) {
+    const s = document.getElementById('select-jugador-gestion');
+    s.innerHTML = "";
+    if(js) Object.keys(js).forEach(k => s.innerHTML += `<option value="${k}">${js[k].nombre}</option>`);
 }
