@@ -1,63 +1,50 @@
 :root {
-    --bg-dark: #0f172a;
-    --card-bg: #1e293b;
-    --accent: #38bdf8;
-    --text: #f8fafc;
+    --primary: #38bdf8;
+    --danger: #ef4444;
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f1f5f9;
 }
 
-body {
-    background-color: var(--bg-dark);
-    color: var(--text);
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-}
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
+.hidden { display: none !important; }
 
-#team-selector {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
-}
+/* Selector de Equipo */
+#setup-screen { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.selector-container { display: flex; gap: 2rem; }
+.card { background: var(--card); padding: 2rem; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
+.card:hover { border-color: var(--primary); transform: translateY(-10px); }
+.card img { width: 120px; margin-bottom: 1rem; }
 
-.team-card {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.3s;
-    text-align: center;
-}
+/* Dashboard */
+header { background: var(--card); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+.team-brand { display: flex; align-items: center; gap: 15px; }
+.team-brand img { width: 50px; }
 
-.team-card:hover { transform: scale(1.05); border: 1px solid var(--accent); }
+/* Tabla */
+.player-section { padding: 2rem 5%; }
+.table-wrapper { background: var(--card); border-radius: 15px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th, td { padding: 1rem; border-bottom: 1px solid #334155; }
+th { background: #334155; color: var(--primary); }
 
-.team-card img { width: 80px; display: block; margin: 0 auto 10px; }
+/* CELULAR */
+#phone-wrapper { position: fixed; bottom: 0; right: 20px; width: 320px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; }
+.phone-closed { transform: translateY(calc(100% - 45px)); }
+#phone-trigger { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 15px 15px 0 0; cursor: pointer; font-weight: bold; }
+.phone-body { height: 500px; background: #000; border: 6px solid #333; border-radius: 0 0 0 0; border-bottom: none; padding: 10px; }
+.phone-screen { background: #111; height: 100%; border-radius: 15px; padding: 15px; overflow-y: auto; }
 
-/* ESTILO DEL CELULAR */
-.mobile-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 300px;
-    height: 500px;
-    background: #000;
-    border: 8px solid #333;
-    border-radius: 30px;
-    transition: all 0.5s ease-in-out;
-    z-index: 1000;
-}
+.phone-nav { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 15px; }
+.phone-nav button { font-size: 10px; padding: 5px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer; }
 
-.mobile-container.closed { transform: translateY(450px); }
+.tab { display: none; }
+.tab.active { display: block; }
 
-#toggle-phone {
-    position: absolute;
-    top: -50px;
-    right: 10px;
-    background: var(--accent);
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-}
+input, select { width: 100%; padding: 10px; margin: 8px 0; background: #222; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; }
+.btn-action { width: 100%; background: var(--primary); color: black; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+.btn-danger { width: 100%; background: var(--danger); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 5px; }
 
-.phone-screen { padding: 15px; overflow-y: auto; height: 100%; color: white; }
+/* Modal de Oferta */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-content { background: var(--card); padding: 2rem; border-radius: 20px; text-align: center; max-width: 400px; }
