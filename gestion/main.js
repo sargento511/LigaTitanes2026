@@ -57,6 +57,8 @@ function entrarEquipo(nombreEquipo, logo) {
             document.getElementById('input-capacidad').value = data.capacidad || 0;
             document.getElementById('input-tamano').value = data.tamano || "";
 
+            document.getElementById('info-tamano').innerText = data.tamano || "No definido";
+
             // Cargar Tabla de Jugadores
             renderizarJugadores(data.jugadores);
         }
