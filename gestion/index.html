@@ -3,84 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liga Titanes 2026</title>
+    <title>Liga Titanes 2026 - Gestión</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
-    <div id="pantalla-inicio">
-        <h1>LIGA TITANES 2026</h1>
-        <div class="contenedor-equipos">
-            <div class="card-equipo" onclick="seleccionarEquipo('Deportivo')">
-                <img src="dep_logo.png" alt="Deportivo Federal">
-                <button>DEPORTIVO FEDERAL</button>
-            </div>
-            <div class="card-equipo" onclick="seleccionarEquipo('Halcones')">
+    <header>
+        <nav id="team-selector">
+            <div class="team-card" onclick="selectTeam('halcones')">
                 <img src="hal.png" alt="Halcones Rojos">
-                <button>HALCONES ROJOS</button>
+                <span>Halcones Rojos</span>
+            </div>
+            <div class="team-card" onclick="selectTeam('deportivo')">
+                <img src="dep_logo.png" alt="Deportivo Federal">
+                <span>Deportivo Federal</span>
+            </div>
+        </nav>
+    </header>
+
+    <main id="app-content" class="hidden">
+        <section id="team-info">
+            </section>
+
+        <section id="player-list">
+            <h3>Plantilla</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jugador</th>
+                        <th>Valor</th>
+                        <th>Salario</th>
+                        <th>Prima</th>
+                        <th>Contrato</th>
+                    </tr>
+                </thead>
+                <tbody id="players-table-body"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <div id="mobile-menu" class="mobile-container closed">
+        <button id="toggle-phone" onclick="togglePhone()">📱</button>
+        <div class="phone-screen">
+            <div class="phone-header">Gestión Pro</div>
+            <div class="phone-content">
+                <button onclick="showModule('renovacion')">Renovación</button>
+                <button onclick="showModule('liberar')">Liberar</button>
+                <button onclick="showModule('calculadora')">Calculadora/Fichar</button>
+                <button onclick="showModule('negociacion')">Negociación ⚡</button>
+                
+                <div id="module-container">
+                    </div>
             </div>
         </div>
-
-        <div id="mercado-global">
-            <h2>🔥 LISTA DE VENTAS</h2>
-            <ul id="lista-mercado"></ul>
-        </div>
-    </div>
-
-    <div id="dashboard" style="display:none;">
-        <header>
-            <button onclick="irInicio()">⬅ Volver</button>
-            <h2 id="nombre-equipo-titulo"></h2>
-            <button onclick="finalizarTemporada()" style="background:#cc0000;">FINALIZAR TEMPORADA</button>
-        </header>
-
-        <div class="info-panel">
-            <div class="stat-box">Saldo: <span id="saldo-actual"></span></div>
-            <div class="stat-box">Estadio: <span id="tipo-estadio"></span></div>
-        </div>
-
-        <div class="buscador-container">
-            <h3>🔍 CALCULADOR DE FICHAJES</h3>
-            <input type="text" id="nombre-busqueda" placeholder="Nombre...">
-            <input type="number" id="valor-busqueda" placeholder="Valor MDD">
-            <button onclick="calcularFichaje()">CALCULAR</button>
-            <div id="resultado-busqueda"></div>
-        </div>
-
-        <div class="buscador-container" style="border: 2px solid #6f42c1; background: #111;">
-    <h3 style="color: #6f42c1; margin-top: 0;">📩 OFERTAS RECIBIDAS</h3>
-    <div id="contenedor-ofertas">
-        </div>
-    
-    <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
-    
-    <h3 style="color: #007bff;">🤝 ENVIAR OFERTA AL RIVAL</h3>
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-        <div>
-            <label style="display:block; font-size: 12px;">Jugador que quieres:</label>
-            <select id="select-jugador-rival" style="padding: 8px; border-radius: 5px;"></select>
-        </div>
-        <div>
-            <label style="display:block; font-size: 12px;">Dinero que ofreces:</label>
-            <input type="number" id="oferta-dinero" placeholder="MDD" style="width: 80px;">
-        </div>
-        <div>
-            <label style="display:block; font-size: 12px;">Tu jugador (Intercambio):</label>
-            <select id="mi-jugador-cambio" style="padding: 8px; border-radius: 5px;"></select>
-        </div>
-        <button onclick="enviarOferta()" style="background:#6f42c1; color:white; align-self: flex-end;">ENVIAR</button>
-    </div>
-</div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Jugador</th><th>Valor</th><th>Salario</th><th>Prima</th><th>Contrato</th><th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="body-plantilla"></tbody>
-        </table>
     </div>
 
     <script src="main.js"></script>
