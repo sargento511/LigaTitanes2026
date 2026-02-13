@@ -12,7 +12,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 let equipoActualID = "";
 
-// Lógica de la tabla (Valores en MDD)
+// 1. Tabla de Salarios y Primas (MDD)
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
     if (v >= 120) { salario = 22; prima = 7; }
@@ -34,6 +34,7 @@ function actualizarCalculos() {
     document.getElementById('res-prima').innerText = res.prima;
 }
 
+// 2. Entrada al Equipo y Sincronización
 function entrarEquipo(nombreEquipo, logo) {
     equipoActualID = nombreEquipo;
     document.getElementById('selection-screen').classList.add('hidden');
@@ -58,6 +59,7 @@ function entrarEquipo(nombreEquipo, logo) {
             actualizarSelects(data.jugadores);
         }
     });
+    escucharNegociaciones();
 }
 
 function guardarConfiguracion() {
@@ -67,7 +69,7 @@ function guardarConfiguracion() {
         estadio: document.getElementById('input-estadio').value,
         capacidad: document.getElementById('input-capacidad').value,
         tamano: document.getElementById('input-tamano').value
-    }).then(() => alert("✅ Club actualizado en MDD"));
+    }).then(() => alert("✅ Club actualizado"));
 }
 
 function renderizarJugadores(jugadores) {
@@ -82,35 +84,79 @@ function renderizarJugadores(jugadores) {
     document.getElementById('player-count').innerText = `${count} Jugadores`;
 }
 
+// 3. Botones del Celular (Funcionalidades)
 function contratarJugador() {
     let nombre = document.getElementById('calc-nombre').value;
     let valor = parseFloat(document.getElementById('calc-valor').value);
     let años = parseInt(document.getElementById('calc-contrato').value);
     let res = calcularFinanzas(valor);
 
-    if (nombre && valor > 0) {
+    if (nombre && valor > 0 && años > 0) {
         db.ref('equipos/' + equipoActualID).transaction((data) => {
             if (data && data.presupuesto >= valor) {
                 data.presupuesto -= valor;
                 if (!data.jugadores) data.jugadores = {};
                 data.jugadores[Date.now()] = { nombre, valor, salario: res.salario, prima: res.prima, contrato: años };
                 return data;
-            } else { alert("Sin presupuesto MDD suficiente"); return; }
+            } else { alert("Saldo insuficiente"); return; }
         });
+    }
+}
+
+function renovarJugador() {
+    let id = document.getElementById('select-jugador-gestion').value;
+    let extra = parseInt(document.getElementById('reno-anos').value) || 0;
+    if (id && extra > 0) {
+        db.ref(`equipos/${equipoActualID}/jugadores/${id}/contrato`).transaction(val => (val || 0) + extra);
+        alert("Contrato renovado");
     }
 }
 
 function liberarProceso() {
     let id = document.getElementById('select-jugador-gestion').value;
+    if (!id) return;
     db.ref('equipos/' + equipoActualID).once('value', snap => {
         let data = snap.val();
         let jug = data.jugadores[id];
-        let reembolso = jug.salario * jug.contrato;
-        db.ref('equipos/' + equipoActualID + '/jugadores/' + id).remove();
-        db.ref('equipos/' + equipoActualID).update({ presupuesto: data.presupuesto + reembolso });
+        let reembolso = (jug.salario * jug.contrato); // Devuelve los salarios no pagados
+        db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
+        db.ref(`equipos/${equipoActualID}/presupuesto`).set(data.presupuesto + reembolso);
+        alert("Jugador liberado y presupuesto recuperado");
     });
 }
 
+function enviarPropuesta() {
+    let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
+    let targetSelect = document.getElementById('select-jugador-rival');
+    let oferta = {
+        jugador: targetSelect.options[targetSelect.selectedIndex].text,
+        dinero: document.getElementById('nego-oferta').value,
+        cambio: document.getElementById('nego-cambio').value,
+        de: equipoActualID
+    };
+    db.ref('negociaciones/' + rival).set(oferta);
+    alert("Oferta enviada al rival");
+}
+
+function escucharNegociaciones() {
+    db.ref('negociaciones/' + equipoActualID).on('value', snap => {
+        let of = snap.val();
+        if (of) {
+            document.getElementById('modal-oferta').classList.remove('hidden');
+            document.getElementById('oferta-content').innerHTML = `
+                <p>El equipo <b>${of.de}</b> quiere a <b>${of.jugador}</b></p>
+                <p>Ofrecen: <b>${of.dinero} MDD</b> y a <b>${of.cambio || 'nadie'}</b></p>
+            `;
+        }
+    });
+}
+
+function cerrarOferta() {
+    db.ref('negociaciones/' + equipoActualID).remove();
+    document.getElementById('modal-oferta').classList.add('hidden');
+}
+
+// UI Helpers
 function togglePhone() { document.getElementById('phone-container').classList.toggle('phone-hidden'); }
 function openTab(id) {
     document.querySelectorAll('.phone-tab').forEach(t => t.classList.remove('active'));
@@ -118,8 +164,17 @@ function openTab(id) {
 }
 function actualizarSelects(jugadores) {
     const sel = document.getElementById('select-jugador-gestion');
+    const selRival = document.getElementById('select-jugador-rival');
     if (sel) {
         sel.innerHTML = "";
         if (jugadores) Object.keys(jugadores).forEach(id => sel.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`);
     }
+    // Cargar nombres del rival para negociar
+    let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
+    db.ref(`equipos/${rival}/jugadores`).once('value', snap => {
+        if (selRival) {
+            selRival.innerHTML = "";
+            snap.forEach(child => { selRival.innerHTML += `<option value="${child.key}">${child.val().nombre}</option>`; });
+        }
+    });
 }
