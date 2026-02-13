@@ -59,8 +59,10 @@ function calcularFinanzas(v) {
     else if (v >= 70) { salario = 14; prima = 4; }
     else if (v >= 50) { salario = 11; prima = 3; }
     else if (v >= 30) { salario = 8; prima = 2; }
-    else if (v >= 15) { salario = 5; prima = 1; }
-    else { salario = 2; prima = 0.5; }
+    else if (v >= 20) { salario = 5; prima = 1.5; }
+    else if (v >= 10) { salario = 3; prima = 1; }
+    else if (v >= 5) { salario = 1.5; prima = 0.7; }
+    else { salario = 0.8; prima = 0.4; }
     return { salario, prima };
 }
 
