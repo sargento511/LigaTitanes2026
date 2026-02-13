@@ -3,119 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liga Titanes - Gestión Profesional</title>
+    <title>Liga Titanes 2026 - Selección</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
 
-<div id="setup-screen">
-    <h1>LIGA TITANES 2026</h1>
-    <p>Selecciona tu equipo para gestionar:</p>
-    <div class="selector-container">
-        <div class="card" onclick="initApp('HALCONES ROJOS', 'hal.png')">
-            <img src="hal.png" alt="Halcones">
-            <h3>HALCONES ROJOS</h3>
-        </div>
-        <div class="card" onclick="initApp('DEPORTIVO FEDERAL', 'dep_logo.png')">
-            <img src="dep_logo.png" alt="Deportivo">
-            <h3>DEPORTIVO FEDERAL</h3>
-        </div>
-    </div>
-</div>
-
-<main id="main-app" class="hidden">
-    <header>
-        <div class="team-brand">
-            <img id="current-logo" src="" alt="Logo">
-            <h2 id="current-team-name"></h2>
-        </div>
-        <div class="stats-bar">
-            <span>Presupuesto: <b id="display-budget">$0</b></span>
-            <span>Estadio: <b id="display-stadium">-</b> (<span id="display-cap">0</span>)</span>
-        </div>
-    </header>
-
-    <section class="player-section">
-        <h3>Plantilla Actual</h3>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Jugador</th>
-                        <th>Valor</th>
-                        <th>Salario</th>
-                        <th>Prima</th>
-                        <th>Contrato</th>
-                    </tr>
-                </thead>
-                <tbody id="player-table"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <div id="phone-wrapper" class="phone-closed">
-        <button id="phone-trigger" onclick="togglePhone()">📱 Menú de Gestión</button>
-        <div class="phone-body">
-            <div class="phone-screen">
-                <div class="phone-nav">
-                    <button onclick="switchTab('tab-calc')">Fichar</button>
-                    <button onclick="switchTab('tab-reno')">Renovar</button>
-                    <button onclick="switchTab('tab-nego')">Negociar ⚡</button>
-                    <button onclick="switchTab('tab-conf')">Config</button>
+    <div id="selection-screen" class="fade-in">
+        <h1 class="main-title">LIGA TITANES 2026</h1>
+        <p class="subtitle">Selecciona tu equipo para comenzar la gestión</p>
+        
+        <div class="team-grid">
+            <div class="team-card" onclick="entrarEquipo('HALCONES ROJOS', 'hal.png')">
+                <div class="logo-wrapper">
+                    <img src="hal.png" alt="Halcones Rojos">
                 </div>
+                <h2>HALCONES ROJOS</h2>
+                <button class="btn-select">Gestionar</button>
+            </div>
 
-                <div id="tab-calc" class="tab active">
-                    <h4>Calculadora de Fichaje</h4>
-                    <input type="text" id="new-name" placeholder="Nombre del jugador">
-                    <input type="number" id="new-value" placeholder="Valor mercado" oninput="updateCalculations()">
-                    <div class="calc-res">
-                        <p>Sueldo/Año: <span id="res-salary">$0</span></p>
-                        <p>Prima: <span id="res-bonus">$0</span></p>
-                    </div>
-                    <input type="number" id="new-years" placeholder="Años de contrato">
-                    <button class="btn-action" onclick="ficharJugador()">CONTRATAR</button>
+            <div class="team-card" onclick="entrarEquipo('DEPORTIVO FEDERAL', 'dep_logo.png')">
+                <div class="logo-wrapper">
+                    <img src="dep_logo.png" alt="Deportivo Federal">
                 </div>
-
-                <div id="tab-reno" class="tab">
-                    <h4>Renovaciones / Bajas</h4>
-                    <select id="select-player-action"></select>
-                    <input type="number" id="reno-years" placeholder="Años extra">
-                    <button class="btn-action" onclick="renovarJugador()">RENOVAR</button>
-                    <hr>
-                    <button class="btn-danger" onclick="liberarJugador()">LIBERAR JUGADOR</button>
-                </div>
-
-                <div id="tab-nego" class="tab">
-                    <h4>Negociar con Rival</h4>
-                    <select id="select-target-player"></select>
-                    <input type="number" id="nego-money" placeholder="Dinero a ofrecer">
-                    <input type="text" id="nego-exchange" placeholder="Jugador a cambio (Opcional)">
-                    <button class="btn-action" onclick="enviarOferta()">ENVIAR OFERTA</button>
-                </div>
-
-                <div id="tab-conf" class="tab">
-                    <h4>Estadio</h4>
-                    <input type="text" id="conf-stadium" placeholder="Nombre Estadio">
-                    <input type="number" id="conf-cap" placeholder="Capacidad">
-                    <button class="btn-action" onclick="updateStadium()">GUARDAR</button>
-                </div>
+                <h2>DEPORTIVO FEDERAL</h2>
+                <button class="btn-select">Gestionar</button>
             </div>
         </div>
     </div>
-</main>
 
-<div id="offer-modal" class="modal hidden">
-    <div class="modal-content">
-        <h3>🚨 ¡OFERTA RECIBIDA!</h3>
-        <div id="offer-details"></div>
-        <div class="modal-btns">
-            <button class="btn-action" onclick="responderOferta('aceptada')">Aceptar</button>
-            <button class="btn-danger" onclick="responderOferta('rechazada')">Rechazar</button>
-        </div>
+    <div id="dashboard" class="hidden">
+        <header class="top-nav">
+            <div class="current-team-info">
+                <img id="header-logo" src="" alt="Logo">
+                <h2 id="header-name"></h2>
+            </div>
+            <button class="btn-exit" onclick="location.reload()">Cerrar Sesión</button>
+        </header>
+
+        <section class="overview-cards">
+            <div class="stat-card">
+                <span class="label">Presupuesto</span>
+                <h3 id="info-presupuesto">$0</h3>
+            </div>
+            <div class="stat-card">
+                <span class="label">Estadio</span>
+                <h3 id="info-estadio">-</h3>
+            </div>
+            <div class="stat-card">
+                <span class="label">Capacidad</span>
+                <h3 id="info-capacidad">0</h3>
+            </div>
+        </section>
     </div>
-</div>
 
+    <script src="main.js"></script>
 </body>
 </html>
