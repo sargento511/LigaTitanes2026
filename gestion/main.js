@@ -287,35 +287,42 @@ function actualizarSelectRival() {
 }
 
 function finalizarTemporada() {
-    if (!confirm("¿Seguro que quieres finalizar la temporada? Se restará 1 año de contrato y se cobrarán los salarios de toda la plantilla.")) return;
+    if (!confirm("¿Finalizar temporada? Se cobrarán salarios y se restará 1 año de contrato.")) return;
 
     const refEquipo = db.ref('equipos/' + equipoActualID);
-    
     refEquipo.once('value', snapshot => {
         const data = snapshot.val();
         if (!data || !data.jugadores) return;
 
         let jugadoresActualizados = { ...data.jugadores };
         let mensajes = [];
-        let totalSalarios = 0; // Sumatoria de sueldos
+        let totalSalarios = 0;
 
         Object.keys(jugadoresActualizados).forEach(id => {
             let j = jugadoresActualizados[id];
             
-            // 1. Sumamos el salario del jugador
+            // Sumar salario anual
             totalSalarios += parseFloat(j.salario || 0);
-
-            // 2. Restamos el año de contrato
+            // Restar año
             j.contrato = parseInt(j.contrato) - 1;
 
             if (j.contrato <= 0) {
-                mensajes.push(`❌ ${j.nombre} terminó contrato y se fue libre.`);
-                delete jugadoresActualizados[id]; // Eliminar jugador
-            } else if (j.contrato === 1) {
-                mensajes.push(`⚠️ A ${j.nombre} solo le queda 1 año de contrato.`);
+                mensajes.push(`❌ ${j.nombre} terminó contrato.`);
+                delete jugadoresActualizados[id];
             }
         });
 
+        const nuevoPresupuesto = (data.presupuesto || 0) - totalSalarios;
+
+        refEquipo.update({
+            presupuesto: nuevoPresupuesto,
+            jugadores: jugadoresActualizados
+        }).then(() => {
+            alert(`✅ Temporada cerrada.\n💰 Salarios pagados: ${totalSalarios} MDD.\n📉 Nuevo presupuesto: ${nuevoPresupuesto} MDD.`);
+            if (mensajes.length > 0) alert("Resumen: " + mensajes.join("\n"));
+        });
+    });
+}
         // 3. Calculamos el nuevo presupuesto restando los salarios
         const presupuestoActual = parseFloat(data.presupuesto) || 0;
         const nuevoPresupuesto = presupuestoActual - totalSalarios;
