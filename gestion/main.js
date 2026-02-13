@@ -251,3 +251,11 @@ function finalizarTemporada() {
         });
     });
 }
+function guardarConfiguracion() {
+    db.ref('equipos/' + equipoActualID).update({
+        presupuesto: parseFloat(document.getElementById('input-presupuesto').value) || 0,
+        estadio: document.getElementById('input-estadio').value,
+        capacidad: document.getElementById('input-capacidad').value
+    });
+    alert("Datos guardados");
+}
