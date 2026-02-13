@@ -106,4 +106,25 @@
                 <div id="tab-nego" class="phone-tab">
                     <h4>Oferta a Rival</h4>
                     <select id="select-jugador-rival"></select>
-                    <input type="number" id="nego-oferta" placeholder="MDD Of
+                    <input type="number" id="nego-oferta" placeholder="MDD Ofrecidos">
+                    <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-oferta" class="hidden">
+        <div class="modal-box">
+            <h3>🚨 Oferta Recibida</h3>
+            <div id="oferta-content"></div>
+            <div class="modal-grid-btns">
+                <button class="btn-action" onclick="aceptarOferta()">Aceptar</button>
+                <button class="btn-warning" onclick="contraofertar()">Contraoferta</button>
+                <button class="btn-danger" onclick="cerrarOferta()">Rechazar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
