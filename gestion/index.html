@@ -35,7 +35,7 @@
             </div>
             <div class="nav-actions">
                 <button class="btn-season" onclick="avanzarTemporada()">🗓️ Terminar Temporada</button>
-                <button class="btn-exit" onclick="location.reload()">Cerrar Sesión</button>
+                <button class="btn-exit" onclick="location.reload()">Salir</button>
             </div>
         </header>
 
@@ -47,22 +47,22 @@
         </section>
 
         <section class="stadium-config">
-            <h3>Configuración de Club (MDD)</h3>
+            <h3>Sede y Club</h3>
             <div class="config-grid">
-                <div class="input-group"><label>Presupuesto Total (MDD)</label><input type="number" id="input-presupuesto"></div>
-                <div class="input-group"><label>Nombre del Estadio</label><input type="text" id="input-estadio"></div>
+                <div class="input-group"><label>Presupuesto (MDD)</label><input type="number" id="input-presupuesto"></div>
+                <div class="input-group"><label>Estadio</label><input type="text" id="input-estadio"></div>
                 <div class="input-group"><label>Capacidad</label><input type="number" id="input-capacidad"></div>
                 <div class="input-group"><label>Tamaño</label><input type="text" id="input-tamano"></div>
-                <button class="btn-save" onclick="guardarConfiguracion()">Guardar Cambios</button>
+                <button class="btn-save" onclick="guardarConfiguracion()">Guardar</button>
             </div>
         </section>
 
         <section class="player-list-section">
-            <div class="section-header"><h3>Plantilla de Jugadores</h3><span id="player-count">0 Jugadores</span></div>
+            <div class="section-header"><h3>Plantilla</h3><span id="player-count">0 Jugadores</span></div>
             <div class="table-container">
                 <table>
                     <thead>
-                        <tr><th>Nombre</th><th>Valor (MDD)</th><th>Salario (MDD)</th><th>Prima (MDD)</th><th>Contrato</th></tr>
+                        <tr><th>Nombre</th><th>Valor</th><th>Sueldo</th><th>Prima</th><th>Contrato</th></tr>
                     </thead>
                     <tbody id="lista-jugadores"></tbody>
                 </table>
@@ -71,7 +71,7 @@
     </div>
 
     <div id="phone-container" class="phone-hidden">
-        <button id="phone-toggle" onclick="togglePhone()">📱 Menú Pro</button>
+        <button id="phone-toggle" onclick="togglePhone()">📱 Menú Gestión</button>
         <div class="phone-screen">
             <div class="phone-tabs">
                 <button onclick="openTab('tab-calc')">🧮</button>
@@ -84,25 +84,23 @@
                 <input type="text" id="calc-nombre" placeholder="Nombre">
                 <input type="number" id="calc-valor" placeholder="Valor MDD" oninput="actualizarCalculos()">
                 <div class="calc-preview">
-                    <p>Sueldo: <span id="res-salario">0</span> MDD</p>
-                    <p>Prima: <span id="res-prima">0</span> MDD</p>
+                    <p>Sueldo: <span id="res-salario">0</span> MDD | Prima: <span id="res-prima">0</span></p>
                 </div>
                 <input type="number" id="calc-contrato" placeholder="Años">
                 <button class="btn-action" onclick="contratarJugador()">CONTRATAR</button>
             </div>
 
             <div id="tab-reno" class="phone-tab">
-                <h4>Gestión Contratos</h4>
+                <h4>Contratos</h4>
                 <select id="select-jugador-gestion"></select>
                 <input type="number" id="reno-anos-input" placeholder="Años a sumar" style="margin-top:10px">
                 <button class="btn-action" onclick="renovarJugador()" style="margin-top:5px">RENOVAR</button>
                 <hr style="margin: 15px 0; border: 0.5px solid #333;">
-                <p style="font-size: 0.7rem; color: #ff4444; text-align: center;">LIBERAR quita (Sueldo x Años)</p>
-                <button class="btn-danger" onclick="liberarProceso()">LIBERAR (Despido)</button>
+                <button class="btn-danger" onclick="liberarProceso()">DESPEDIR (Pagar contrato)</button>
             </div>
 
             <div id="tab-nego" class="phone-tab">
-                <h4>Negociación</h4>
+                <h4>Negociar con Rival</h4>
                 <select id="select-jugador-rival"></select>
                 <input type="number" id="nego-oferta" placeholder="MDD Ofrecidos">
                 <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
@@ -114,8 +112,9 @@
         <div class="modal-box">
             <h3>🚨 Oferta Recibida</h3>
             <div id="oferta-content"></div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <div class="modal-grid-btns">
                 <button class="btn-action" onclick="aceptarOferta()">Aceptar</button>
+                <button class="btn-warning" onclick="contraofertar()">Contraoferta</button>
                 <button class="btn-danger" onclick="cerrarOferta()">Rechazar</button>
             </div>
         </div>
