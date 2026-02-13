@@ -20,7 +20,7 @@ function entrarEquipo(nombre, logo) {
     document.getElementById('header-name').innerText = nombre;
     document.getElementById('header-logo').src = logo;
 
-    // Escuchar mis datos
+    // Datos propios en tiempo real
     db.ref('equipos/' + nombre).on('value', snap => {
         const data = snap.val();
         if(data) {
@@ -31,7 +31,7 @@ function entrarEquipo(nombre, logo) {
         }
     });
 
-    // Escuchar al RIVAL en vivo para ver sus jugadores nuevos
+    // LISTA DEL RIVAL EN VIVO para negociar
     let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
     db.ref(`equipos/${rival}/jugadores`).on('value', snap => {
         const sel = document.getElementById('select-jugador-rival');
@@ -95,7 +95,7 @@ function liberarJugador() {
         let d = snap.val();
         let j = d.jugadores[id];
         let coste = j.salario * j.contrato;
-        if(confirm(`El despido cuesta ${coste} MDD. ¿Proceder?`)) {
+        if(confirm(`Despedir cuesta ${coste} MDD (Sueldo x Contrato). ¿Proceder?`)) {
             if(d.presupuesto >= coste) {
                 db.ref(`equipos/${equipoActualID}/presupuesto`).set(d.presupuesto - coste);
                 db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
@@ -131,8 +131,9 @@ function aceptarOferta() {
                 db.ref(`equipos/${comprador}/jugadores/${jugadorID}`).set(jData);
                 db.ref(`equipos/${comprador}/presupuesto`).set(dComp.presupuesto - monto);
                 cerrarOferta();
+                alert("Trato Cerrado!");
             });
-        }
+        } else alert("El rival ya no tiene dinero.");
     });
 }
 
@@ -149,7 +150,7 @@ function cerrarOferta() {
 }
 
 function avanzarTemporada() {
-    if(!confirm("¿Avanzar de año? Restará 1 año de contrato.")) return;
+    if(!confirm("¿Avanzar de año? Restará 1 año de contrato a todos.")) return;
     db.ref('equipos').once('value', snap => {
         let eqs = snap.val();
         Object.keys(eqs).forEach(e => {
@@ -163,7 +164,6 @@ function avanzarTemporada() {
     });
 }
 
-// UI HELPERS
 function togglePhone() { document.getElementById('phone-container').classList.toggle('phone-hidden'); }
 function openTab(id) {
     document.querySelectorAll('.phone-tab').forEach(t => t.classList.remove('active'));
