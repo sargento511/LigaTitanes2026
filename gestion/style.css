@@ -102,3 +102,46 @@ body {
 table { width: 100%; border-collapse: collapse; min-width: 600px; }
 th { background: #21262d; color: var(--accent-color); text-align: left; padding: 15px; }
 td { padding: 15px; border-bottom: 1px solid #30363d; }
+
+/* Celular Flotante */
+#phone-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 280px;
+    height: 450px;
+    background: #000;
+    border: 6px solid #333;
+    border-radius: 30px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.phone-hidden { transform: translateY(400px); }
+
+#phone-toggle {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent-color);
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.phone-screen { padding: 15px; color: white; height: 100%; }
+.phone-header { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 10px; }
+
+.phone-tabs { display: flex; justify-content: space-around; margin-bottom: 15px; }
+.phone-tabs button { background: #222; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; width: 30%; }
+
+.phone-tab { display: none; }
+.phone-tab.active { display: block; }
+
+.calc-preview { background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9rem; }
+.btn-action { width: 100%; background: var(--accent-color); color: black; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+.btn-danger { width: 100%; background: #ff4444; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; }
+
+/* Modales */
+#modal-oferta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.modal-box { background: var(--card-color); padding: 30px; border-radius: 20px; text-align: center; border: 2px solid var(--accent-color); }
