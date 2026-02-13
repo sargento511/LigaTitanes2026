@@ -287,7 +287,7 @@ function actualizarSelectRival() {
 }
 
 function finalizarTemporada() {
-    if (!confirm("¿Seguro que quieres finalizar la temporada? Se restará 1 año de contrato a todos los jugadores.")) return;
+    if (!confirm("¿Seguro que quieres finalizar la temporada? Se restará 1 año de contrato y se cobrarán los sueldos de toda la plantilla.")) return;
 
     const refEquipo = db.ref('equipos/' + equipoActualID);
     
@@ -297,18 +297,46 @@ function finalizarTemporada() {
 
         let jugadoresActualizados = { ...data.jugadores };
         let mensajes = [];
+        let totalSueldosACobrar = 0; // Variable para sumar todos los salarios
 
         Object.keys(jugadoresActualizados).forEach(id => {
             let j = jugadoresActualizados[id];
+            
+            // 1. Sumamos el salario del jugador al total de la temporada
+            totalSueldosACobrar += parseFloat(j.salario || 0);
+
+            // 2. Restamos el año de contrato
             j.contrato = parseInt(j.contrato) - 1;
 
             if (j.contrato <= 0) {
                 mensajes.push(`❌ ${j.nombre} ha terminado su contrato y se va del equipo.`);
-                delete jugadoresActualizados[id]; // Eliminar jugador
+                delete jugadoresActualizados[id]; // Se elimina si llega a 0
             } else if (j.contrato === 1) {
                 mensajes.push(`⚠️ A ${j.nombre} solo le queda 1 año de contrato.`);
             }
         });
+
+        // 3. Calculamos el nuevo presupuesto restando la suma de todos los sueldos
+        const presupuestoActual = data.presupuesto || 0;
+        const nuevoPresupuesto = presupuestoActual - totalSueldosACobrar;
+
+        // 4. Guardar cambios en Firebase (Presupuesto actualizado y contratos restados)
+        refEquipo.update({
+            presupuesto: nuevoPresupuesto,
+            estadio: document.getElementById('input-estadio').value || data.estadio,
+            capacidad: document.getElementById('input-capacidad').value || data.capacidad,
+            jugadores: jugadoresActualizados
+        }).then(() => {
+            let textoAlerta = `✅ Temporada finalizada.\n💰 Salarios pagados: ${totalSueldosACobrar} MDD.\n📉 Nuevo presupuesto: ${nuevoPresupuesto} MDD.`;
+            
+            if (mensajes.length > 0) {
+                alert(textoAlerta + "\n\nResumen de contratos:\n" + mensajes.join("\n"));
+            } else {
+                alert(textoAlerta);
+            }
+        });
+    });
+}
 
         // Guardar cambios en Firebase
         refEquipo.update({
