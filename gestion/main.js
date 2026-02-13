@@ -21,7 +21,7 @@ function entrarEquipo(nombreEquipo, logo) {
     document.getElementById('header-name').innerText = nombreEquipo;
     document.getElementById('header-logo').src = logo;
 
-    // Escucha datos propios
+    // Escucha datos propios en tiempo real
     db.ref('equipos/' + nombreEquipo).on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
@@ -40,11 +40,11 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-    escucharJugadoresRival(); // Corregido: Ahora escucha siempre
+    escucharJugadoresRival();
     escucharNegociaciones();
 }
 
-// ESCUCHA JUGADORES RIVALES (Solución Fekir/Kubo)
+// ESCUCHA RIVAL EN TIEMPO REAL (Fekir/Kubo solución)
 function escucharJugadoresRival() {
     let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
     db.ref(`equipos/${rival}/jugadores`).on('value', snap => {
@@ -58,7 +58,38 @@ function escucharJugadoresRival() {
     });
 }
 
-// FINANZAS
+// RENOVACIÓN DE CONTRATO
+function renovarJugador() {
+    const id = document.getElementById('select-jugador-gestion').value;
+    const extra = parseInt(document.getElementById('reno-anos-input').value);
+    
+    if (!id) return alert("Selecciona un jugador");
+    if (isNaN(extra) || extra <= 0) return alert("Ingresa años válidos");
+
+    db.ref(`equipos/${equipoActualID}/jugadores/${id}/contrato`).transaction(c => (c || 0) + extra)
+    .then(() => {
+        alert("✍️ Contrato renovado");
+        document.getElementById('reno-anos-input').value = "";
+    });
+}
+
+// CONTRAOFERTA (Flujo corregido)
+function contraofertar() {
+    if (!ofertaRecibida) return;
+    
+    // 1. Borrar la oferta de Firebase para que no se repita el modal
+    db.ref('negociaciones/' + equipoActualID).remove();
+    
+    // 2. Cerrar modal y abrir celular
+    document.getElementById('modal-oferta').classList.add('hidden');
+    if (document.getElementById('phone-container').classList.contains('phone-hidden')) togglePhone();
+    
+    // 3. Ir a pestaña de negociación
+    openTab('tab-nego');
+    alert("Prepara tu respuesta en el menú de negociación.");
+}
+
+// LÓGICA FINANCIERA
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
     if (v >= 120) { salario = 22; prima = 7; }
@@ -80,7 +111,7 @@ function actualizarCalculos() {
     document.getElementById('res-prima').innerText = res.prima;
 }
 
-// ACCIONES
+// ACCIONES PLANTILLA
 function contratarJugador() {
     let n = document.getElementById('calc-nombre').value;
     let v = parseFloat(document.getElementById('calc-valor').value);
@@ -109,13 +140,13 @@ function liberarProceso() {
             if (data.presupuesto >= coste) {
                 db.ref(`equipos/${equipoActualID}/jugadores/${id}`).remove();
                 db.ref(`equipos/${equipoActualID}/presupuesto`).set(data.presupuesto - coste);
-            } else alert("Presupuesto insuficiente para finiquito.");
+            } else alert("Presupuesto insuficiente.");
         }
     });
 }
 
 function avanzarTemporada() {
-    if (!confirm("¿Cerrar temporada? Los contratos bajan 1 año.")) return;
+    if (!confirm("¿Terminar temporada? Los contratos restan 1 año.")) return;
     db.ref('equipos').once('value', snap => {
         let equipos = snap.val();
         Object.keys(equipos).forEach(eKey => {
@@ -128,7 +159,7 @@ function avanzarTemporada() {
                 });
             }
         });
-        alert("🗓️ Temporada terminada.");
+        alert("🗓️ Temporada actualizada.");
     });
 }
 
@@ -136,7 +167,7 @@ function avanzarTemporada() {
 function enviarPropuesta() {
     let rival = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
     let sel = document.getElementById('select-jugador-rival');
-    if (!sel.value) return;
+    if (!sel.value) return alert("Selecciona un jugador rival");
     let oferta = {
         de: equipoActualID,
         jugadorID: sel.value,
@@ -175,16 +206,10 @@ function aceptarOferta() {
                 db.ref(`equipos/${comprador}/jugadores/${jugadorID}`).set(datosJ);
                 db.ref(`equipos/${comprador}/presupuesto`).set(dComp.presupuesto - monto);
                 cerrarOferta();
+                alert("🤝 Trato cerrado!");
             });
-        } else alert("El comprador ya no tiene dinero.");
+        } else alert("El comprador no tiene dinero.");
     });
-}
-
-function contraofertar() {
-    cerrarOferta();
-    if(document.getElementById('phone-container').classList.contains('phone-hidden')) togglePhone();
-    openTab('tab-nego');
-    alert("Prepara tu contraoferta en el menú de Negociación.");
 }
 
 function cerrarOferta() {
@@ -192,7 +217,7 @@ function cerrarOferta() {
     document.getElementById('modal-oferta').classList.add('hidden');
 }
 
-// UI HELPERS
+// HELPERS
 function togglePhone() { document.getElementById('phone-container').classList.toggle('phone-hidden'); }
 function openTab(id) {
     document.querySelectorAll('.phone-tab').forEach(t => t.classList.remove('active'));
@@ -200,14 +225,13 @@ function openTab(id) {
 }
 function renderizarJugadores(jugadores) {
     const tbody = document.getElementById('lista-jugadores');
-    tbody.innerHTML = ""; let c = 0;
+    tbody.innerHTML = "";
     if (jugadores) {
         Object.keys(jugadores).forEach(k => {
-            let j = jugadores[k]; c++;
+            let j = jugadores[k];
             tbody.innerHTML += `<tr><td>${j.nombre}</td><td>${j.valor}</td><td>${j.salario}</td><td>${j.prima}</td><td>${j.contrato}a</td></tr>`;
         });
     }
-    document.getElementById('player-count').innerText = `${c} Jugadores`;
 }
 function actualizarSelectPropio(jugadores) {
     const sel = document.getElementById('select-jugador-gestion');
