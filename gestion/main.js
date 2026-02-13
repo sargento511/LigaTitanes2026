@@ -1,4 +1,3 @@
-// Tu configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBVPj0mlp5ThkbaRb0XClwhmLPjrpTtlSk",
     authDomain: "ligatitanes-5e005.firebaseapp.com",
@@ -12,62 +11,45 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-function entrarEquipo(nombreEquipo, logo) {
-    // 1. Ocultar selección y mostrar dashboard
-    document.getElementById('selection-screen').classList.add('hidden');
-    document.getElementById('dashboard').classList.remove('hidden');
-
-    // 2. Actualizar visuales del equipo seleccionado
-    document.getElementById('header-name').innerText = nombreEquipo;
-    document.getElementById('header-logo').src = logo;
-
-    // 3. Cargar datos desde Firebase en tiempo real
-    db.ref('equipos/' + nombreEquipo).on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            document.getElementById('info-presupuesto').innerText = `$${data.presupuesto.toLocaleString()}`;
-            document.getElementById('info-estadio').innerText = data.estadio;
-            document.getElementById('info-capacidad').innerText = data.capacidad.toLocaleString() + " espectadores";
-        } else {
-            // Si el equipo no existe en la DB aún, podrías crear un perfil inicial aquí
-            console.log("Equipo nuevo, sin datos en Firebase.");
-        }
-    });
-}
-let equipoActualID = ""; // Variable global para saber qué equipo editamos
+let equipoActualID = "";
 
 function entrarEquipo(nombreEquipo, logo) {
     equipoActualID = nombreEquipo;
+    
+    // UI: Cambiar pantallas
     document.getElementById('selection-screen').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
+    
+    // UI: Header
     document.getElementById('header-name').innerText = nombreEquipo;
     document.getElementById('header-logo').src = logo;
 
-    // Escuchar datos del equipo y jugadores
+    // Escuchar cambios en Firebase (Tiempo Real)
     db.ref('equipos/' + nombreEquipo).on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            // Actualizar Overview
-            document.getElementById('info-presupuesto').innerText = `$${data.presupuesto.toLocaleString()}`;
+            // 1. Actualizar Tarjetas Superiores
+            document.getElementById('info-presupuesto').innerText = `$${(data.presupuesto || 0).toLocaleString()}`;
             document.getElementById('info-estadio').innerText = data.estadio || "Sin nombre";
             document.getElementById('info-capacidad').innerText = (data.capacidad || 0).toLocaleString();
-            
-            // Llenar los inputs de configuración por si quiere editarlos
+            document.getElementById('info-tamano').innerText = data.tamano || "No definido";
+
+            // 2. Sincronizar Inputs de Edición
             document.getElementById('input-estadio').value = data.estadio || "";
             document.getElementById('input-capacidad').value = data.capacidad || 0;
             document.getElementById('input-tamano').value = data.tamano || "";
 
-            document.getElementById('info-tamano').innerText = data.tamano || "No definido";
-
-            // Cargar Tabla de Jugadores
+            // 3. Renderizar Jugadores
             renderizarJugadores(data.jugadores);
         }
     });
 }
 
 function guardarConfiguracion() {
+    if (!equipoActualID) return;
+
     const est = document.getElementById('input-estadio').value;
-    const cap = parseInt(document.getElementById('input-capacidad').value);
+    const cap = parseInt(document.getElementById('input-capacidad').value) || 0;
     const tam = document.getElementById('input-tamano').value;
 
     db.ref('equipos/' + equipoActualID).update({
@@ -75,7 +57,7 @@ function guardarConfiguracion() {
         capacidad: cap,
         tamano: tam
     }).then(() => {
-        alert("¡Configuración de sede actualizada!");
+        alert("✅ Sede actualizada correctamente");
     });
 }
 
