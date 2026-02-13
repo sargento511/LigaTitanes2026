@@ -212,11 +212,42 @@ function actualizarSelectRival() {
     });
 }
 
-function guardarConfiguracion() {
-    db.ref('equipos/' + equipoActualID).update({
-        presupuesto: parseFloat(document.getElementById('input-presupuesto').value) || 0,
-        estadio: document.getElementById('input-estadio').value,
-        capacidad: document.getElementById('input-capacidad').value
+function finalizarTemporada() {
+    if (!confirm("¿Seguro que quieres finalizar la temporada? Se restará 1 año de contrato a todos los jugadores.")) return;
+
+    const refEquipo = db.ref('equipos/' + equipoActualID);
+    
+    refEquipo.once('value', snapshot => {
+        const data = snapshot.val();
+        if (!data || !data.jugadores) return;
+
+        let jugadoresActualizados = { ...data.jugadores };
+        let mensajes = [];
+
+        Object.keys(jugadoresActualizados).forEach(id => {
+            let j = jugadoresActualizados[id];
+            j.contrato = parseInt(j.contrato) - 1;
+
+            if (j.contrato <= 0) {
+                mensajes.push(`❌ ${j.nombre} ha terminado su contrato y se va del equipo.`);
+                delete jugadoresActualizados[id]; // Eliminar jugador
+            } else if (j.contrato === 1) {
+                mensajes.push(`⚠️ A ${j.nombre} solo le queda 1 año de contrato.`);
+            }
+        });
+
+        // Guardar cambios en Firebase
+        refEquipo.update({
+            presupuesto: parseFloat(document.getElementById('input-presupuesto').value) || data.presupuesto,
+            estadio: document.getElementById('input-estadio').value || data.estadio,
+            capacidad: document.getElementById('input-capacidad').value || data.capacidad,
+            jugadores: jugadoresActualizados
+        }).then(() => {
+            if (mensajes.length > 0) {
+                alert("Resumen de temporada:\n\n" + mensajes.join("\n"));
+            } else {
+                alert("Temporada finalizada con éxito.");
+            }
+        });
     });
-    alert("Datos guardados");
 }
