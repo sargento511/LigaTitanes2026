@@ -11,46 +11,39 @@
 body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', sans-serif; margin: 0; }
 .hidden { display: none !important; }
 
-/* Selección */
+/* Selección de Equipo */
 #selection-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
 .team-grid { display: flex; gap: 20px; }
-.team-card { background: var(--card-color); padding: 25px; border-radius: 15px; cursor: pointer; text-align: center; border: 2px solid transparent; transition: 0.3s; width: 180px; }
+.team-card { background: var(--card-color); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; border: 2px solid transparent; width: 180px; }
 .team-card:hover { border-color: var(--accent-color); transform: translateY(-5px); }
-.logo-wrapper img { width: 100px; height: 100px; object-fit: contain; }
+
+/* FIX DE LOGOS */
+.logo-wrapper { width: 100px; height: 100px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; }
+.logo-wrapper img { width: 100%; height: 100%; object-fit: contain; } /* ESTO ARREGLA LA PROPORCIÓN */
 
 /* Dashboard */
-.top-nav { background: #161b22; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top:0; z-index:99; }
-.nav-actions { display: flex; gap: 10px; }
-.btn-season { background: var(--warning); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-.btn-exit { background: #444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+.top-nav { background: #161b22; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+.overview-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
+.stat-card { background: var(--card-color); padding: 15px; border-radius: 10px; text-align: center; }
 
-.overview-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; padding: 20px; }
-.stat-card { background: var(--card-color); padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
-.stadium-config { background: var(--card-color); margin: 0 20px; padding: 20px; border-radius: 12px; }
-.config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: flex-end; }
-
-input, select { background: #0b0e14; border: 1px solid #333; color: white; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; }
-.btn-save, .btn-action { background: var(--success); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.btn-warning { background: var(--warning); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-.btn-danger { background: var(--danger); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-.player-list-section { padding: 20px; margin-bottom: 100px; }
+/* Tablas */
+.table-container { padding: 0 20px; }
 table { width: 100%; border-collapse: collapse; background: var(--card-color); border-radius: 10px; overflow: hidden; }
 th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+th { color: var(--accent-color); font-size: 0.8rem; }
 
 /* Celular */
-#phone-container { position: fixed; bottom: 20px; right: 20px; width: 270px; height: 480px; background: #000; border: 5px solid #333; border-radius: 30px; z-index: 1000; overflow: hidden; transition: 0.4s; }
-.phone-hidden { transform: translateY(435px); }
-#phone-toggle { width: 100%; padding: 12px; background: var(--accent-color); border: none; font-weight: bold; cursor: pointer; color: black; }
+#phone-container { position: fixed; bottom: 20px; right: 20px; width: 280px; height: 480px; background: #000; border: 5px solid #333; border-radius: 30px; z-index: 1000; transition: 0.4s; overflow: hidden; }
+.phone-hidden { transform: translateY(430px); }
+#phone-toggle { width: 100%; padding: 15px; background: var(--accent-color); border: none; font-weight: bold; cursor: pointer; }
 .phone-screen { padding: 15px; }
-.phone-tabs { display: flex; justify-content: space-around; margin-bottom: 15px; }
-.phone-tabs button { background: #222; border: none; color: white; padding: 10px; border-radius: 8px; cursor: pointer; width: 30%; font-size: 1.2rem; }
-.phone-tab { display: none; }
-.phone-tab.active { display: block; }
-.calc-preview { background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.75rem; border-left: 3px solid var(--accent-color); }
+.phone-tabs { display: flex; justify-content: space-between; margin-bottom: 15px; }
+.phone-tabs button { background: #222; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; width: 30%; }
+input, select { background: #111; color: white; border: 1px solid #333; padding: 10px; width: 100%; border-radius: 5px; box-sizing: border-box; margin-bottom: 10px; }
+.btn-action { background: var(--success); color: white; border: none; width: 100%; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+.btn-danger { background: var(--danger); color: white; border: none; width: 100%; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
 /* Modal */
-#modal-oferta { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 2000; }
-.modal-box { background: var(--card-color); padding: 25px; border-radius: 20px; text-align: center; border: 2px solid var(--accent-color); width: 85%; max-width: 320px; }
-.modal-grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-.modal-grid-btns .btn-danger { grid-column: span 2; }
+#modal-oferta { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.modal-box { background: var(--card-color); padding: 25px; border-radius: 15px; border: 2px solid var(--accent-color); width: 280px; text-align: center; }
+.modal-grid-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
