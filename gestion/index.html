@@ -1,3 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga Titanes 2026 - Selección</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+
+    <div id="selection-screen" class="fade-in">
+        <h1 class="main-title">LIGA TITANES 2026</h1>
+        <p class="subtitle">Selecciona tu equipo para comenzar la gestión</p>
+        
+        <div class="team-grid">
+            <div class="team-card" onclick="entrarEquipo('HALCONES ROJOS', 'hal.png')">
+                <div class="logo-wrapper">
+                    <img src="hal.png" alt="Halcones Rojos">
+                </div>
+                <h2>HALCONES ROJOS</h2>
+                <button class="btn-select">Gestionar</button>
+            </div>
+
+            <div class="team-card" onclick="entrarEquipo('DEPORTIVO FEDERAL', 'dep_logo.png')">
+                <div class="logo-wrapper">
+                    <img src="dep_logo.png" alt="Deportivo Federal">
+                </div>
+                <h2>DEPORTIVO FEDERAL</h2>
+                <button class="btn-select">Gestionar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+        <header class="top-nav">
+            <div class="current-team-info">
+                <img id="header-logo" src="" alt="Logo">
+                <h2 id="header-name"></h2>
+            </div>
+            <button class="btn-exit" onclick="location.reload()">Cerrar Sesión</button>
+        </header>
+
+        <section class="overview-cards">
+            <div class="stat-card">
+                <span class="label">Presupuesto</span>
+                <h3 id="info-presupuesto">$0</h3>
+            </div>
+            <div class="stat-card">
+                <span class="label">Estadio</span>
+                <h3 id="info-estadio">-</h3>
+            </div>
+            <div class="stat-card">
+                <span class="label">Capacidad</span>
+                <h3 id="info-capacidad">0</h3>
+            </div>
+        </section>
+    </div>
+
+    <script src="main.js"></script>
+
 <section class="stadium-config">
     <h3>Configuración de Sede</h3>
     <div class="config-grid">
@@ -38,3 +100,5 @@
         </table>
     </div>
 </section>
+    </body>
+</html>
