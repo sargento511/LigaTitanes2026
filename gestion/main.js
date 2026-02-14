@@ -35,28 +35,22 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-  // Escuchar ofertas (BLOQUE CORREGIDO PARA EVITAR BLOQUEOS)
+    // Escuchar ofertas
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
-        const modal = document.getElementById('modal-oferta');
-        const content = document.getElementById('oferta-content');
-
-        if (of && modal && content) {
+        if (of) {
             ofertaRecibida = of;
-            modal.classList.remove('hidden');
-            
-            // Verificamos si hay intercambio de forma segura
-            let plus = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
-            
-            content.innerHTML = `
-                <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre || "Jugador"}</b></p>
-                <p>Ofrece: <b>${of.monto || 0} MDD</b>${plus}</p>
+            document.getElementById('modal-oferta').classList.remove('hidden');
+            document.getElementById('oferta-content').innerHTML = `
+                <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
+                <p>Ofrece: <b>${of.monto} MDD</b></p>
             `;
         } else {
-            if (modal) modal.classList.add('hidden');
+            document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
-    
+}
+
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
@@ -200,68 +194,48 @@ function venderJugadorMitad() {
     });
 }
 
+// MERCADO
 function enviarPropuesta() {
-    const jRivalID = document.getElementById('select-jugador-rival').value;
+    const jugadorID = document.getElementById('select-jugador-rival').value;
     const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
-    const jPropioID = document.getElementById('select-jugador-intercambio') ? document.getElementById('select-jugador-intercambio').value : "";
     const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    if (!jRivalID) return alert("Selecciona un jugador del rival.");
+    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
 
-    db.ref(`equipos/${rivalID}/jugadores/${jRivalID}`).once('value', snap => {
-        const dataR = snap.val();
-        if(!dataR) return alert("Error al obtener datos del rival.");
-
-        let datos = {
+    db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
+        const j = snap.val();
+        db.ref('negociaciones/' + rivalID).set({
             de: equipoActualID,
-            jugadorID: jRivalID,
-            jugadorNombre: dataR.nombre,
+            jugadorID: jugadorID,
+            jugadorNombre: j.nombre,
             monto: monto
-        };
-
-        if (jPropioID && jPropioID !== "") {
-            db.ref(`equipos/${equipoActualID}/jugadores/${jPropioID}`).once('value', snapP => {
-                const dataP = snapP.val();
-                datos.jugadorOfrecidoID = jPropioID;
-                datos.jugadorOfrecidoNombre = dataP.nombre;
-                db.ref('negociaciones/' + rivalID).set(datos);
-            });
-        } else {
-            db.ref('negociaciones/' + rivalID).set(datos);
-        }
-        alert("¡Oferta enviada con éxito!");
+        });
+        alert("Oferta enviada!");
     });
 }
+
 function aceptarOferta() {
-    if (!ofertaRecibida) return;
     const of = ofertaRecibida;
     const comprador = of.de;
     const vendedor = equipoActualID;
 
     db.ref(`equipos/${vendedor}`).once('value', snapV => {
         const dataV = snapV.val();
-        const jVendido = dataV.jugadores[of.jugadorID];
+        const j = dataV.jugadores[of.jugadorID];
 
         db.ref(`equipos/${comprador}`).once('value', snapC => {
             const dataC = snapC.val();
             
-            // Cobrar y pagar
+            // 1. Cobrar al comprador
             db.ref(`equipos/${comprador}/presupuesto`).set(dataC.presupuesto - of.monto);
+            // 2. Pagar al vendedor
             db.ref(`equipos/${vendedor}/presupuesto`).set(dataV.presupuesto + of.monto);
-
-            // Mover jugador comprado
-            db.ref(`equipos/${comprador}/jugadores`).push(jVendido);
+            // 3. Mover jugador
+            db.ref(`equipos/${comprador}/jugadores`).push(j);
             db.ref(`equipos/${vendedor}/jugadores/${of.jugadorID}`).remove();
             
-            // Mover intercambio si existe
-            if (of.jugadorOfrecidoID) {
-                const jInter = dataC.jugadores[of.jugadorOfrecidoID];
-                db.ref(`equipos/${vendedor}/jugadores`).push(jInter);
-                db.ref(`equipos/${comprador}/jugadores/${of.jugadorOfrecidoID}`).remove();
-            }
-            
             cerrarOferta();
-            alert("✅ ¡Trato cerrado con éxito!");
+            alert("Trato cerrado!");
         });
     });
 }
