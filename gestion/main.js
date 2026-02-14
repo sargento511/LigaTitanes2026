@@ -240,30 +240,36 @@ function enviarFinal(rivalID, pack) {
 
 function aceptarOferta() {
     const of = ofertaRecibida;
-    const comprador = of.de;
-    const vendedor = equipoActualID;
+    const comprador = of.de; // Quien envió la oferta
+    const vendedor = equipoActualID; // Quien la recibe
 
     db.ref(`equipos/${vendedor}`).once('value', snapV => {
         const dataV = snapV.val();
-        const j = dataV.jugadores[of.jugadorID];
+        const jVendido = dataV.jugadores[of.jugadorID]; // El jugador que me piden
 
         db.ref(`equipos/${comprador}`).once('value', snapC => {
             const dataC = snapC.val();
             
-            // 1. Cobrar al comprador
+            // 1. Mover Dinero
             db.ref(`equipos/${comprador}/presupuesto`).set(dataC.presupuesto - of.monto);
-            // 2. Pagar al vendedor
             db.ref(`equipos/${vendedor}/presupuesto`).set(dataV.presupuesto + of.monto);
-            // 3. Mover jugador
-            db.ref(`equipos/${comprador}/jugadores`).push(j);
+
+            // 2. Mover Jugador Pedido (Vendedor -> Comprador)
+            db.ref(`equipos/${comprador}/jugadores`).push(jVendido);
             db.ref(`equipos/${vendedor}/jugadores/${of.jugadorID}`).remove();
             
+            // 3. SI HAY INTERCAMBIO: Mover Jugador Ofrecido (Comprador -> Vendedor)
+            if (of.jugadorOfrecidoID) {
+                const jOfrecido = dataC.jugadores[of.jugadorOfrecidoID];
+                db.ref(`equipos/${vendedor}/jugadores`).push(jOfrecido);
+                db.ref(`equipos/${comprador}/jugadores/${of.jugadorOfrecidoID}`).remove();
+            }
+            
             cerrarOferta();
-            alert("Trato cerrado!");
+            alert("🤝 ¡Trato cerrado e intercambio realizado!");
         });
     });
 }
-
 function contraofertar() {
     cerrarOferta();
     togglePhone();
