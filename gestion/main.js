@@ -271,10 +271,22 @@ function renderizarJugadores(jugadores) {
 }
 
 function actualizarSelectPropio(jugadores) {
-    const sel = document.getElementById('select-jugador-gestion');
-    if (sel) {
-        sel.innerHTML = "";
-        if (jugadores) Object.keys(jugadores).forEach(id => sel.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`);
+    const selGestion = document.getElementById('select-jugador-gestion');
+    const selIntercambio = document.getElementById('select-jugador-intercambio');
+    
+    // 1. Limpiamos ambos menús
+    if (selGestion) selGestion.innerHTML = "";
+    if (selIntercambio) selIntercambio.innerHTML = '<option value="">Solo dinero</option>';
+    
+    // 2. Si hay jugadores, los metemos en ambos selects
+    if (jugadores) {
+        Object.keys(jugadores).forEach(id => {
+            const j = jugadores[id];
+            const opt = `<option value="${id}">${j.nombre}</option>`;
+            
+            if (selGestion) selGestion.innerHTML += opt;
+            if (selIntercambio) selIntercambio.innerHTML += opt;
+        });
     }
 }
 
