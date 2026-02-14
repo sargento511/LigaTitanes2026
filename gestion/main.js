@@ -35,7 +35,7 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-   // Escuchar ofertas entrantes
+   // Escuchar ofertas (Corregido para que no bloquee la entrada)
     db.ref('negociaciones/' + nombreEquipo).on('value', (snap) => {
         const of = snap.val();
         const modal = document.getElementById('modal-oferta');
@@ -45,16 +45,18 @@ function entrarEquipo(nombreEquipo, logo) {
             ofertaRecibida = of;
             modal.classList.remove('hidden');
             
-            let txtIntercambio = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
+            // Verificamos si hay intercambio de forma segura
+            let textoExtra = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
             
             content.innerHTML = `
-                <p><b>${of.de}</b> quiere fichar a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b>${txtIntercambio}</p>
+                <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
+                <p>Ofrece: <b>${of.monto} MDD</b>${textoExtra}</p>
             `;
         } else if (modal) {
             modal.classList.add('hidden');
         }
     });
+    
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
