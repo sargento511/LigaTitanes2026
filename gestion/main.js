@@ -222,6 +222,9 @@ function aceptarOferta() {
     db.ref(`equipos/${vendedor}`).once('value', snapV => {
         const dataV = snapV.val();
         const j = dataV.jugadores[of.jugadorID];
+
+        db.ref(`equipos/${comprador}`).once('value', snapC => {
+            const dataC = snapC.val();
             
             // 1. Cobrar al comprador
             db.ref(`equipos/${comprador}/presupuesto`).set(dataC.presupuesto - of.monto);
@@ -270,6 +273,10 @@ function renderizarJugadores(jugadores) {
 function actualizarSelectPropio(jugadores) {
     const selGestion = document.getElementById('select-jugador-gestion');
     const selIntercambio = document.getElementById('select-jugador-intercambio');
+    
+    // 1. Limpiamos ambos menús
+    if (selGestion) selGestion.innerHTML = "";
+    if (selIntercambio) selIntercambio.innerHTML = '<option value="">Solo dinero</option>';
     
     // 2. Si hay jugadores, los metemos en ambos selects
     if (jugadores) {
