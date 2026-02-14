@@ -35,30 +35,21 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-    // ESCUCHAR OFERTAS (REHECHO)
+    // Escuchar ofertas
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
-        const modal = document.getElementById('modal-oferta');
-        const content = document.getElementById('oferta-content');
-
-        if (of && of.jugadorNombre && modal && content) {
+        if (of) {
             ofertaRecibida = of;
-            modal.classList.remove('hidden');
-            
-            // Texto dinámico: Soporta solo dinero o dinero + jugador
-            let detalleIntercambio = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
-            
-            content.innerHTML = `
-                <div style="text-align:center; background:#1a1a1a; padding:15px; border-radius:10px; border:1px solid #444;">
-                    <p style="color:#aaa; margin-bottom:5px;">${of.de} propone:</p>
-                    <h3 style="margin:10px 0;">${of.jugadorNombre}</h3>
-                    <p style="font-size:1.2em; color:#2ecc71;"><b>${of.monto} MDD</b>${detalleIntercambio}</p>
-                </div>
+            document.getElementById('modal-oferta').classList.remove('hidden');
+            document.getElementById('oferta-content').innerHTML = `
+                <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
+                <p>Ofrece: <b>${of.monto} MDD</b></p>
             `;
         } else {
-            if (modal) modal.classList.add('hidden');
+            document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
+}
 
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
@@ -203,50 +194,26 @@ function venderJugadorMitad() {
     });
 }
 
+// MERCADO
 function enviarPropuesta() {
-    const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
-    const jRivalID = document.getElementById('select-jugador-rival').value;
+    const jugadorID = document.getElementById('select-jugador-rival').value;
     const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
-    
-    // Intentamos obtener el selector de intercambio si existe en tu HTML
-    const selectInter = document.getElementById('select-jugador-intercambio');
-    const jPropioID = selectInter ? selectInter.value : "";
+    const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    if (!jRivalID) return alert("❌ Selecciona un jugador del rival.");
+    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
 
-    // 1. Obtenemos los datos del jugador del RIVAL
-    db.ref(`equipos/${rivalID}/jugadores/${jRivalID}`).once('value').then(snap => {
-        const dataR = snap.val();
-        if(!dataR) throw new Error("No se encontró el jugador rival");
-
-        let paqueteOferta = {
+    db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
+        const j = snap.val();
+        db.ref('negociaciones/' + rivalID).set({
             de: equipoActualID,
-            jugadorID: jRivalID,
-            jugadorNombre: dataR.nombre,
+            jugadorID: jugadorID,
+            jugadorNombre: j.nombre,
             monto: monto
-        };
-
-        // 2. ¿Hay intercambio? Obtenemos datos de TU jugador
-        if (jPropioID && jPropioID !== "") {
-            return db.ref(`equipos/${equipoActualID}/jugadores/${jPropioID}`).once('value').then(snapP => {
-                const dataP = snapP.val();
-                paqueteOferta.jugadorOfrecidoID = jPropioID;
-                paqueteOferta.jugadorOfrecidoNombre = dataP.nombre;
-                return paqueteOferta;
-            });
-        }
-        return paqueteOferta;
-    }).then(datosFinales => {
-        // 3. Enviamos la oferta final al nodo del RIVAL
-        return db.ref('negociaciones/' + rivalID).set(datosFinales);
-    }).then(() => {
-        alert("🚀 ¡Oferta enviada con éxito!");
-    }).catch(err => {
-        console.error(err);
-        alert("Error al enviar la oferta.");
+        });
+        alert("Oferta enviada!");
     });
 }
-    
+
 function aceptarOferta() {
     const of = ofertaRecibida;
     const comprador = of.de;
