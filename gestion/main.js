@@ -35,24 +35,29 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-    // Escuchar ofertas
+   // Escuchar ofertas (REEMPLAZA ESTO)
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         const modal = document.getElementById('modal-oferta');
-    if (of && of.jugadorNombre) { // <--- Validación clave
-        if (of) {
+        const content = document.getElementById('oferta-content');
+
+        // Solo actuamos si existen los elementos en el HTML y hay una oferta válida
+        if (of && of.jugadorNombre && modal && content) {
             ofertaRecibida = of;
-            document.getElementById('modal-oferta').classList.remove('hidden');
-            document.getElementById('oferta-content').innerHTML = `
+            modal.classList.remove('hidden');
+            
+            // Si agregaste la lógica de intercambio, aquí la protegemos también
+            let plus = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
+            
+            content.innerHTML = `
                 <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b></p>
+                <p>Ofrece: <b>${of.monto} MDD</b>${plus}</p>
             `;
         } else {
-            document.getElementById('modal-oferta').classList.add('hidden');
+            // Si no hay nada, escondemos el modal sin que el código explote
+            if (modal) modal.classList.add('hidden');
         }
     });
-}
-
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
@@ -197,32 +202,35 @@ function venderJugadorMitad() {
 }
 
 function enviarPropuesta() {
-    const jugadorID = document.getElementById('select-jugador-rival').value;
-    const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
+    const selectorRival = document.getElementById('select-jugador-rival');
+    const inputMonto = document.getElementById('nego-oferta');
+    
+    // Si no hay nada seleccionado, frenamos aquí para que no de error
+    if (!selectorRival || !selectorRival.value) return alert("Selecciona un jugador del rival");
+    
+    const jugadorID = selectorRival.value;
+    const monto = parseFloat(inputMonto.value) || 0;
     const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
-
-    // Buscamos al jugador en la base de datos del rival para sacar su nombre
+    // Buscamos el nombre real en la base de datos para no mandar datos vacíos
     db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
         const j = snap.val();
-        
-        if (!j || !j.nombre) {
-            console.error("No se encontró el nombre del jugador en:", rivalID, jugadorID);
-            return alert("Error: No se pudo obtener el nombre del jugador.");
-        }
+        if (!j) return alert("No se encontraron datos del jugador rival");
 
-        // Enviamos la oferta con el nombre ya confirmado
+        // Mandamos la oferta completa
         db.ref('negociaciones/' + rivalID).set({
             de: equipoActualID,
             jugadorID: jugadorID,
-            jugadorNombre: j.nombre, // <--- Esto debe coincidir con tu receptor
+            jugadorNombre: j.nombre,
             monto: monto
         }).then(() => {
             alert("¡Oferta enviada con éxito!");
+        }).catch(e => {
+            console.error("Error al enviar:", e);
         });
     });
 }
+
 function aceptarOferta() {
     const of = ofertaRecibida;
     const comprador = of.de;
