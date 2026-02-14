@@ -222,9 +222,6 @@ function aceptarOferta() {
     db.ref(`equipos/${vendedor}`).once('value', snapV => {
         const dataV = snapV.val();
         const j = dataV.jugadores[of.jugadorID];
-
-        db.ref(`equipos/${comprador}`).once('value', snapC => {
-            const dataC = snapC.val();
             
             // 1. Cobrar al comprador
             db.ref(`equipos/${comprador}/presupuesto`).set(dataC.presupuesto - of.monto);
