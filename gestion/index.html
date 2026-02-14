@@ -106,14 +106,20 @@
                 </div>
 
                 <div id="tab-nego" class="phone-tab">
-                    <h4>Oferta a Rival</h4>
-                    <select id="select-jugador-rival"></select>
-                    <input type="number" id="nego-oferta" placeholder="MDD Ofrecidos">
-                    <button class="btn-action" onclick="enviarPropuesta()">ENVIAR OFERTA</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h4>Oferta a Rival</h4>
+    <label>Jugador que deseas:</label>
+    <select id="select-jugador-rival"></select>
+    
+    <label>Ofreces Dinero (MDD):</label>
+    <input type="number" id="nego-oferta" placeholder="Monto MDD">
+    
+    <label>Ofreces Jugador (Opcional):</label>
+    <select id="select-jugador-intercambio">
+        <option value="">Solo dinero</option>
+    </select>
+    
+    <button class="btn-action" onclick="enviarPropuesta()" style="margin-top:10px">ENVIAR OFERTA</button>
+</div>
 
     <div id="modal-oferta" class="hidden">
         <div class="modal-box">
