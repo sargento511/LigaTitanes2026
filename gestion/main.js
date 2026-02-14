@@ -197,23 +197,34 @@ function venderJugadorMitad() {
     });
 }
 
-// MERCADO
-function enviarPropuesta() {
+    function enviarPropuesta() {
     const jugadorID = document.getElementById('select-jugador-rival').value;
     const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
+    const intercambioID = document.getElementById('select-jugador-intercambio').value;
     const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
+    if (!jugadorID || monto < 0) return alert("Datos incompletos");
 
     db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
         const j = snap.val();
-        db.ref('negociaciones/' + rivalID).set({
+        let packOferta = {
             de: equipoActualID,
             jugadorID: jugadorID,
             jugadorNombre: j.nombre,
             monto: monto
-        });
-        alert("Oferta enviada!");
+        };
+
+        // Si seleccionaste un jugador para dar a cambio
+        if (intercambioID) {
+            db.ref(`equipos/${equipoActualID}/jugadores/${intercambioID}`).once('value', s => {
+                packOferta.jugadorOfrecidoID = intercambioID;
+                packOferta.jugadorOfrecidoNombre = s.val().nombre;
+                db.ref('negociaciones/' + rivalID).set(packOferta);
+            });
+        } else {
+            db.ref('negociaciones/' + rivalID).set(packOferta);
+        }
+        alert("¡Oferta enviada con éxito!");
     });
 }
 
