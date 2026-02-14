@@ -35,25 +35,22 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-   // Escuchar ofertas (CORREGIDO)
+    // Escuchar ofertas
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         if (of) {
             ofertaRecibida = of;
             document.getElementById('modal-oferta').classList.remove('hidden');
-            
-            // Si hay un jugador ofrecido, añadimos el texto
-            let plus = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
-            
             document.getElementById('oferta-content').innerHTML = `
                 <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b>${plus}</p>
+                <p>Ofrece: <b>${of.monto} MDD</b></p>
             `;
         } else {
             document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
-    
+}
+
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
@@ -197,34 +194,23 @@ function venderJugadorMitad() {
     });
 }
 
-    function enviarPropuesta() {
+// MERCADO
+function enviarPropuesta() {
     const jugadorID = document.getElementById('select-jugador-rival').value;
     const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
-    const intercambioID = document.getElementById('select-jugador-intercambio').value;
     const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    if (!jugadorID || monto < 0) return alert("Datos incompletos");
+    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
 
     db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
         const j = snap.val();
-        let packOferta = {
+        db.ref('negociaciones/' + rivalID).set({
             de: equipoActualID,
             jugadorID: jugadorID,
             jugadorNombre: j.nombre,
             monto: monto
-        };
-
-        // Si seleccionaste un jugador para dar a cambio
-        if (intercambioID) {
-            db.ref(`equipos/${equipoActualID}/jugadores/${intercambioID}`).once('value', s => {
-                packOferta.jugadorOfrecidoID = intercambioID;
-                packOferta.jugadorOfrecidoNombre = s.val().nombre;
-                db.ref('negociaciones/' + rivalID).set(packOferta);
-            });
-        } else {
-            db.ref('negociaciones/' + rivalID).set(packOferta);
-        }
-        alert("¡Oferta enviada con éxito!");
+        });
+        alert("Oferta enviada!");
     });
 }
 
