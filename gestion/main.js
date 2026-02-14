@@ -35,22 +35,25 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-    // Escuchar ofertas
+   // Escuchar ofertas (CORREGIDO)
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         if (of) {
             ofertaRecibida = of;
             document.getElementById('modal-oferta').classList.remove('hidden');
+            
+            // Si hay un jugador ofrecido, añadimos el texto
+            let plus = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
+            
             document.getElementById('oferta-content').innerHTML = `
                 <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b></p>
+                <p>Ofrece: <b>${of.monto} MDD</b>${plus}</p>
             `;
         } else {
             document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
-}
-
+    
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
