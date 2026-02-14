@@ -35,29 +35,22 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-// Escuchar ofertas (BLOQUE CORREGIDO)
+    // Escuchar ofertas
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
-        const modal = document.getElementById('modal-oferta');
-        const content = document.getElementById('oferta-content');
-
-        // Solo actuamos si hay una oferta real y los elementos existen
-        if (of && of.jugadorNombre && modal && content) {
+        if (of) {
             ofertaRecibida = of;
-            modal.classList.remove('hidden');
-            
-            // Si hay un jugador ofrecido, lo sumamos al texto
-            let plus = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
-            
-            content.innerHTML = `
+            document.getElementById('modal-oferta').classList.remove('hidden');
+            document.getElementById('oferta-content').innerHTML = `
                 <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b>${plus}</p>
+                <p>Ofrece: <b>${of.monto} MDD</b></p>
             `;
         } else {
-            // Si no hay oferta, simplemente escondemos el modal sin errores
-            if (modal) modal.classList.add('hidden');
+            document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
+}
+
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
@@ -201,39 +194,26 @@ function venderJugadorMitad() {
     });
 }
 
+// MERCADO
 function enviarPropuesta() {
     const jugadorID = document.getElementById('select-jugador-rival').value;
     const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
-    const interID = document.getElementById('select-jugador-intercambio') ? document.getElementById('select-jugador-intercambio').value : "";
     const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    if (!jugadorID) return alert("Selecciona un jugador del rival");
+    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
 
     db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
         const j = snap.val();
-        if(!j) return alert("Error al obtener datos");
-
-        let pack = {
+        db.ref('negociaciones/' + rivalID).set({
             de: equipoActualID,
             jugadorID: jugadorID,
             jugadorNombre: j.nombre,
             monto: monto
-        };
-
-        // Si el usuario eligió un jugador para dar a cambio
-        if (interID && interID !== "") {
-            db.ref(`equipos/${equipoActualID}/jugadores/${interID}`).once('value', s => {
-                const jP = s.val();
-                pack.jugadorOfrecidoID = interID;
-                pack.jugadorOfrecidoNombre = jP.nombre;
-                db.ref('negociaciones/' + rivalID).set(pack);
-            });
-        } else {
-            db.ref('negociaciones/' + rivalID).set(pack);
-        }
-        alert("¡Oferta enviada!");
+        });
+        alert("Oferta enviada!");
     });
 }
+
 function aceptarOferta() {
     const of = ofertaRecibida;
     const comprador = of.de;
