@@ -35,21 +35,23 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-    // Escuchar ofertas
+   // Escuchar ofertas (DENTRO DE entrarEquipo)
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
-        if (of) {
+        const modal = document.getElementById('modal-oferta');
+        const content = document.getElementById('oferta-content');
+
+        if (of && of.jugadorNombre && modal && content) {
             ofertaRecibida = of;
-            document.getElementById('modal-oferta').classList.remove('hidden');
-            document.getElementById('oferta-content').innerHTML = `
+            modal.classList.remove('hidden');
+            content.innerHTML = `
                 <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
                 <p>Ofrece: <b>${of.monto} MDD</b></p>
             `;
-        } else {
-            document.getElementById('modal-oferta').classList.add('hidden');
+        } else if (modal) {
+            modal.classList.add('hidden');
         }
     });
-}
 
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
@@ -194,23 +196,23 @@ function venderJugadorMitad() {
     });
 }
 
-// MERCADO
 function enviarPropuesta() {
-    const jugadorID = document.getElementById('select-jugador-rival').value;
-    const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
     const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
+    const jRivalID = document.getElementById('select-jugador-rival').value;
+    const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
 
-    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
+    if (!jRivalID || monto <= 0) return alert("Selecciona un jugador y pon un monto válido");
 
-    db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
+    db.ref(`equipos/${rivalID}/jugadores/${jRivalID}`).once('value', snap => {
         const j = snap.val();
+        if (!j) return alert("Error al obtener datos del jugador");
+
         db.ref('negociaciones/' + rivalID).set({
             de: equipoActualID,
-            jugadorID: jugadorID,
+            jugadorID: jRivalID,
             jugadorNombre: j.nombre,
             monto: monto
-        });
-        alert("Oferta enviada!");
+        }).then(() => alert("¡Oferta enviada!"));
     });
 }
 
@@ -272,21 +274,14 @@ function renderizarJugadores(jugadores) {
 
 function actualizarSelectPropio(jugadores) {
     const selGestion = document.getElementById('select-jugador-gestion');
-    const selIntercambio = document.getElementById('select-jugador-intercambio');
     
-    // 1. Limpiamos ambos menús
-    if (selGestion) selGestion.innerHTML = "";
-    if (selIntercambio) selIntercambio.innerHTML = '<option value="">Solo dinero</option>';
-    
-    // 2. Si hay jugadores, los metemos en ambos selects
-    if (jugadores) {
-        Object.keys(jugadores).forEach(id => {
-            const j = jugadores[id];
-            const opt = `<option value="${id}">${j.nombre}</option>`;
-            
-            if (selGestion) selGestion.innerHTML += opt;
-            if (selIntercambio) selIntercambio.innerHTML += opt;
-        });
+    if (selGestion) {
+        selGestion.innerHTML = "";
+        if (jugadores) {
+            Object.keys(jugadores).forEach(id => {
+                selGestion.innerHTML += `<option value="${id}">${jugadores[id].nombre}</option>`;
+            });
+        }
     }
 }
 
