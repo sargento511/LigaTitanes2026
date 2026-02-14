@@ -35,7 +35,8 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-   db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
+  // Escuchar ofertas
+    db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         if (of) {
             ofertaRecibida = of;
@@ -48,6 +49,7 @@ function entrarEquipo(nombreEquipo, logo) {
             document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
+    
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
@@ -268,11 +270,16 @@ function renderizarJugadores(jugadores) {
 
 function actualizarSelectPropio(jugadores) {
     const selGestion = document.getElementById('select-jugador-gestion');
-    selGestion.innerHTML = "";
+    
+    // Limpiamos el menú
+    if (selGestion) selGestion.innerHTML = "";
+    
+    // Llenamos solo el de gestión
     if (jugadores) {
-        Object.keys(jugadores).forEach((id) => {
+        Object.keys(jugadores).forEach(id => {
             const j = jugadores[id];
-            selGestion.innerHTML += `<option value="${id}">${j.nombre}</option>`;
+            const opt = `<option value="${id}">${j.nombre}</option>`;
+            if (selGestion) selGestion.innerHTML += opt;
         });
     }
 }
