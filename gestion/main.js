@@ -274,10 +274,6 @@ function actualizarSelectPropio(jugadores) {
     const selGestion = document.getElementById('select-jugador-gestion');
     const selIntercambio = document.getElementById('select-jugador-intercambio');
     
-    // 1. Limpiamos ambos menús
-    if (selGestion) selGestion.innerHTML = "";
-    if (selIntercambio) selIntercambio.innerHTML = '<option value="">Solo dinero</option>';
-    
     // 2. Si hay jugadores, los metemos en ambos selects
     if (jugadores) {
         Object.keys(jugadores).forEach(id => {
