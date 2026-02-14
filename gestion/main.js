@@ -35,18 +35,18 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-   // Escuchar ofertas (REEMPLAZA ESTO)
+// Escuchar ofertas (BLOQUE CORREGIDO)
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         const modal = document.getElementById('modal-oferta');
         const content = document.getElementById('oferta-content');
 
-        // Solo actuamos si existen los elementos en el HTML y hay una oferta válida
+        // Solo actuamos si hay una oferta real y los elementos existen
         if (of && of.jugadorNombre && modal && content) {
             ofertaRecibida = of;
             modal.classList.remove('hidden');
             
-            // Si agregaste la lógica de intercambio, aquí la protegemos también
+            // Si hay un jugador ofrecido, lo sumamos al texto
             let plus = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
             
             content.innerHTML = `
@@ -54,7 +54,7 @@ function entrarEquipo(nombreEquipo, logo) {
                 <p>Ofrece: <b>${of.monto} MDD</b>${plus}</p>
             `;
         } else {
-            // Si no hay nada, escondemos el modal sin que el código explote
+            // Si no hay oferta, simplemente escondemos el modal sin errores
             if (modal) modal.classList.add('hidden');
         }
     });
@@ -202,35 +202,38 @@ function venderJugadorMitad() {
 }
 
 function enviarPropuesta() {
-    const selectorRival = document.getElementById('select-jugador-rival');
-    const inputMonto = document.getElementById('nego-oferta');
-    
-    // Si no hay nada seleccionado, frenamos aquí para que no de error
-    if (!selectorRival || !selectorRival.value) return alert("Selecciona un jugador del rival");
-    
-    const jugadorID = selectorRival.value;
-    const monto = parseFloat(inputMonto.value) || 0;
+    const jugadorID = document.getElementById('select-jugador-rival').value;
+    const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
+    const interID = document.getElementById('select-jugador-intercambio') ? document.getElementById('select-jugador-intercambio').value : "";
     const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    // Buscamos el nombre real en la base de datos para no mandar datos vacíos
+    if (!jugadorID) return alert("Selecciona un jugador del rival");
+
     db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
         const j = snap.val();
-        if (!j) return alert("No se encontraron datos del jugador rival");
+        if(!j) return alert("Error al obtener datos");
 
-        // Mandamos la oferta completa
-        db.ref('negociaciones/' + rivalID).set({
+        let pack = {
             de: equipoActualID,
             jugadorID: jugadorID,
             jugadorNombre: j.nombre,
             monto: monto
-        }).then(() => {
-            alert("¡Oferta enviada con éxito!");
-        }).catch(e => {
-            console.error("Error al enviar:", e);
-        });
+        };
+
+        // Si el usuario eligió un jugador para dar a cambio
+        if (interID && interID !== "") {
+            db.ref(`equipos/${equipoActualID}/jugadores/${interID}`).once('value', s => {
+                const jP = s.val();
+                pack.jugadorOfrecidoID = interID;
+                pack.jugadorOfrecidoNombre = jP.nombre;
+                db.ref('negociaciones/' + rivalID).set(pack);
+            });
+        } else {
+            db.ref('negociaciones/' + rivalID).set(pack);
+        }
+        alert("¡Oferta enviada!");
     });
 }
-
 function aceptarOferta() {
     const of = ofertaRecibida;
     const comprador = of.de;
