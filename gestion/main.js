@@ -35,28 +35,22 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-   // Escuchar ofertas (Corregido para que no bloquee la entrada)
-    db.ref('negociaciones/' + nombreEquipo).on('value', (snap) => {
+    // Escuchar ofertas
+    db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
-        const modal = document.getElementById('modal-oferta');
-        const content = document.getElementById('oferta-content');
-
-        if (of && modal && content) {
+        if (of) {
             ofertaRecibida = of;
-            modal.classList.remove('hidden');
-            
-            // Verificamos si hay intercambio de forma segura
-            let textoExtra = of.jugadorOfrecidoNombre ? ` + <b>${of.jugadorOfrecidoNombre}</b>` : "";
-            
-            content.innerHTML = `
+            document.getElementById('modal-oferta').classList.remove('hidden');
+            document.getElementById('oferta-content').innerHTML = `
                 <p><b>${of.de}</b> quiere a <b>${of.jugadorNombre}</b></p>
-                <p>Ofrece: <b>${of.monto} MDD</b>${textoExtra}</p>
+                <p>Ofrece: <b>${of.monto} MDD</b></p>
             `;
-        } else if (modal) {
-            modal.classList.add('hidden');
+        } else {
+            document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
-    
+}
+
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
@@ -200,33 +194,23 @@ function venderJugadorMitad() {
     });
 }
 
+// MERCADO
 function enviarPropuesta() {
-    const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
-    const jRivalID = document.getElementById('select-jugador-rival').value;
+    const jugadorID = document.getElementById('select-jugador-rival').value;
     const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
-    const jPropioID = document.getElementById('select-jugador-intercambio').value;
+    const rivalID = (equipoActualID === "HALCONES ROJOS") ? "DEPORTIVO FEDERAL" : "HALCONES ROJOS";
 
-    if (!jRivalID) return alert("Selecciona qué jugador quieres comprar.");
+    if (!jugadorID || monto <= 0) return alert("Datos incompletos");
 
-    db.ref(`equipos/${rivalID}/jugadores/${jRivalID}`).once('value', snap => {
-        const dataRival = snap.val();
-        let datos = {
+    db.ref(`equipos/${rivalID}/jugadores/${jugadorID}`).once('value', snap => {
+        const j = snap.val();
+        db.ref('negociaciones/' + rivalID).set({
             de: equipoActualID,
-            jugadorID: jRivalID,
-            jugadorNombre: dataRival.nombre,
+            jugadorID: jugadorID,
+            jugadorNombre: j.nombre,
             monto: monto
-        };
-
-        if (jPropioID) {
-            db.ref(`equipos/${equipoActualID}/jugadores/${jPropioID}`).once('value', s => {
-                datos.jugadorOfrecidoID = jPropioID;
-                datos.jugadorOfrecidoNombre = s.val().nombre;
-                db.ref('negociaciones/' + rivalID).set(datos);
-            });
-        } else {
-            db.ref('negociaciones/' + rivalID).set(datos);
-        }
-        alert("¡Oferta enviada con éxito!");
+        });
+        alert("Oferta enviada!");
     });
 }
 
@@ -287,18 +271,21 @@ function renderizarJugadores(jugadores) {
 }
 
 function actualizarSelectPropio(jugadores) {
-    const sel = document.getElementById('select-jugador-gestion');
-    const selInter = document.getElementById('select-jugador-intercambio');
+    const selGestion = document.getElementById('select-jugador-gestion');
+    const selIntercambio = document.getElementById('select-jugador-intercambio');
     
-    if (sel) sel.innerHTML = "";
-    if (selInter) selInter.innerHTML = '<option value="">Solo dinero</option>';
-
+    // 1. Limpiamos ambos menús
+    if (selGestion) selGestion.innerHTML = "";
+    if (selIntercambio) selIntercambio.innerHTML = '<option value="">Solo dinero</option>';
+    
+    // 2. Si hay jugadores, los metemos en ambos selects
     if (jugadores) {
         Object.keys(jugadores).forEach(id => {
             const j = jugadores[id];
             const opt = `<option value="${id}">${j.nombre}</option>`;
-            if (sel) sel.innerHTML += opt;
-            if (selInter) selInter.innerHTML += opt; 
+            
+            if (selGestion) selGestion.innerHTML += opt;
+            if (selIntercambio) selIntercambio.innerHTML += opt;
         });
     }
 }
