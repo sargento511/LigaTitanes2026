@@ -35,7 +35,7 @@ function entrarEquipo(nombreEquipo, logo) {
         }
     });
 
-  // Escuchar ofertas
+    // Escuchar ofertas
     db.ref('negociaciones/' + equipoActualID).on('value', (snap) => {
         const of = snap.val();
         if (of) {
@@ -49,7 +49,8 @@ function entrarEquipo(nombreEquipo, logo) {
             document.getElementById('modal-oferta').classList.add('hidden');
         }
     });
-    
+}
+
 // LÓGICA DE FINANZAS
 function calcularFinanzas(v) {
     let salario = 0; let prima = 0;
@@ -193,6 +194,7 @@ function venderJugadorMitad() {
     });
 }
 
+// MERCADO
 function enviarPropuesta() {
     const jugadorID = document.getElementById('select-jugador-rival').value;
     const monto = parseFloat(document.getElementById('nego-oferta').value) || 0;
@@ -270,16 +272,20 @@ function renderizarJugadores(jugadores) {
 
 function actualizarSelectPropio(jugadores) {
     const selGestion = document.getElementById('select-jugador-gestion');
+    const selIntercambio = document.getElementById('select-jugador-intercambio');
     
-    // Limpiamos el menú
+    // 1. Limpiamos ambos menús
     if (selGestion) selGestion.innerHTML = "";
+    if (selIntercambio) selIntercambio.innerHTML = '<option value="">Solo dinero</option>';
     
-    // Llenamos solo el de gestión
+    // 2. Si hay jugadores, los metemos en ambos selects
     if (jugadores) {
         Object.keys(jugadores).forEach(id => {
             const j = jugadores[id];
             const opt = `<option value="${id}">${j.nombre}</option>`;
+            
             if (selGestion) selGestion.innerHTML += opt;
+            if (selIntercambio) selIntercambio.innerHTML += opt;
         });
     }
 }
