@@ -1,5 +1,5 @@
-const primera = ["Bayern Munich", "Inter de Milán", "Chelsea", "Barca", "PSG", "Real Madrid", "Milán", "Sporting Portugal"];
-const segunda = ["Deportivo", "Halcones", "Arsenal", "Atlético de Madrid", "Bayer Leverkusen", "Palmeiras", "Al Ahli SFC", "Manchester City"];
+const primera = ["Bayern Munich", "Inter de Milán", "Chelsea", "Barca", "PSG", "Real Madrid", "Manchester City", "Arsenal"];
+const segunda = ["Deportivo", "Halcones", "Sporting Portugal", "Atlético de Madrid", "Bayer Leverkusen", "Palmeiras", "Al Ahli SFC", "Milán"];
 
 // 1. PESTAÑAS PRINCIPALES (Tablas, Reglamento, etc.)
 function openTab(evt, tabName) {
