@@ -67,8 +67,8 @@ function cargarTablas() {
         t1.innerHTML = "";
         primera.forEach((club, i) => {
             let pos = i + 1;
-            let sponsor = pos <= 5 ? "Nivel 1" : pos <= 9 ? "Nivel 2" : "Nivel 3";
-            let estatus = pos <= 5 ? "🏆 Liguilla/Champions" : pos >= 11 ? "🔴 Descenso" : "⚪ Permanente";
+            let sponsor = pos <= 4 ? "Nivel 1" : pos <= 9 ? "Nivel 2" : "Nivel 3";
+            let estatus = pos <= 4 ? "🏆 Liguilla/Champions" : pos >= 11 ? "🔴 Descenso" : "⚪ Permanente";
             t1.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
     }
