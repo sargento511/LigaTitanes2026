@@ -1,5 +1,5 @@
-const primera = ["Bayern Munich", "Inter de Milán", "Chelsea", "Barca", "PSG", "Real Madrid", "Manchester City", "Arsenal"];
-const segunda = ["Deportivo", "Halcones", "Sporting Portugal", "Atlético de Madrid", "Bayer Leverkusen", "Palmeiras", "Al Ahli SFC", "Milán"];
+const primera = ["Halcones", "Deportivo", "Al-Nassr", "Inter Miami", "Al Hilal", "Palmeiras", "America", "Flamengo", "Ulsan HD", "Yokohama F Marinos", "Columbus Crew", "Al Ittihad"];
+const segunda = ["Vancouber Whitecaps", "Vissel Kobe", "Los Angeles", "Boca Juniors", "River Plate", "Tigres UANL", "Al-Ain", "Sao Paulo", "Jeonbuk Hyundai Motors", "Monterrey"];
 
 // 1. PESTAÑAS PRINCIPALES (Tablas, Reglamento, etc.)
 function openTab(evt, tabName) {
@@ -68,7 +68,7 @@ function cargarTablas() {
         primera.forEach((club, i) => {
             let pos = i + 1;
             let sponsor = pos <= 3 ? "Nivel 1" : pos <= 5 ? "Nivel 2" : "Nivel 3";
-            let estatus = pos <= 4 ? "🏆 Liguilla" : pos >= 7 ? "🔴 Descenso" : "⚪ Permanente";
+            let estatus = pos <= 4 ? "🏆 Liguilla/Champions" : pos >= 11 ? "🔴 Descenso" : "⚪ Permanente";
             t1.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
     }
@@ -78,7 +78,7 @@ function cargarTablas() {
         segunda.forEach((club, i) => {
             let pos = i + 1;
             let sponsor = pos <= 4 ? "Nivel 3" : "Nivel 4";
-            let estatus = pos <= 2 ? "🟢 Ascenso" : pos >= 7 ? "❌ Desaparece" : "⚪ Permanente";
+            let estatus = pos <= 2 ? "🟢 Ascenso" : pos >= 9 ? "❌ Desaparece" : "⚪ Permanente";
             t2.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
     }
