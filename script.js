@@ -70,7 +70,7 @@ function cargarTablas() {
         primera.forEach((club, i) => {
             let pos = i + 1;
             let sponsor = pos <= 8 ? "Nivel 1" : pos <= 14 ? "Nivel 2" : "Nivel 3";
-            let estatus = pos <= 8 ? "🏆 Liguilla" : pos <= 4 ? "🏆 Champions" : pos >= 11 ? "🔴 Descenso" : "⚪ Permanente";
+            let estatus = pos <= 8 ? "🏆 Liguilla" : pos <= 4 ? "🏆 Champions" : pos >= 16 ? "🔴 Descenso" : "⚪ Permanente";
             t1.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
     }
