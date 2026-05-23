@@ -1,5 +1,5 @@
-const primera = ["Halcones", "Deportivo", "Al-Nassr", "Inter Miami", "Al Hilal", "Palmeiras", "America", "Flamengo", "Jeonbuk Hyundai Motor", "Yokohama F Marinos", "Columbus Crew", 
-"Al Ittihad", "Boca Juniors", "Gamba Osaka", "Los Angeles", "Monterrey", "Sau Paulo", "Urrawa Red Diamonds"];
+const primera = ["Deportivo", "Al Hilal", "Palmeiras", "Al Ittihad", "Inter Miami", "Halcones", "Al Ahli", "Yokohama F Marinos", "Club America", "Columbus Crew", "Boca Juniors", 
+"Gamba Osaka", "Los Angeles", "Al Nassr", "Monterrey", "Sau Paulo", "Urawa Red Diamonds", "Jeonbuk Hyundai Motors"];
 const segunda = ["Vancouber Whitecaps", "Vissel Kobe", "Ulsan HD", "Kawasaki Frontale", "River Plate", "Tigres UANL", "Al-Ain", "Shangai Shenhua", "LA Galaxi", "Flamengo", "Peñarol", 
 "Guangzhou Evergrande"];
 
