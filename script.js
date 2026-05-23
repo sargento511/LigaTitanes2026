@@ -80,7 +80,7 @@ function cargarTablas() {
         segunda.forEach((club, i) => {
             let pos = i + 1;
             let sponsor = pos <= 5 ? "Nivel 3" : "Nivel 4";
-            let estatus = pos <= 2 ? "🟢 Ascenso" : pos >= 9 ? "❌ Desaparece" : "⚪ Permanente";
+            let estatus = pos <= 2 ? "🟢 Ascenso" : pos >= 11 ? "❌ Desaparece" : "⚪ Permanente";
             t2.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
     }
