@@ -1,7 +1,7 @@
 const primera = ["Deportivo", "Al Hilal", "Palmeiras", "Al Ittihad", "Inter Miami", "Halcones", "Al Ahli", "Yokohama F Marinos", "Club America", "Columbus Crew", "Boca Juniors", 
 "Gamba Osaka", "Los Angeles", "Al Nassr", "Monterrey", "Sao Paulo", "Urawa Red Diamonds", "Jeonbuk Hyundai Motors"];
-const segunda = ["Vancouber Whitecaps", "Vissel Kobe", "Ulsan HD", "Kawasaki Frontale", "River Plate", "Tigres UANL", "Al-Ain", "Shangai Shenhua", "LA Galaxi", "Flamengo", "Peñarol", 
-"Guangzhou Evergrande"];
+const segunda = ["Vancouber Whitecaps", "Vissel Kobe", "Ulsan HD", "Kawasaki Frontale", "River Plate", "Tigres UANL", "Al-Ain", "Shanghai Shenhua", "LA Galaxi", "Flamengo", "Peñarol", "sidney", "Bolivar", 
+"Shanghai Por"];
 
 // 1. PESTAÑAS PRINCIPALES (Tablas, Reglamento, etc.)
 function openTab(evt, tabName) {
