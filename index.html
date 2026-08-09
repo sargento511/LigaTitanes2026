@@ -58,16 +58,68 @@
     </div>
 </div>
 
-        <div id="fichajes" class="tab-content" style="display: none;">
+<div id="fichajes" class="tab-content" style="display: none;">
     <div class="card">
-        <h3>🚫 Reglas de Mercado</h3>
+        <h3>🚫 Reglas de Mercado y Fichajes</h3>
+        <h4>📋 Operativa General y Restricciones</h4>
         <ul>
-            <li><strong>Negociaciones:</strong> Todo fichaje, ya sea por negociación directa con el club o con el jugador, se debe realizar a través del prompt en Gemini.</li>
+            <li><strong>Negociaciones con Gemini:</strong> Todo fichaje, ya sea por negociación directa con el club o con el jugador, se debe realizar a través del prompt en Gemini.</li>
             <li><strong>Simulación de Mercado:</strong> Si se realiza un fichaje de o hacia un equipo importante, se debe llevar a cabo una simulación de mercado en Gemini.</li>
-            <li><strong>Fair Play Financiero:</strong> Se deben cumplir las normativas y límites presupuestales establecidos por el Fair Play Financiero.</li>
-            <li><strong>Canteranos - Estado Activo:</strong> Los jugadores canteranos en reserva sin contrato no se pueden vender a Gemini; deben estar activos en un club y contar con un contrato vigente.</li>
-            <li><strong>Canteranos - Venta Libre por Rendimiento:</strong> Jugadores con una calificación de 6.9 o más en la última temporada, o bien que hayan registrado 10 goles o más / 10 asistencias o más, se consideran de venta libre a Gemini.</li>
-            <li><strong>Canteranos - Precio Máximo de Venta:</strong> Los jugadores canteranos con una calificación de 6.8 o menos tienen un precio máximo de venta a Gemini de 30 MDE por jugador.</li>
+            <li><strong>Prohibición de Reciclaje de Fichajes:</strong> No se puede vender y volver a fichar al mismo jugador dentro del mismo mercado de fichajes.</li>
+            <li><strong>Prohibición de Venta y Préstamo Simultáneo:</strong> No se puede vender a un jugador y solicitar su préstamo dentro del mismo mercado de fichajes.</li>
+            <li><strong>Negociaciones entre Rivales Directos:</strong> Las negociaciones entre Deportivo Federal y Halcones Rojos son de venta libre.</li>
+        </ul>
+        <hr>
+        <h4>🌱 Reglas de Venta de Canteranos a Gemini</h4>
+        <ul>
+            <li><strong>Estado Activo Exigido:</strong> Los jugadores canteranos en reserva sin contrato no se pueden vender a Gemini; deben estar activos en un club y contar con un contrato vigente.</li>
+            <li><strong>Canteranos ≤ 25 años:</strong> Venta libre a Gemini.</li>
+            <li><strong>Venta Libre por Rendimiento:</strong> Jugadores canteranos con una calificación de 6.9 o más en la última temporada, o bien con 10 goles o más / 10 asistencias o más, son de venta libre a Gemini.</li>
+            <li><strong>Tope Máximo de Venta:</strong> Canteranos con calificación de 6.8 o menos tienen un precio máximo de venta a Gemini de 30 MDE por jugador.</li>
+        </ul>
+        <hr>
+        <h4>⚖️ Fair Play Financiero (Ventas o Compras con Gemini)</h4>
+        <p><em>Límites de sobreprecio permitidos sobre el valor oficial de Transfermarkt:</em></p>
+        <ul>
+            <li><strong>Jugadores de 25 años o menos (No Canteranos / Jugadores Reales):</strong> Máximo hasta un 200% adicional sobre su valor en Transfermarkt (es decir, el triple del valor base).</li>
+            <li><strong>Jugadores de 26 a 29 años:</strong> Máximo hasta un 100% adicional sobre su valor en Transfermarkt (es decir, el doble del valor base).</li>
+            <li><strong>Jugadores de 30 años o más:</strong> Máximo hasta un 50% adicional sobre su valor en Transfermarkt (es decir, el valor base más la mitad).</li>
+        </ul>
+        <hr>
+        <h4>⭐ Jugadores Exentos de Límites (Venta Libre)</h4>
+        <p><em>Un jugador queda exento de los límites de Fair Play Financiero si cumplió al menos una de las siguientes condiciones en la temporada que finalizó:</em></p>
+        <ul>
+            <li>10 goles o más en general durante la temporada.</li>
+            <li>10 asistencias o más en general durante la temporada.</li>
+            <li>Calificación de 6.5 o más en Champions League o Liga.</li>
+            <li>Haber sido finalista de Liga, Copa o Champions League.</li>
+        </ul>
+
+        <hr>
+        <h4>🚨 Sanciones e Incumplimiento del Fair Play Financiero</h4>
+        <p><em>Una vez anunciado de forma oficial el movimiento en el grupo, al detectarse un incumplimiento se notificará al rival y se aplicará lo siguiente:</em></p>
+        <ul>
+            <li><strong>Primer Incumplimiento:</strong>
+                <ul>
+                    <li>El fichaje por el cual se incumple queda totalmente cancelado.</li>
+                    <li>Multa de <strong>50 MDE</strong> (no se podrá participar en ningún mercado o continuar en el presente hasta pagar la multa).</li>
+                </ul>
+            </li>
+            <li><strong>Segunda Reincidencia (Mismo mercado o 2 mercados continuos):</strong>
+                <ul>
+                    <li>El fichaje por el cual se incumple queda cancelado.</li>
+                    <li>Multa de <strong>100 MDE</strong> (bloqueo de mercado hasta pagar).</li>
+                    <li>Devolución inmediata de todos los movimientos realizados en el mercado presente.</li>
+                </ul>
+            </li>
+            <li><strong>Tercera Reincidencia o Más:</strong>
+                <ul>
+                    <li>El fichaje por el cual se incumple queda cancelado.</li>
+                    <li>Multa de <strong>150 MDE</strong> (bloqueo de mercado hasta pagar).</li>
+                    <li>Devolución inmediata de todos los movimientos realizados en el mercado presente.</li>
+                    <li>Descenso automático a 2° División para el siguiente torneo (o reducción de 10 puntos si ya se encuentra en Segunda División).</li>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>
@@ -75,8 +127,6 @@
 <div id="jugadores" class="tab-content" style="display: none;">
     <div class="card">
         <h3>⚽ Desarrollo y Reglas de Jugadores</h3>
-        
-        <!-- REGLAS GENERALES (APLICAN A TODO JUGADOR) -->
         <h4>📌 Reglas Generales de Crecimiento y Rendimiento</h4>
         <ul>
             <li><strong>Requisito de partidos:</strong> Ningún jugador con menos de la mitad de partidos en Primera División sube de nivel. Para subir de nivel debe haber jugado mínimo 8 partidos de liga (fase regular) o más, sea quien sea.</li>
@@ -86,17 +136,13 @@
             <li><strong>Mantenimiento de Media:</strong> Todos los jugadores con calificación de 5.6 y 5.7 se mantienen con su media actual (0 GVR).</li>
             <li><strong>Penalización por Bajo Rendimiento:</strong> Jugadores con calificación de 5.5 o menos en la temporada bajan -1 punto en su media actual; si acumulan 2 temporadas seguidas con este rendimiento, bajan -2 puntos.</li>
         </ul>
-
         <hr>
-
-        <!-- A) JUGADORES MAYORES (>= 26 AÑOS) -->
         <h3>👴 A) Jugadores Veteranos / Mayores (Edad ≥ 26 años)</h3>
         <p><em>Los jugadores mayores de 26 años suben de media más lento:</em></p>
         <ul>
             <li><strong>Calificación Promedio ≥ 6.7:</strong> +1 GVR (Sube muy poco).</li>
             <li><strong>Calificación Promedio < 6.7:</strong> +0 GVR (Mantiene media, no sube ni baja).</li>
-        </ul>
-
+            </ul>
         <hr>
 
         <!-- B) JUGADORES JÓVENES FICHADOS (<= 25 AÑOS) -->
