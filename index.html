@@ -14,7 +14,7 @@
                 <button class="tab-btn active" onclick="openTab(event, 'tablas')">📊 Tablas</button>
                 <button class="tab-btn" onclick="openTab(event, 'reglamento')">📜 Reglamento</button>
                 <button class="tab-btn" onclick="openTab(event, 'fichajes')">⚽ Fichajes</button>
-                <button class="tab-btn" onclick="openTab(event, 'jovenes')">💎 Jóvenes</button>
+                <button class="tab-btn" onclick="openTab(event, 'jovenes')">👤 jugadores</button>
                 <button class="tab-btn" onclick="openTab(event, 'finanzas')">💰 Finanzas</button>
                 <button class="tab-btn" onclick="openTab(event, 'multas')">⏰ Multas</button>
             </nav>
@@ -127,53 +127,6 @@
 <div id="jugadores" class="tab-content" style="display: none;">
     <div class="card">
         <h3>⚽ Desarrollo y Reglas de Jugadores</h3>
-        <h4>📌 Reglas Generales de Crecimiento y Rendimiento</h4>
-        <ul>
-            <li><strong>Requisito de partidos:</strong> Ningún jugador con menos de la mitad de partidos en Primera División sube de nivel. Para subir de nivel debe haber jugado mínimo 8 partidos de liga (fase regular) o más, sea quien sea.</li>
-            <li><strong>Restricción por Descenso:</strong> Los jugadores de equipos en las posiciones 16°, 17° y 18° de Primera División no suben de nivel.</li>
-            <li><strong>Límite por División:</strong> En Segunda División no existe nivel de cantera alto (solo medio y bajo), y en Tercera División solo existe nivel bajo.</li>
-            <li><strong>Poca Actividad:</strong> Jugadores con 7 partidos o menos no suben ni bajan de media.</li>
-            <li><strong>Mantenimiento de Media:</strong> Todos los jugadores con calificación de 5.6 y 5.7 se mantienen con su media actual (0 GVR).</li>
-            <li><strong>Penalización por Bajo Rendimiento:</strong> Jugadores con calificación de 5.5 o menos en la temporada bajan -1 punto en su media actual; si acumulan 2 temporadas seguidas con este rendimiento, bajan -2 puntos.</li>
-        </ul>
-        <hr>
-        <h3>👴 A) Jugadores Veteranos / Mayores (Edad ≥ 26 años)</h3>
-        <p><em>Los jugadores mayores de 26 años suben de media más lento:</em></p>
-        <ul>
-            <li><strong>Calificación Promedio ≥ 6.7:</strong> +1 GVR (Sube muy poco).</li>
-            <li><strong>Calificación Promedio < 6.7:</strong> +0 GVR (Mantiene media, no sube ni baja).</li>
-            </ul>
-        <hr>
-
-        <!-- B) JUGADORES JÓVENES FICHADOS (<= 25 AÑOS) -->
-        <h3>👦 B) Jugadores Jóvenes Fichados (Edad ≤ 25 años)</h3>
-        <p><em>Aplica para todos los jugadores menores de 25 años que NO sean canteranos. Crecen según su calificación individual:</em></p>
-        <ul>
-            <li><strong>Calificación Promedio ≥ 7.2 (Crack / MVP):</strong> +4 GVR.</li>
-            <li><strong>Calificación Promedio de 6.7 a 7.1:</strong> +3 GVR.</li>
-            <li><strong>Calificación Promedio de 6.3 a 6.6:</strong> +2 GVR.</li>
-            <li><strong>Calificación Promedio de 5.8 a 6.2:</strong> +1 GVR.</li>
-            <li><strong>Calificación Promedio de 5.6 a 5.7:</strong> +0 GVR (No sube ni baja).</li>
-            <li><strong>Calificación Promedio ≤ 5.5:</strong> -1 GVR (Baja de media por pésimo rendimiento).</li>
-        </ul>
-
-        <hr>
-
-        <!-- C) CANTERANOS DEL CLUB (<= 25 AÑOS) -->
-        <h3>🌱 C) Canteranos del Club (Desarrollo por Instalación)</h3>
-        <p><em>Aplica para los jugadores formados en la cantera (≤ 25 años). Su crecimiento en el primer equipo depende de su calificación y del <strong>Nivel de Instalación</strong> que tenga el club (Tope máximo de desarrollo: 84 GVR):</em></p>
-        <ul>
-            <li><strong>Nota 7.2 o superior (Crack / MVP):</strong> Nivel 1: <strong>+4 GVR</strong> | Nivel 2: <strong>+3 GVR</strong> | Nivel 3: <strong>+2 GVR</strong></li>
-            <li><strong>Nota 6.5 a 7.1 (Titular Consolidado):</strong> Nivel 1: <strong>+3 GVR</strong> | Nivel 2: <strong>+2 GVR</strong> | Nivel 3: <strong>+1 GVR</strong></li>
-            <li><strong>Nota 5.8 a 6.4 (Rotación / Regular):</strong> Nivel 1: <strong>+2 GVR</strong> | Nivel 2: <strong>+1 GVR</strong> | Nivel 3: <strong>+0 GVR</strong></li>
-            <li><strong>Nota menor a 5.8 (Pocos minutos):</strong> Nivel 1: <strong>+1 GVR</strong> | Nivel 2: <strong>+0 GVR</strong> | Nivel 3: <strong>+0 GVR</strong></li>
-        </ul>
-
-        <hr>
-
-<div id="jugadores" class="tab-content" style="display: none;">
-    <div class="card">
-        <h3>⚽ Desarrollo y Reglas de Jugadores</h3>
         
         <!-- REGLAS GENERALES (APLICAN A TODO JUGADOR) -->
         <h4>📌 Reglas Generales de Crecimiento y Rendimiento</h4>
@@ -257,7 +210,8 @@
                 </ul>
             </li>
         </ul>
-        
+    </div>
+</div>
 <div id="finanzas" class="tab-content" style="display: none;">
         <div class="sub-nav" style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center;">
             <button class="sub-btn active" onclick="openSubTab(event, 'ingresos')">📈 Ingresos y Premios</button>
