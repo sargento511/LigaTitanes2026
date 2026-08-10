@@ -1,5 +1,5 @@
 const primera = [
-  "Palmeiras",
+  "Palmeiras.",
   "Flamengo",
   "River Plate",
   "Boca Juniors",
