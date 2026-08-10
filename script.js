@@ -27,8 +27,8 @@ const segunda = [
   "Liga de Quito",
   "Colo-Colo",
   "Cruz Azul",
-  "Chivas de Guadalajara",
-  "Toluca FC",
+  "Peñarol",
+  "Nacional",
   "LAFC",
   "Inter Miami CF",
   "Vissel Kobe",
@@ -37,17 +37,17 @@ const segunda = [
 const tercera = [
   "Halcones",
   "Deportivo",
-  "Pumas UNAM",
-  "Atlas FC",
+  "Shanghai Port",
+  "Sidney FC",
   "Barcelona SC",
   "Universitario de Deportes",
   "Alianza Lima",
   "Club Bolívar",
-  "LD Alajuelense",
-  "Deportivo Saprissa",
+  "Cerro Porteño",
+  "Olimpia Asuncion",
   "Pohang Steelers",
   "Yokohama F. Marinos",
-  "Melbourne City",
+  "Ulsan HD",
   "Al-Ain FC"];
 
 // Función para cambiar las pestañas principales
