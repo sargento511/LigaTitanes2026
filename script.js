@@ -1,63 +1,54 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. ARRAYS SIMPLES DE EQUIPOS POR DIVISIÓN
-    const primeraDivision = [
-        "Palmeiras", "Flamengo", "River Plate", "Boca Juniors", "Fluminense",
-        "São Paulo FC", "Atlético Mineiro", "Racing Club", "Club América",
-        "Tigres UANL", "CF Monterrey", "Columbus Crew", "Al-Hilal", "Al-Nassr",
-        "Al-Ittihad", "Al-Ahli", "Urawa Red Diamonds", "Kawasaki Frontale"
-    ];
+const primera = [
+  "Palmeiras",
+  "Flamengo",
+  "River Plate",
+  "Boca Juniors",
+  "Fluminense",
+  "São Paulo FC",
+  "Atlético Mineiro",
+  "Racing Club",
+  "Club América",
+  "Tigres UANL",
+  "CF Monterrey",
+  "Columbus Crew",
+  "Al-Hilal",
+  "Al-Nassr",
+  "Al-Ittihad",
+  "Al-Ahli",
+  "Urawa Red Diamonds",
+  "Kawasaki Frontale"];
 
-    const segundaDivision = [
-        "Independiente", "San Lorenzo", "Vélez Sarsfield", "Athletico Paranaense",
-        "Internacional", "Liga de Quito", "Colo-Colo", "Cruz Azul",
-        "Chivas de Guadalajara", "Toluca FC", "LAFC", "Inter Miami CF",
-        "Vissel Kobe", "Jeonbuk Hyundai Motors"
-    ];
+const segunda = [
+  "Independiente",
+  "San Lorenzo",
+  "Vélez Sarsfield",
+  "Athletico Paranaense",
+  "Internacional",
+  "Liga de Quito",
+  "Colo-Colo",
+  "Cruz Azul",
+  "Chivas de Guadalajara",
+  "Toluca FC",
+  "LAFC",
+  "Inter Miami CF",
+  "Vissel Kobe",
+  "Jeonbuk Hyundai Motors"];
 
-    const terceraDivision = [
-        "Halcones Rojos", "Deportivo Federal", "Pumas UNAM", "Atlas FC",
-        "Barcelona SC", "Universitario de Deportes", "Alianza Lima", "Club Bolívar",
-        "LD Alajuelense", "Deportivo Saprissa", "Pohang Steelers", "Yokohama F. Marinos",
-        "Melbourne City", "Al-Ain FC"
-    ];
-
-    // 2. RENDERIZADO DE TABLAS
-    function renderTabla(listaEquipos, elementId, sponsorTxt, estatusTxt) {
-        const tbody = document.getElementById(elementId);
-        if (!tbody) return;
-        tbody.innerHTML = "";
-
-        listaEquipos.forEach((club, index) => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td><strong>${club}</strong></td>
-                <td>${sponsorTxt}</td>
-                <td><span class="badge ${estatusTxt.toLowerCase()}">${estatusTxt}</span></td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    // Cargar las 3 tablas respetando el formato
-    renderTabla(primeraDivision, "body-primera", "Sponsor Nivel 1", "Élite");
-    renderTabla(segundaDivision, "body-segunda", "Sponsor Nivel 2", "Competitivo");
-    renderTabla(terceraDivision, "body-tercera", "Sponsor Nivel 4", "Desarrollo");
-function openTab(evt, tabName) {
-    const contents = document.getElementsByClassName("tab-content");
-    for (let i = 0; i < contents.length; i++) {
-        contents[i].style.display = "none";
-    }
-
-    const buttons = document.getElementsByClassName("tab-btn");
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].classList.remove("active");
-    }
-
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.classList.add("active");
-}
-
+const tercera = [
+  "Halcones",
+  "Deportivo",
+  "Pumas UNAM",
+  "Atlas FC",
+  "Barcelona SC",
+  "Universitario de Deportes",
+  "Alianza Lima",
+  "Club Bolívar",
+  "LD Alajuelense",
+  "Deportivo Saprissa",
+  "Pohang Steelers",
+  "Yokohama F. Marinos",
+  "Melbourne City",
+  "Al-Ain FC"];
     
 // 2. SUB-PESTAÑAS DE FINANZAS (Ingresos / Gastos)
 function openSubTab(evt, subName) {
@@ -104,6 +95,7 @@ function toggleGastos(modo) {
 function cargarTablas() {
     const t1 = document.getElementById('body-primera');
     const t2 = document.getElementById('body-segunda');
+    const t3 = document.getElementById('body-tercera');
 
     if (t1) {
         t1.innerHTML = "";
@@ -120,8 +112,17 @@ function cargarTablas() {
         segunda.forEach((club, i) => {
             let pos = i + 1;
             let sponsor = pos <= 5 ? "Nivel 3" : "Nivel 4";
-            let estatus = pos <= 3 ? "🟢 Ascenso" : pos >= 13 ? "❌ Desaparece" : "⚪ Permanente";
+            let estatus = pos <= 3 ? "🟢 Ascenso" : pos >= 13 ? "🔴 Descenso" : "⚪ Permanente";
             t2.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
+        });
+    }
+        if (t3) {
+        t3.innerHTML = "";
+        segunda.forEach((club, i) => {
+            let pos = i + 1;
+            let sponsor = pos <= 5 ? "Nivel 4" : "Nivel 4";
+            let estatus = pos <= 3 ? "🟢 Ascenso" : pos >= 13 ? "⚪ Permanente" : "⚪ Permanente";
+            t3.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
     }
 }
