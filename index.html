@@ -152,7 +152,8 @@
                     <li><strong>Límite por División:</strong> En Segunda División no existe nivel de cantera alto (solo medio y bajo), y en Tercera División solo existe nivel bajo.</li>
                     <li><strong>Poca Actividad:</strong> Jugadores con 7 partidos o menos no suben ni bajan de media.</li>
                     <li><strong>Mantenimiento de Media:</strong> Todos los jugadores con calificación de 5.6 y 5.7 se mantienen con su media actual (0 GVR).</li>
-                    <li><strong>Penalización por Bajo Rendimiento:</strong> Jugadores con calificación de 5.5 o menos en la temporada bajan -1 punto en su media actual; si acumulan 2 temporadas seguidas con este rendimiento, bajan -2 puntos.</li>
+                    <li><strong>Penalización por Bajo Rendimiento:</strong> Jugadores con calificación de 5.5 o menos en la temporada bajan -1 punto en su media actual; si acumulan 2 temporadas seguidas con este rendimiento, bajan -2 puntos (si son canteranos su valor se multiplica por x0.75
+                        ).</li>
                 </ul>
 
                 <hr>
@@ -180,17 +181,62 @@
                 <hr>
 
                 <h3>🌱 C) Canteranos del Club (Desarrollo por Instalación)</h3>
-                <p><em>Aplica para los jugadores formados en la cantera (≤ 25 años). Su crecimiento en el primer equipo depende de su calificación y del <strong>Nivel de Instalación</strong> que tenga el club (Tope máximo de desarrollo: 84 GVR):</em></p>
+                <p><em>Aplica para los jugadores formados en la cantera (≤ 25 años). Su crecimiento en el primer equipo depende de su calificación y del <strong>Nivel de Instalación</strong> que tenga el club (Tope máximo de desarrollo: 85-90 GVR):</em></p>
                 <ul>
                     <li><strong>Nota 7.2 o superior (Crack / MVP):</strong> Nivel 1: <strong>+4 GVR</strong> | Nivel 2: <strong>+3 GVR</strong> | Nivel 3: <strong>+2 GVR</strong></li>
                     <li><strong>Nota 6.5 a 7.1 (Titular Consolidado):</strong> Nivel 1: <strong>+3 GVR</strong> | Nivel 2: <strong>+2 GVR</strong> | Nivel 3: <strong>+1 GVR</strong></li>
                     <li><strong>Nota 5.8 a 6.4 (Rotación / Regular):</strong> Nivel 1: <strong>+2 GVR</strong> | Nivel 2: <strong>+1 GVR</strong> | Nivel 3: <strong>+0 GVR</strong></li>
                     <li><strong>Nota menor a 5.8 (Pocos minutos):</strong> Nivel 1: <strong>+1 GVR</strong> | Nivel 2: <strong>+0 GVR</strong> | Nivel 3: <strong>+0 GVR</strong></li>
                 </ul>
+                <hr>
 
                 <hr>
 
-                <h3>🔍 D) Sistema de Infraestructura, Visoría y Academia</h3>
+<h3>🌱 D) Canteranos del Club (Aumento de Valor de Mercado)</h3>
+<p><em>Aplica para los jugadores formados en la cantera (≤ 25 años). Todo canterano recién promovido o sin minutos base inicia con un valor de <strong>$100,000</strong>. Su revalorización en el primer equipo depende de su calificación promedio al finalizar la temporada:</em></p>
+
+<h4>1. Canteranos Iniciales / Desconocidos ($100k a $1.0M)</h4>
+<ul>
+    <li><strong>Nota 7.2 o superior (Crack / MVP):</strong> Pasa directo a <strong>$1,500,000</strong></li>
+    <li><strong>Nota 6.5 a 7.1 (Titular Consolidado):</strong> Pasa directo a <strong>$600,000</strong></li>
+    <li><strong>Nota 5.8 a 6.4 (Rotación / Regular):</strong> Pasa directo a <strong>$300,000</strong></li>
+    <li><strong>Nota menor a 5.8 (Pocos minutos / Sin jugar):</strong> Pasa directo a <strong>$150,000</strong></li>
+</ul>
+
+<h4>2. Promesas en Ascenso ($1.1M a $10.0M)</h4>
+<ul>
+    <li><strong>Nota 7.2 o superior (Crack / MVP):</strong> Aumenta un <strong>+100%</strong> de su valor actual (Duplica)</li>
+    <li><strong>Nota 6.5 a 7.1 (Titular Consolidado):</strong> Aumenta un <strong>+50%</strong> de su valor actual</li>
+    <li><strong>Nota 5.8 a 6.4 (Rotación / Regular):</strong> Aumenta un <strong>+20%</strong> de su valor actual</li>
+    <li><strong>Nota menor a 5.8 (Pocos minutos / Sin jugar):</strong> Aumenta un <strong>+5%</strong> de su valor actual</li>
+</ul>
+
+<h4>3. Canteranos Consolidados ($10.1M a $50.0M)</h4>
+<ul>
+    <li><strong>Nota 7.2 o superior (Crack / MVP):</strong> Aumenta un <strong>+40%</strong> de su valor actual</li>
+    <li><strong>Nota 6.5 a 7.1 (Titular Consolidado):</strong> Aumenta un <strong>+25%</strong> de su valor actual</li>
+    <li><strong>Nota 5.8 a 6.4 (Rotación / Regular):</strong> Aumenta un <strong>+12%</strong> de su valor actual</li>
+    <li><strong>Nota menor a 5.8 (Pocos minutos / Sin jugar):</strong> Aumenta un <strong>+5%</strong> de su valor actual</li>
+</ul>
+
+<h4>4. Canteranos Estrella / Elite (Más de $50.0M)</h4>
+<ul>
+    <li><strong>Nota 7.2 o superior (Crack / MVP):</strong> Aumenta un <strong>+25%</strong> de su valor actual</li>
+    <li><strong>Nota 6.5 a 7.1 (Titular Consolidado):</strong> Aumenta un <strong>+15%</strong> de su valor actual</li>
+    <li><strong>Nota 5.8 a 6.4 (Rotación / Regular):</strong> Aumenta un <strong>+5%</strong> de su valor actual</li>
+    <li><strong>Nota menor a 5.8 (Pocos minutos / Sin jugar):</strong> Aumenta un <strong>+1%</strong> de su valor actual</li>
+</ul>
+
+<h4>🏆 Bonificaciones Extras por Premios Individuales</h4>
+<p><em>Estos bonos se suman al valor final obtenido tras aplicar el aumento por calificación:</em></p>
+<ul>
+    <li><strong>🥇 Líder de Goleo (Máximo Anotador):</strong> <strong>+20% de valor extra</strong> (o <strong>+$2,000,000</strong> si su valor es menor a $10M)</li>
+    <li><strong>🎯 Líder de Asistencias (Máximo Asistidor):</strong> <strong>+15% de valor extra</strong> (o <strong>+$1,500,000</strong> si su valor es menor a $10M)</li>
+    <li><strong>⭐ Doble Corona (Goleo + Asistencias):</strong> <strong>+40% de valor extra</strong> (o <strong>+$4,000,000</strong> si su valor es menor a $10M)</li>
+</ul>
+<hr>
+                
+                <h3>🔍 E) Sistema de Infraestructura, Visoría y Academia</h3>
                 <ul>
                     <li><strong>1. Reclutamiento y Despliegue de Visoría:</strong>
                         <ul>
