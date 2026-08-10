@@ -1,83 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. DATOS DE LOS EQUIPOS
+    // 1. ARRAYS SIMPLES DE EQUIPOS POR DIVISIÓN
     const primeraDivision = [
-        { pos: 1, club: "Palmeiras", pais: "Brasil", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 2, club: "Flamengo", pais: "Brasil", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 3, club: "River Plate", pais: "Argentina", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 4, club: "Boca Juniors", pais: "Argentina", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 5, club: "Fluminense", pais: "Brasil", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 6, club: "São Paulo FC", pais: "Brasil", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 7, club: "Atlético Mineiro", pais: "Brasil", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 8, club: "Racing Club", pais: "Argentina", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 9, club: "Club América", pais: "México", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 10, club: "Tigres UANL", pais: "México", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 11, club: "CF Monterrey", pais: "México", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 12, club: "Columbus Crew", pais: "EE. UU.", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 13, club: "Al-Hilal", pais: "Arabia Saudita", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 14, club: "Al-Nassr", pais: "Arabia Saudita", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 15, club: "Al-Ittihad", pais: "Arabia Saudita", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 16, club: "Al-Ahli", pais: "Arabia Saudita", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 17, club: "Urawa Red Diamonds", pais: "Japón", sponsor: "Sponsor Nivel 1", estatus: "Élite" },
-        { pos: 18, club: "Kawasaki Frontale", pais: "Japón", sponsor: "Sponsor Nivel 1", estatus: "Élite" }
+        "Palmeiras", "Flamengo", "River Plate", "Boca Juniors", "Fluminense",
+        "São Paulo FC", "Atlético Mineiro", "Racing Club", "Club América",
+        "Tigres UANL", "CF Monterrey", "Columbus Crew", "Al-Hilal", "Al-Nassr",
+        "Al-Ittihad", "Al-Ahli", "Urawa Red Diamonds", "Kawasaki Frontale"
     ];
 
     const segundaDivision = [
-        { pos: 1, club: "Independiente", pais: "Argentina", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 2, club: "San Lorenzo", pais: "Argentina", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 3, club: "Vélez Sarsfield", pais: "Argentina", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 4, club: "Athletico Paranaense", pais: "Brasil", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 5, club: "Internacional", pais: "Brasil", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 6, club: "Liga de Quito", pais: "Ecuador", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 7, club: "Colo-Colo", pais: "Chile", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 8, club: "Cruz Azul", pais: "México", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 9, club: "Chivas de Guadalajara", pais: "México", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 10, club: "Toluca FC", pais: "México", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 11, club: "LAFC", pais: "EE. UU.", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 12, club: "Inter Miami CF", pais: "EE. UU.", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 13, club: "Vissel Kobe", pais: "Japón", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" },
-        { pos: 14, club: "Jeonbuk Hyundai Motors", pais: "Corea del Sur", sponsor: "Sponsor Nivel 2/3", estatus: "Competitivo" }
+        "Independiente", "San Lorenzo", "Vélez Sarsfield", "Athletico Paranaense",
+        "Internacional", "Liga de Quito", "Colo-Colo", "Cruz Azul",
+        "Chivas de Guadalajara", "Toluca FC", "LAFC", "Inter Miami CF",
+        "Vissel Kobe", "Jeonbuk Hyundai Motors"
     ];
 
     const terceraDivision = [
-        { pos: 1, club: "Halcones Rojos", pais: "Usuario", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 2, club: "Deportivo Federal", pais: "Usuario", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 3, club: "Pumas UNAM", pais: "México", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 4, club: "Atlas FC", pais: "México", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 5, club: "Barcelona SC", pais: "Ecuador", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 6, club: "Universitario de Deportes", pais: "Perú", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 7, club: "Alianza Lima", pais: "Perú", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 8, club: "Club Bolívar", pais: "Bolivia", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 9, club: "LD Alajuelense", pais: "Costa Rica", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 10, club: "Deportivo Saprissa", pais: "Costa Rica", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 11, club: "Pohang Steelers", pais: "Corea del Sur", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 12, club: "Yokohama F. Marinos", pais: "Japón", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 13, club: "Melbourne City", pais: "Australia", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" },
-        { pos: 14, club: "Al-Ain FC", pais: "EAU", sponsor: "Sponsor Nivel 4", estatus: "Desarrollo" }
+        "Halcones Rojos", "Deportivo Federal", "Pumas UNAM", "Atlas FC",
+        "Barcelona SC", "Universitario de Deportes", "Alianza Lima", "Club Bolívar",
+        "LD Alajuelense", "Deportivo Saprissa", "Pohang Steelers", "Yokohama F. Marinos",
+        "Melbourne City", "Al-Ain FC"
     ];
 
-    // 2. FUNCIÓN PARA RENDERIZAR TABLAS
-    function renderTabla(datos, elementId) {
+    // 2. RENDERIZADO DE TABLAS
+    function renderTabla(listaEquipos, elementId, sponsorTxt, estatusTxt) {
         const tbody = document.getElementById(elementId);
         if (!tbody) return;
         tbody.innerHTML = "";
 
-        datos.forEach(item => {
+        listaEquipos.forEach((club, index) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${item.pos}</td>
-                <td><strong>${item.club}</strong> <small style="opacity: 0.7;">(${item.pais})</small></td>
-                <td>${item.sponsor}</td>
-                <td><span class="badge ${item.estatus.toLowerCase()}">${item.estatus}</span></td>
+                <td>${index + 1}</td>
+                <td><strong>${club}</strong></td>
+                <td>${sponsorTxt}</td>
+                <td><span class="badge ${estatusTxt.toLowerCase()}">${estatusTxt}</span></td>
             `;
             tbody.appendChild(tr);
         });
     }
 
-    // Cargar tablas al iniciar
-    renderTabla(primeraDivision, "body-primera");
-    renderTabla(segundaDivision, "body-segunda");
-    renderTabla(terceraDivision, "body-tercera");
-});
+    // Cargar las 3 tablas respetando el formato
+    renderTabla(primeraDivision, "body-primera", "Sponsor Nivel 1", "Élite");
+    renderTabla(segundaDivision, "body-segunda", "Sponsor Nivel 2", "Competitivo");
+    renderTabla(terceraDivision, "body-tercera", "Sponsor Nivel 4", "Desarrollo");
 function openTab(evt, tabName) {
     const contents = document.getElementsByClassName("tab-content");
     for (let i = 0; i < contents.length; i++) {
@@ -93,6 +58,7 @@ function openTab(evt, tabName) {
     evt.currentTarget.classList.add("active");
 }
 
+    
 // 2. SUB-PESTAÑAS DE FINANZAS (Ingresos / Gastos)
 function openSubTab(evt, subName) {
     const subContents = document.getElementsByClassName("sub-content");
