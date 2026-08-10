@@ -50,8 +50,26 @@ const tercera = [
   "Melbourne City",
   "Al-Ain FC"];
 
-// 2. SUB-PESTAÑAS DE FINANZAS (Ingresos / Gastos)
+// Función para cambiar las pestañas principales
+function openTab(evt, tabName) {
+    const tabContents = document.getElementsByClassName("tab-content");
+    for (let i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = "none";
+    }
 
+    const tabButtons = document.getElementsByClassName("tab-btn");
+    for (let i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+    }
+
+    const targetTab = document.getElementById(tabName);
+    if (targetTab) {
+        targetTab.style.display = "block";
+    }
+    evt.currentTarget.classList.add("active");
+}
+
+// 2. SUB-PESTAÑAS DE FINANZAS (Ingresos / Gastos)
 function openSubTab(evt, subName) {
     const subContents = document.getElementsByClassName("sub-content");
     for (let i = 0; i < subContents.length; i++) {
