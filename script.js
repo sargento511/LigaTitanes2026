@@ -111,6 +111,7 @@ function cargarTablas() {
             t1.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
     }
+
     if (t2) {
         t2.innerHTML = "";
         segunda.forEach((club, i) => {
@@ -121,16 +122,15 @@ function cargarTablas() {
         });
     }
 
-if (t3) {
-    t3.innerHTML = "";
-    tercera.forEach((club, i) => {
-        let pos = i + 1;
-        let sponsor = "Nivel 4";
-        let estatus = pos <= 3 ? "🟢 Ascenso" : "⚪ Permanente";
-        t3.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
-
+    if (t3) {
+        t3.innerHTML = "";
+        tercera.forEach((club, i) => {
+            let pos = i + 1;
+            let sponsor = "Nivel 4";
+            let estatus = pos <= 3 ? "🟢 Ascenso" : "⚪ Permanente";
+            t3.innerHTML += `<tr><td>${pos}</td><td>${club}</td><td>${sponsor}</td><td>${estatus}</td></tr>`;
         });
-      }
     }
+}
 // Ejecutar al cargar
 window.onload = cargarTablas;
