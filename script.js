@@ -15,40 +15,40 @@ const primera = [
   "Al-Nassr",
   "Al-Ittihad",
   "Al-Ahli",
-  "Urawa Red Diamonds",
-  "Kawasaki Frontale"];
+  "Inter Miami CF",
+  "Internacional"];
 
 const segunda = [
   "Independiente",
   "San Lorenzo",
   "Vélez Sarsfield",
   "Athletico Paranaense",
-  "Internacional",
   "Liga de Quito",
   "Colo-Colo",
   "Cruz Azul",
   "Peñarol",
   "Nacional",
   "LAFC",
-  "Inter Miami CF",
-  "Vissel Kobe",
-  "Jeonbuk Hyundai Motors"];
+  "Urawa Red Diamonds",
+  "Kawasaki Frontale",
+  "Deportivo",
+  "Cerro Porteño"];
 
 const tercera = [
   "Halcones",
-  "Deportivo",
   "Shanghai Port",
   "Sidney FC",
   "Barcelona SC",
   "Universitario de Deportes",
   "Alianza Lima",
   "Club Bolívar",
-  "Cerro Porteño",
   "Olimpia Asuncion",
   "Pohang Steelers",
   "Yokohama F. Marinos",
   "Ulsan HD",
-  "Al-Ain FC"];
+  "Al-Ain FC",
+  "Vissel Kobe",
+  "Jeonbuk Hyundai Motors"];
 
 // Función para cambiar las pestañas principales
 function openTab(evt, tabName) {
