@@ -50,9 +50,9 @@ const tercera = [
     { pos: 9, club: "Saprissa", pais: "🇨🇷 Costa Rica", conf: "CONCACAF", sponsor: "Nivel 4", estatus: "permanente" },
     { pos: 10, club: "Al-Ain", pais: "🇦🇪 E. Árabes", conf: "AFC", sponsor: "Nivel 4", estatus: "permanente" },
     { pos: 11, club: "Yokohama F. Marinos", pais: "🇯🇵 Japón", conf: "AFC", sponsor: "Nivel 4", estatus: "permanente" },
-    { pos: 12, club: "Jeonbuk Hyundai", pais: "🇰🇷 C. del Sur", conf: "AFC", sponsor: "Nivel 4", estatus: "permanente" },
-    { pos: 13, club: "Central Coast Mariners", pais: "🇦🇺 Australia", conf: "AFC", sponsor: "Nivel 4", estatus: "permanente" },
-    { pos: 14, club: "Monterrey (Rayados)", pais: "🇲🇽 México", conf: "CONCACAF", sponsor: "Nivel 4", estatus: "permanente" }
+    { pos: 12, club: "Jeonbuk Hyundai", pais: "🇰🇷 C. del Sur", conf: "AFC", sponsor: "Nivel 4", estatus: "descenso" },
+    { pos: 13, club: "Central Coast Mariners", pais: "🇦🇺 Australia", conf: "AFC", sponsor: "Nivel 4", estatus: "descenso" },
+    { pos: 14, club: "Monterrey (Rayados)", pais: "🇲🇽 México", conf: "CONCACAF", sponsor: "Nivel 4", estatus: "descenso" }
 ];
 
 // NAVEGACIÓN DE PESTAÑAS
