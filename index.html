@@ -382,9 +382,21 @@
                     </div>
                     <pre id="prompt-fichajes" class="prompt-box">Actúa como el Director Deportivo del club vendedor y el Agente/Representante Oficial del futbolista en una negociación de mercado de pases de fútbol profesional. Tu lenguaje debe ser formal, estratégico, sumamente realista y profesional.
 
+CONTEXTO GENERAL DE LA LIGA Y REGLAS DE FFP:
+- Estructura y Formato: 🌎 LIGA INTERCONTINENTAL (AMÉRICA - ASIA), competición piramidal de máximo nivel disputada a 20 minutos por partido en dificultad Imbatible. Cuenta con 3 divisiones (1ª División con 18 clubes y liguilla del 1° al 8°; 2ª División con 14 clubes; 3ª División con 14 clubes) y torneos internacionales (Champions, Europa League, Conference League y Copa América - Asia).
+- Fair Play Financiero (Límites de sobreprecio al vender el usuario un jugador con Gemini respecto a Transfermarkt):
+  * Jóvenes (hasta 25 años): Máximo hasta el triple de su precio (hasta +200% extra).
+  * Apogeo (26 a 29 años): Máximo hasta el doble de su precio (hasta +100% extra).
+  * Veteranos (30+ años): Máximo el valor base más un 50% extra (su valor y medio).
+- Límite de Jugadores Extranjeros (sin contar canteranos) por plantilla según categoría:
+  * 3ª División: Máximo 5 extranjeros.
+  * 2ª División: Máximo 8 extranjeros.
+  * 1ª División: Máximo 15 extranjeros.
+  *(Nota: Se deben reportar al grupo al informar la compra como "comunitario", "extracomunitario" o "extranjero". Esta regla regula las compras hacia nuestros equipos).*
+
 DATOS DE LA OPERACIÓN:
-- Club Comprador: [Escribe aquí tu club, ej: Halcones Rojos]
-- Jugador a Fichar: [Nombre del futbolista]
+- Club Comprador: [Escribe aquí tu club, ej: Halcones Rojos y especifica tu división actual]
+- Jugador a Fichar: [Nombre del futbolista, su edad y si ocupa plaza de extranjero/comunitario]
 - Club Actual del Jugador: [Nombre del club actual / poner "Agente Libre" si no tiene equipo]
 - Valor de Mercado (Transfermarkt): [Valor en MDE, ej: 15 MDE]
 - Oferta Inicial Enviada: [Monto de tu oferta inicial o propuesta]
@@ -392,10 +404,10 @@ DATOS DE LA OPERACIÓN:
 INSTRUCCIONES DE RESPUESTA EN 2 FASES:
 
 FASE 1: NEGOCIACIÓN CLUB A CLUB (Omitir completamente si el jugador es Agente Libre)
-1. Evalúa la oferta del comprador considerando el valor de Transfermarkt, edad del jugador, estatus en el equipo (titular, promesa, descarte) y rivalidad entre clubes.
+1. Evalúa la oferta del comprador considerando el valor de Transfermarkt, los límites de Fair Play Financiero según la edad, el estatus del jugador en el equipo (titular, promesa, descarte) y la rivalidad entre clubes.
 2. Responde de forma oficial en nombre del club vendedor. Tienes 3 opciones:
    - Aceptar la oferta si es justa o superior.
-   - Rechazar de forma tajante si es insostenible o ridícula.
+   - Rechazar de forma tajante si es insostenible, ridícula o incumple márgenes.
    - Presentar una contraoferta (monto fijo + bonos por rendimiento o % de futura venta).
 3. Espera mi confirmación antes de pasar a la Fase 2 si hay contraoferta, o avanza automáticamente si la oferta fue aceptada de inmediato.
 
@@ -512,18 +524,7 @@ Muestra la respuesta con un tono formal de reporte de fichajes y mercado de pase
 
 DATOS DEL CLUB Y CONTEXTO DE LA TEMPORADA:
 - Nombre del Club: [Escribe tu club, ej: Halcones Rojos]
-- División Actual y Posición Final: [🌎 LIGA INTERCONTINENTAL (AMÉRICA - ASIA)Una competición piramidal de máximo nivel y alta exigencia 
-que reúne a los gigantes continentales, clubes históricos y potencias emergentes de América y Asia. Todos los encuentros se disputan 
-bajo la modalidad de 20 minutos por partido en dificultad Imbatible. 🏆 Estructura de Divisiones🏆 Primera División (Liga Titanes — 18 Clubes): 
-Reservada para las máximas potencias y gigantes de ambos continentes. Se juega una fase regular de 17 jornadas a una sola vuelta, seguida de una 
-Liguilla por el Título (del 1° al 8° lugar) a partidos de ida y vuelta. Los puestos 17° y 18° descienden directo, mientras que el 16° disputa el Playoff de Permanencia. 
-🥈 Segunda División (División B — 14 Clubes): Equipos de alto nivel competitivo e históricos de América y Asia. El 1° y 2° lugar logran el ascenso directo a Primera, y 
-el 3° disputa la promoción. El 13° y 14° descienden a Tercera, mientras el 12° juega el Playoff de Permanencia.   🥉 Tercera División (División C — 14 Clubes): Clubes 
-tradicionales y potencias emergentes en busca de la gloria. El 1° y 2° ascienden directo, y el 3° juega el Playoff de Ascenso. Descienden los ultimos 3.  🎫 Clasificación a Copas Internacionales 
-(Vías desde 1ª Div y Copa)⭐ Champions League: Clasifican directo 
-los clubes ubicados del 1° al 4° lugar de la Primera División.   🌟 Europa League: Clasifican los clubes posicionados en el 5° y 6° lugar de la Primera División.  
-💫 Conference League: Clasifican los clubes posicionados en el 7° y 8° lugar de la Primera División.   🏆 Copa América - Asia: Torneo de eliminación directa donde 
-participan todos los clubes de las tres divisiones. ¡El campeón obtiene una bolsa económica estelar y su boleto directo a la Champions League!]
+- División Actual y Posición Final: [🌎 LIGA INTERCONTINENTAL (AMÉRICA - ASIA) Una competición piramidal de máximo nivel y alta exigencia que reúne a los gigantes continentales, clubes históricos y potencias emergentes de América y Asia. Todos los encuentros se disputan bajo la modalidad de 20 minutos por partido en dificultad Imbatible. 🏆 Estructura de Divisiones: 1ª División (Liga Titanes — 18 Clubes, liguilla del 1° al 8°, descienden 17° y 18°, playoff el 16°); 2ª División (División B — 14 Clubes, ascienden 1° y 2°, playoff el 3°, descienden 13° y 14°, playoff el 12°); 3ª División (División C — 14 Clubes, ascienden 1° y 2°, playoff el 3°, sanción económica a los últimos dos). 🎫 Clasificación a Copas: Champions (1° al 4° de 1ª Div), Europa League (5° y 6° de 1ª Div), Conference League (7° y 8° de 1ª Div), y Copa América - Asia (torneo de todas las divisiones donde el campeón clasifica directo a Champions).]
 - Logros o Participaciones Especiales: [Ej: Campeón de Copa, Clasificado a Champions League, o Temporada de Descanso/Media Tabla]
 - Historial / Prestigio del Club: [Ej: Club Élite consolidado, Club de Clase Media, o Club Emergente/Ascendido]
 
@@ -537,11 +538,11 @@ INSTRUCCIONES DE ASIGNACIÓN Y OFERTAS:
      * Nombre de la Marca y Sector.
      * Monto de Pago Anual (en MDE).
      * Duración del Contrato (Años).
-     * Bonificaciones o Cláusulas especiales o requisitos de temporada para renovar o perdida de patrocinio o indeminisacion por incumplimiento(Ej: bono extra si clasifica a torneos internacionales o gana la liga, o incumplimiento de contrato, etc).
-     * Toma en cuenta que es el patrocinador principal, es decir el monto neto final debe llegar minimo a los 20mde como valor mas bajo y de ahi en adelante, sin limite pasando incluso los 100mde en los mejores patrocinadores
+     * Bonificaciones, cláusulas de rendimiento y penalizaciones (Ej: +20% de bonus si gana la liga o clasifica a Champions; reducción de la contraprestación o penalización económica si el club desciende de categoría o incumple metas de visibilidad).
+     * Rango financiero estricto para el Patrocinador Principal: el monto neto final debe partir de un piso mínimo de 20 MDE para clubes modestos y puede superar los 100 MDE para marcas globales en clubes élite.
 
 FORMATO DE RESPUESTA REQUERIDO:
-Presenta las ofertas comerciales de forma clara y formal, simulando el portafolio que la directiva recibe al ini.ciar la ventana de renovación de contratos para que el mánager pueda elegir una y negociar sus condiciones (recuerda ser riguroso y realista, con clausulas de acuerdo a la posicion y logros del club, y entre mas reconocida o mas fuerte la marca las condiciones son mas fuertes).</pre>
+Presenta las ofertas comerciales de forma clara y formal, simulando el portafolio que la directiva recibe al iniciar la ventana de renovación de contratos para que el mánager pueda elegir una y negociar sus condiciones (recuerda ser riguroso y realista, con cláusulas de acuerdo a la posición y logros del club, y entre más reconocida o más fuerte sea la marca, mayores y más estrictas serán sus exigencias comerciales).</pre>
                 </div>
 
                 <!-- Prompt: Patrocinador de Jersey / Marca Deportiva -->
@@ -553,37 +554,26 @@ Presenta las ofertas comerciales de forma clara y formal, simulando el portafoli
                     <pre id="prompt-sponsor-jersey" class="prompt-box">Actúa como el Director Global de Patrocinios de las principales marcas fabricantes de indumentaria deportiva (marcas de ropa de fútbol como Adidas, Nike, Puma, New Balance, Umbro, Kappa, Joma, etc.). Evalúa la temporada reciente del club solicitante para determinar qué marcas de ropa deportiva están interesadas en diseñar y fabricar sus jerseys.
 
 DATOS DEL CLUB Y CONTEXTO DE LA TEMPORADA:
-- Nombre del Club: [🌎 LIGA INTERCONTINENTAL (AMÉRICA - ASIA)Una competición piramidal de máximo nivel y alta exigencia 
-que reúne a los gigantes continentales, clubes históricos y potencias emergentes de América y Asia. Todos los encuentros se disputan 
-bajo la modalidad de 20 minutos por partido en dificultad Imbatible. 🏆 Estructura de Divisiones🏆 Primera División (Liga Titanes — 18 Clubes): 
-Reservada para las máximas potencias y gigantes de ambos continentes. Se juega una fase regular de 17 jornadas a una sola vuelta, seguida de una 
-Liguilla por el Título (del 1° al 8° lugar) a partidos de ida y vuelta. Los puestos 17° y 18° descienden directo, mientras que el 16° disputa el Playoff de Permanencia. 
-🥈 Segunda División (División B — 14 Clubes): Equipos de alto nivel competitivo e históricos de América y Asia. El 1° y 2° lugar logran el ascenso directo a Primera, y 
-el 3° disputa la promoción. El 13° y 14° descienden a Tercera, mientras el 12° juega el Playoff de Permanencia.   🥉 Tercera División (División C — 14 Clubes): Clubes 
-tradicionales y potencias emergentes en busca de la gloria. El 1° y 2° ascienden directo, y el 3° juega el Playoff de Ascenso. Descienden los ultimos 3.  🎫 Clasificación a Copas Internacionales 
-(Vías desde 1ª Div y Copa)⭐ Champions League: Clasifican directo 
-los clubes ubicados del 1° al 4° lugar de la Primera División.   🌟 Europa League: Clasifican los clubes posicionados en el 5° y 6° lugar de la Primera División.  
-💫 Conference League: Clasifican los clubes posicionados en el 7° y 8° lugar de la Primera División.   🏆 Copa América - Asia: Torneo de eliminación directa donde 
-participan todos los clubes de las tres divisiones. ¡El campeón obtiene una bolsa económica estelar y su boleto directo a la Champions League!]
+- Nombre del Club y Contexto de la Liga: [🌎 LIGA INTERCONTINENTAL (AMÉRICA - ASIA) Una competición piramidal de máximo nivel y alta exigencia que reúne a los gigantes continentales, clubes históricos y potencias emergentes de América y Asia. Todos los encuentros se disputan bajo la modalidad de 20 minutos por partido en dificultad Imbatible. 🏆 Estructura de Divisiones: 1ª División (Liga Titanes — 18 Clubes, liguilla del 1° al 8°, descienden 17° y 18°, playoff el 16°); 2ª División (División B — 14 Clubes, ascienden 1° y 2°, playoff el 3°, descienden 13° y 14°, playoff el 12°); 3ª División (División C — 14 Clubes, ascienden 1° y 2°, playoff el 3°, sanción económica a los últimos dos). 🎫 Clasificación a Copas: Champions (1° al 4° de 1ª Div), Europa League (5° y 6° de 1ª Div), Conference League (7° y 8° de 1ª Div), y Copa América - Asia (torneo de todas las divisiones donde el campeón clasifica directo a Champions).]
 - División Actual y Posición Final: [Ej: Primera División, 5° lugar / Tercera División, 1° lugar]
+- Historial / Prestigio del Club: [Ej: Club Élite consolidado, Club de Clase Media, o Club Emergente/Ascendido]
 
 INSTRUCCIONES DE SELECCIÓN DE MARCAS Y OFERTAS:
 1. FILTRADO POR RENDIMIENTO Y ESTATUS:
    - Clubes Élite o Campeones (Top de Primera División / Champions League): Reciben ofertas de marcas top mundiales (Adidas, Nike, Puma) con contratos muy lucrativos y pagos por nivel de merchandising.
    - Clubes de Zona Media / Alta de 2ª o 1ª División: Atraen a marcas consolidadas de nivel intermedio (New Balance, Umbro, Kappa, Under Armour) con condiciones estables.
-   - Clubes Modestes / Tercera División: Reciben propuestas de marcas alternativas o regionales (Joma, Charly, Kelme, marcas genéricas o locales) con patrocinios más limitados y menor presupuesto.
+   - Clubes Modestos / Tercera División: Reciben propuestas de marcas alternativas o regionales (Joma, Charly, Kelme, marcas locales) con patrocinios más limitados y menor presupuesto.
 
 2. GENERACIÓN DE PROPUESTAS (Mínimo 3 marcas interesadas):
    - Para cada marca fabricante de jersey, detalla:
      * Nombre de la Marca Deportiva.
-     * Categoría de Exclusividad (Ej: Proveedor Oficial Exclusivo).
-     * Bonificaciones o Cláusulas especiales o requisitos de temporada para renovar o perdida de patrocinio o indeminisacion por incumplimiento(Ej: bono extra si clasifica a torneos internacionales o gana la liga, o incumplimiento de contrato, etc).
-     * Ingreso Anual Fijo por Patrocinio de Camiseta (en MDE).
-     * Toma en cuenta que es el patrocinador del jersey entonces no se enfoca tanto en dinero lo cual permite que en el peor de los casos solo ofrezca 6mde, y en los casos mas altos los 70 u 80mde.
-     * Duración del Contrato propuesto.
+     * Categoria de Exclusividad (Ej: Proveedor Oficial Exclusivo).
+     * Ingreso Anual Fijo por Patrocinio de Camiseta (en MDE) considerando un rango realista: desde un piso mínimo de 6 MDE para equipos modestos hasta un techo de 70 u 80 MDE para marcas globales en clubes élite.
+     * Duración del Contrato propuesto (Años).
+     * Bonificaciones, cláusulas especiales y penalizaciones (Ej: bono extra por clasificación a torneos internacionales, regalías por ventas de indumentaria, o cláusula de rescisión / reducción de contraprestación si el club sufre un descenso de categoría).
 
 FORMATO DE RESPUESTA REQUERIDO:
-Muestra el reporte de las marcas deportivas que pujan por vestir al equipo, detallando las condiciones económicas para que el mánager elija con qué marca firmar contrato de indumentaria (recuerda debe ser realista y rigurosa, las condiciones de acuerdo al nivel del club y el nivel de la marca).</pre>
+Muestra el reporte de las marcas deportivas que pujan por vestir al equipo, detallando las condiciones económicas de forma rigurosa y realista para que el mánager elija con qué marca firmar contrato de indumentaria de acuerdo al nivel real del club y el prestigio de la marca.</pre>
                 </div>
 
                 <!-- Prompt 4: Visoría y Cantera -->
