@@ -187,7 +187,7 @@
             </div>
         </main>
 
-        <!-- PESTAÑA 5: FINANZAS Y PATROCINIOS -->
+       <!-- PESTAÑA 5: FINANZAS Y PATROCINIOS -->
         <main id="finanzas" class="tab-content">
             <div class="sub-nav">
                 <button class="sub-btn active" onclick="openSubTab(event, 'ingresos')">📈 Ingresos y Premios</button>
@@ -197,28 +197,48 @@
             <!-- SUB-TAB INGRESOS -->
             <div id="ingresos" class="sub-content active">
                 <div class="grid-tablas">
+                    <!-- Tarjeta 1: TV, Sponsors y Taquilla -->
                     <div class="card-table">
                         <h3>📺 TV, Sponsors y Taquilla</h3>
                         <table>
-                            <thead><tr><th>Concepto</th><th>1ª Div</th><th>2ª Div</th><th>3ª Div</th></tr></thead>
+                            <thead>
+                                <tr><th>Concepto</th><th>1ª Div</th><th>2ª Div</th><th>3ª Div</th></tr>
+                            </thead>
                             <tbody>
                                 <tr><td>Derechos de TV Anuales</td><td class="gold-text">50 MDE</td><td class="silver-text">30 MDE</td><td class="bronze-text">10 MDE</td></tr>
                                 <tr><td>Sponsors Camiseta (Top/Base)</td><td>65M / 25M</td><td>15M</td><td>8M</td></tr>
-                                <tr><td>Taquilla (Estadio Gigante/Grande)</td><td>44M / 36M</td><td>--- / 27M</td><td>--- / ---</td></tr>
-                                <tr><td>Taquilla (Estadio Mediano/Pequeño)</td><td>20M / 10M</td><td>17M / 8M</td><td>12M / 5M</td></tr>
+                                <tr><td>Taquilla (Gigante / Grande)</td><td>44M / 36M</td><td>--- / 27M</td><td>--- / ---</td></tr>
+                                <tr><td>Taquilla (Mediano / Pequeño)</td><td>20M / 10M</td><td>17M / 8M</td><td>12M / 5M</td></tr>
                             </tbody>
                         </table>
                     </div>
 
+                    <!-- Tarjeta 2: Premios Oficiales de Liga -->
                     <div class="card-table">
                         <h3>🏆 Premios Oficiales de Liga</h3>
                         <table>
-                            <thead><tr><th>Posición</th><th>1ª Div</th><th>2ª Div</th><th>3ª Div</th></tr></thead>
+                            <thead>
+                                <tr><th>Posición</th><th>1ª Div</th><th>2ª Div</th><th>3ª Div</th></tr>
+                            </thead>
                             <tbody>
                                 <tr><td>Campeón</td><td class="gold-text">85 MDE</td><td class="gold-text">35 MDE</td><td class="gold-text">15 MDE</td></tr>
                                 <tr><td>Subcampeón</td><td>60 MDE</td><td>30 MDE</td><td>10 MDE</td></tr>
                                 <tr><td>3er Lugar</td><td>40 MDE</td><td>24 MDE</td><td>7 MDE</td></tr>
                                 <tr><td>4° Lugar</td><td>30 MDE</td><td>13 MDE</td><td>5 MDE</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tarjeta 3: Merchandising y Sponsors Principales -->
+                    <div class="card-table">
+                        <h3>🛍️ Merchandising y Sponsors</h3>
+                        <table>
+                            <thead>
+                                <tr><th>Categoría / Nivel</th><th>1ª Div / Top</th><th>2ª Div / Medio</th><th>3ª Div / Base</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Merchandising (Alto / Med / Bajo)</td><td>25M / 20M / 15M</td><td>15M / 12M / 8M</td><td>10M / 6M / 4M</td></tr>
+                                <tr><td>Sponsors Principales (Ranking)</td><td>Top 1-50 (170M)</td><td>Top 51-300 (120M-70M)</td><td>301+ (20M)</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -228,10 +248,13 @@
             <!-- SUB-TAB GASTOS -->
             <div id="gastos" class="sub-content">
                 <div class="grid-tablas">
+                    <!-- Tarjeta 1: Mantenimiento de Estadios e Instalaciones -->
                     <div class="card-table">
-                        <h3>🏗️ Mantenimiento de Estadios e Instalaciones</h3>
+                        <h3>🏗️ Mantenimiento Anual</h3>
                         <table>
-                            <thead><tr><th>Nivel Estadio</th><th>Mantenimiento Estadio</th><th>Instalaciones</th></tr></thead>
+                            <thead>
+                                <tr><th>Nivel / Tamaño</th><th>Estadio</th><th>Instalaciones</th></tr>
+                            </thead>
                             <tbody>
                                 <tr><td>Élite / Gigante</td><td>28 MDE</td><td>10 MDE</td></tr>
                                 <tr><td>Profesional / Grande</td><td>21 MDE</td><td>6 MDE</td></tr>
@@ -241,21 +264,37 @@
                         </table>
                     </div>
 
+                    <!-- Tarjeta 2: Deducción de Liga y Staff -->
                     <div class="card-table">
-                        <h3>🏛️ Deducción de Liga y Staff Anual</h3>
+                        <h3>🏛️ Deducción de Liga y Staff</h3>
                         <table>
-                            <thead><tr><th>División</th><th>Impuesto Liga</th><th>Staff Técnico / Médico</th></tr></thead>
+                            <thead>
+                                <tr><th>División</th><th>Impuesto (Ganancias)</th><th>Staff (Técnico / Médico)</th></tr>
+                            </thead>
                             <tbody>
-                                <tr><td>Primera División</td><td>15% Ganancias</td><td>12M / 6M</td></tr>
-                                <tr><td>Segunda División</td><td>10% Ganancias</td><td>8M / 4M</td></tr>
-                                <tr><td>Tercera División</td><td>5% Ganancias</td><td>5M / 2M</td></tr>
+                                <tr><td>Primera División</td><td>15% de deducción</td><td>12 MDE / 6 MDE</td></tr>
+                                <tr><td>Segunda División</td><td>10% de deducción</td><td>8 MDE / 4 MDE</td></tr>
+                                <tr><td>Tercera División</td><td>5% de deducción</td><td>5 MDE / 2 MDE</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tarjeta 3: Límites de Salario y Plantilla -->
+                    <div class="card-table">
+                        <h3>📊 Límites Salariales y Plantilla</h3>
+                        <table>
+                            <thead>
+                                <tr><th>Concepto Financiero</th><th>Élite / Alto</th><th>Profesional / Medio</th><th>Básico / Bajo</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Tope Salarial por Jugador</td><td>Sin Límite</td><td>90 MDE</td><td>50 MDE</td></tr>
+                                <tr><td>Clasificación de Plantilla</td><td>+300 MDE</td><td>120M - 300 MDE</td><td>Hasta 120 MDE</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </main>
-
         <!-- PESTAÑA 6: PROMPTS AI -->
         <main id="prompts" class="tab-content">
             <div class="prompts-header">
