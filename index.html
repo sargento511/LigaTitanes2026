@@ -276,6 +276,24 @@
                 </div>
             </div>
 
+            <!-- Tarjeta: Sistema de Patrocinadores (Jersey y Principal) -->
+                    <div class="card-table">
+                        <h3>👕 Sistema de Patrocinadores (Camiseta y Principal)</h3>
+                        <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 12px;">
+                            Al finalizar cada temporada, las marcas reales evaluarán el rendimiento de tu club para enviarte propuestas comerciales.
+                        </p>
+                        
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 8px; border-left: 4px solid #00d26a;">
+                            <h4 style="margin-top: 0; color: #00d26a;">🤖 ¿Cómo solicitar y negociar ofertas en Gemini?</h4>
+                            <ul style="margin: 8px 0 0 15px; font-size: 0.85rem; line-height: 1.5;">
+                                <li><strong>Solicitud de Ofertas:</strong> En la pestaña <strong style="color: #fff;">Prompts AI</strong> encontrarás el prompt oficial. Solo debes enviarle a Gemini tu <em>división actual, posición final en la tabla y logros obtenidos</em>.</li>
+                                <li><strong>Propuestas Automáticas:</strong> Gemini generará ofertas de marcas reales (tanto para el patrocinador principal como para la camiseta) ajustadas a tu nivel y estatus.</li>
+                                <li><strong>Renovaciones y Despidos:</strong> Si mantienes tu contrato actual, el patrocinador evaluará tu rendimiento para decidir si te renueva, mejora las condiciones o cancela el acuerdo.</li>
+                                <li><strong>Negociación Libre:</strong> Puedes elegir una propuesta y negociar cualquier cláusula directamente con Gemini: <em>monto anual, duración en años, bonos por títulos/ascensos, cláusulas de rescisión o metas de rendimiento</em>.</li>
+                            </ul>
+                        </div>
+                    </div>
+
             <!-- SUB-TAB GASTOS -->
             <div id="gastos" class="sub-content">
                 <div class="grid-tablas">
@@ -461,6 +479,68 @@ Debes simular de forma realista los movimientos de reacción en cadena que reali
    - Cuánto dinero neto les sobró o gastaron tras este mercado de fichajes en cadena.
 
 Muestra la respuesta con un tono formal de reporte de fichajes y mercado de pases europeo/sudamericano.</pre>
+                </div>
+
+       <!-- Prompt: Patrocinador Principal -->
+                <div class="prompt-card">
+                    <div class="prompt-title">
+                        <span>💼 Prompt de Ofertas: Patrocinador Principal</span>
+                        <button class="copy-btn" onclick="copyPrompt('prompt-sponsor-principal')">📋 Copiar Prompt</button>
+                    </div>
+                    <pre id="prompt-sponsor-principal" class="prompt-box">Actúa como el Director de Marketing y Relaciones Comerciales de la Liga Intercontinental. Tu tarea es evaluar el desempeño de la temporada que acaba de finalizar para un club de nuestra liga y asignarle ofertas realistas de marcas comerciales de patrocinio principal (aerolíneas, tecnología, finanzas, automotrices, consumo masivo, etc.).
+
+DATOS DEL CLUB Y CONTEXTO DE LA TEMPORADA:
+- Nombre del Club: [Escribe tu club, ej: Halcones Rojos]
+- División Actual y Posición Final: [Ej: Primera División, 3° lugar / Segunda División, Campeón]
+- Logros o Participaciones Especiales: [Ej: Campeón de Copa, Clasificado a Champions League, o Temporada de Descanso/Media Tabla]
+- Historial / Prestigio del Club: [Ej: Club Élite consolidado, Club de Clase Media, o Club Emergente/Ascendido]
+
+INSTRUCCIONES DE ASIGNACIÓN Y OFERTAS:
+1. ANÁLISIS DE MERCADO Y RENDIMIENTO:
+   - Dependiendo de la división, la posición final y los logros, determina el atractivo comercial del club. Los equipos punteros o de Primera División atraen marcas globales de Nivel 1 (Top 1-50, pagos altos), mientras que los equipos de divisiones inferiores o de mitad de tabla atraen marcas regionales o de menor presupuesto (Nivel 3 o 4).
+   
+2. GENERACIÓN DE PROPUESTAS (Mínimo 3 opciones de marcas reales o verosímiles):
+   - Presenta opciones de diferentes categorías (Ej: una marca muy alta pero exigente, una opción equilibrada y una opción menor pero segura).
+   - Para cada propuesta detalla:
+     * Nombre de la Marca y Sector.
+     * Monto de Pago Anual (en MDE).
+     * Duración del Contrato (Años).
+     * Bonificaciones o Cláusulas especiales (Ej: bono extra si clasifica a torneos internacionales o gana la liga).
+
+FORMATO DE RESPUESTA REQUERIDO:
+Presenta las ofertas comerciales de forma clara y formal, simulando el portafolio que la directiva recibe al iniciar la ventana de renovación de contratos para que el mánager pueda elegir una y negociar sus condiciones.</pre>
+                </div>
+
+                <!-- Prompt: Patrocinador de Jersey / Marca Deportiva -->
+                <div class="prompt-card">
+                    <div class="prompt-title">
+                        <span>👕 Prompt de Ofertas: Marca Deportiva (Jersey)</span>
+                        <button class="copy-btn" onclick="copyPrompt('prompt-sponsor-jersey')">📋 Copiar Prompt</button>
+                    </div>
+                    <pre id="prompt-sponsor-jersey" class="prompt-box">Actúa como el Director Global de Patrocinios de las principales marcas fabricantes de indumentaria deportiva (marcas de ropa de fútbol como Adidas, Nike, Puma, New Balance, Umbro, Kappa, Joma, etc.). Evalúa la temporada reciente del club solicitante para determinar qué marcas de ropa deportiva están interesadas en diseñar y fabricar sus jerseys.
+
+DATOS DEL CLUB Y CONTEXTO DE LA TEMPORADA:
+- Nombre del Club: [Escribe tu club, ej: Halcones Rojos]
+- División Actual y Posición Final: [Ej: Primera División, 5° lugar / Tercera División, 1° lugar]
+- Prestigio de Camiseta / Popularidad: [Ej: Alta venta de playeras, club histórico, o club modesto]
+- Estado Actual del Contrato: [Ej: Sin marca deportiva / Terminación de contrato anterior]
+
+INSTRUCCIONES DE SELECCIÓN DE MARCAS Y OFERTAS:
+1. FILTRADO POR RENDIMIENTO Y ESTATUS:
+   - Clubes Élite o Campeones (Top de Primera División / Champions League): Reciben ofertas de marcas top mundiales (Adidas, Nike, Puma) con contratos muy lucrativos y pagos por nivel de merchandising.
+   - Clubes de Zona Media / Alta de 2ª o 1ª División: Atraen a marcas consolidadas de nivel intermedio (New Balance, Umbro, Kappa, Under Armour) con condiciones estables.
+   - Clubes Modestes / Tercera División: Reciben propuestas de marcas alternativas o regionales (Joma, Charly, Kelme, marcas genéricas o locales) con patrocinios más limitados y menor presupuesto.
+
+2. GENERACIÓN DE PROPUESTAS (Mínimo 3 marcas interesadas):
+   - Para cada marca fabricante de jersey, detalla:
+     * Nombre de la Marca Deportiva.
+     * Categoría de Exclusividad (Ej: Proveedor Oficial Exclusivo).
+     * Ingreso Anual Fijo por Patrocinio de Camiseta (en MDE).
+     * Porcentaje de Regalías por Venta de Merchandising de los Jerseys.
+     * Duración del Contrato propuesto.
+
+FORMATO DE RESPUESTA REQUERIDO:
+Muestra el reporte de las marcas deportivas que pujan por vestir al equipo, detallando las condiciones económicas para que el mánager elija con qué marca firmar contrato de indumentaria.</pre>
                 </div>
 
                 <!-- Prompt 4: Visoría y Cantera -->
