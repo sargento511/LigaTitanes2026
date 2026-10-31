@@ -218,7 +218,7 @@
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
 
             <h3>🌱 D) Canteranos del Club (Aumento de Valor de Mercado)</h3>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;"><em>Aplica para los jugadores formados en la cantera (≤ 25 años). Todo canterano recién promovido o sin minutos base inicia con un valor de <strong>$100,000</strong>. Su revalorización en el primer equipo depende de su calificación promedio al finalizar la temporada:</em></p>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;"><em>Aplica para los jugadores formados en la cantera (≤ 25 años. recordando que aumentan su edad cada 2 temporadas llegando hasta los 26 o 27 donde se frena esta regla). Todo canterano recién promovido o sin minutos base inicia con un valor de <strong>lo que le ponga Gemini de base</strong>. Su revalorización en el primer equipo depende de su calificación promedio al finalizar la temporada:</em></p>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px;">
                 <div style="background: #0B0E14; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px;">
@@ -266,6 +266,7 @@
                     <li><strong>🥇 Líder de Goleo (Máximo Anotador):</strong> <strong>+20% de valor extra</strong> (o <strong>+$2,000,000</strong> si su valor es menor a $10M, además sube 1 GRL).</li>
                     <li><strong>🎯 Líder de Asistencias (Máximo Asistidor):</strong> <strong>+15% de valor extra</strong> (o <strong>+$1,500,000</strong> si su valor es menor a $10M, además sube 1 GRL).</li>
                     <li><strong>⭐ Doble Corona (Goleo + Asistencias):</strong> <strong>+40% de valor extra</strong> (o <strong>+$4,000,000</strong> si su valor es menor a $10M, además sube 2 GRL).</li>
+                    <li><strong>⭐ Mejor Portero:</strong> <strong>+30% de valor extra</strong> (o <strong>+$4,000,000</strong> si su valor es menor a $10M, además sube 1 GRL).</li>
                 </ul>
             </div>
 
@@ -524,57 +525,61 @@ Muestra tu respuesta de forma clara, dividida por fases y con un tono de negocia
                     </div>
                     <pre id="prompt-desarrollo" class="prompt-box">Actúa como el Comité Técnico, Auditor Financiero y Director Deportivo oficial de la Liga Intercontinental. Analiza la imagen de la plantilla que te adjunto y procesa la evaluación anual de desarrollo de cada futbolista basándote estrictamente en el reglamento oficial completo.
 
-DATOS DEL CLUB Y CONTEXTO DE LA TEMPORADA:
+DATOS DEL CLUB Y PLANTILLA:
 - Nombre del Club: [Escribe tu club, ej: Halcones Rojos]
-- División Actual y Posición Final: [Ej: Tercera División, 1° lugar / Primera División, 12° lugar]
-- Nivel de Instalación / Academia: [Ej: Nivel 1, Nivel 2 o Nivel 3]
-- Lista de Canteranos en Plantilla: [Escribe los nombres de los jugadores que son canteranos]
+- División Actual y Posición Final: [Ej: Primera División, 3° lugar]
+- Nivel de Instalación / Cantera: [Ej: Nivel 1 (Alto), Nivel 2 (Medio) o Nivel 3 (Bajo)]
+- Logros individuales de cada jugador [Ej: Maximo goleador mejor portero de la liga o maximo asistidor o ambas]
+- LISTA DE CANTERANOS A EVALUAR (Adjunta foto o texto con: Nombre, Edad actual, GRL actual, Valor de Mercado actual, Partidos Jugados y Nota Promedio):
 
-INSTRUCCIONES DE AUDITORÍA Y CÁLCULO (Aplica exhaustivamente cada apartado):
+REGLAS STRICTAS DE EVALUACIÓN Y CÁLCULO:
 
-1. VALIDACIÓN DE REQUISITOS MÍNIMOS DE PARTIDOS:
-   - Requisito obligatorio: Mínimo 8 partidos jugados en Primera División (17 jornadas) o 12 partidos jugados en Segunda/Tercera División (26 jornadas).
-   - Consecuencia por Poca Actividad: Si el jugador disputó 7 partidos o menos, o su nota se ubica entre 5.6 y 5.7, conserva su media intacta (0 GVR).
+1. REQUISITO MÍNIMO DE ACTIVIDAD:
+   - Mínimo 8 partidos jugados en Primera División o 12 en Segunda/Tercera División.
+   - Si jugó 7 partidos o menos, o su nota fue 5.6 - 5.7: Mantiene su media (0 GRL) y su valor actual intacto.
 
-2. APLICACIÓN DE TABLAS DE CRECIMIENTO SEGÚN EDAD Y TIPO DE JUGADOR:
-   - A) Jugadores Veteranos (Edad ≥ 26 años): Nota ≥ 6.7 (+1 GVR) | Nota < 6.7 (0 GVR).
-   - B) Jugadores Jóvenes Fichados (Edad ≤ 25 años): 
-     * Nota ≥ 7.2 (+4 GVR)
-     * Nota 6.7 a 7.1 (+3 GVR)
-     * Nota 6.3 a 6.6 (+2 GVR)
-     * Nota 5.8 a 6.2 (+1 GVR)
-     * Nota ≤ 5.5 (-1 GVR)
-   - C) Canteranos (Desarrollo por Instalación - Con tope estricto de 88-92 GVR):
-     * Nota ≥ 7.2: Nivel 1 (+4 GVR) | Nivel 2 (+3 GVR) | Nivel 3 (+2 GVR)
-     * Nota 6.5 a 7.1: Nivel 1 (+3 GVR) | Nivel 2 (+2 GVR) | Nivel 3 (+1 GVR)
-     * Nota 5.8 a 6.4: Nivel 1 (+2 GVR) | Nivel 2 (+1 GVR) | Nivel 3 (0 GVR)
-   - Penalización Severa (Nota ≤ 5.5): Descuento de -1 GVR (o -2 GVR si acumulan 2 temporadas consecutivas). Los canteranos penalizados congelan su valor base en $100k.
+2. AUMENTO DE MEDIA (GRL) POR NIVEL DE INSTALACIÓN (Edad ≤ 25 años):
+   - Nota ≥ 7.2 (Crack / MVP): Nivel 1 (+4 GRL) | Nivel 2 (+3 GRL) | Nivel 3 (+2 GRL)
+   - Nota 6.5 a 7.1 (Titular): Nivel 1 (+3 GRL) | Nivel 2 (+2 GRL) | Nivel 3 (+1 GRL)
+   - Nota 5.8 a 6.4 (Rotación): Nivel 1 (+2 GRL) | Nivel 2 (+1 GRL) | Nivel 3 (0 GRL)
+   - Nota < 5.8 (Pocos min): Nivel 1 (+1 GRL) | Nivel 2 (0 GRL) | Nivel 3 (0 GRL)
+   - Penalización (Nota ≤ 5.5): Baja -1 GRL en su media actual y su valor sufre penalización de x0.75.
 
-3. EVALUACIÓN DE ENVEJECIMIENTO BIANUAL (Aplica para Halcones Rojos y Deportivo Federal):
-   - Cada 2 temporadas disputadas, los futbolistas menores de 24 años avanzan en edad hasta el rango de 25-26 años, estabilizando su desarrollo.
+3. REVALORIZACIÓN DE MERCADO (Sobre el Valor Actual del Jugador):
+   * Rango 1: Canteranos Iniciales / Desconocidos ($100k a $1.0M actual):
+     - Nota ≥ 7.2: Pasa directo a $1,500,000
+     - Nota 6.5 a 7.1: Pasa directo a $600,000
+     - Nota 5.8 a 6.4: Pasa directo a $300,000
+     - Nota < 5.8: Pasa directo a $150,000
+   * Rango 2: Promesas en Ascenso ($1.1M a $10.0M actual):
+     - Nota ≥ 7.2: +100% de su valor actual (Duplica)
+     - Nota 6.5 a 7.1: +50% de su valor actual
+     - Nota 5.8 a 6.4: +20% de su valor actual
+     - Nota < 5.8: +5% de su valor actual
+   * Rango 3: Canteranos Consolidados ($10.1M a $50.0M actual):
+     - Nota ≥ 7.2: +40% de su valor actual
+     - Nota 6.5 a 7.1: +25% de su valor actual
+     - Nota 5.8 a 6.4: +12% de su valor actual
+     - Nota < 5.8: +5% de su valor actual
+   * Rango 4: Canteranos Estrella / Élite (> $50.0M actual):
+     - Nota ≥ 7.2: +25% de su valor actual
+     - Nota 6.5 a 7.1: +15% de su valor actual
+     - Nota 5.8 a 6.4: +5% de su valor actual
+     - Nota < 5.8: +1% de su valor actual
 
-4. RASGOS ESPECIALES Y DATOS EXTRAS DE DESARROLLO:
-   - Propensión a Lesiones: Sube -1 GVR menos de lo que correspondería por su nota.
-   - Crecimiento Acelerado: Sube +1 GVR extra al final de la temporada.
-   - Mentalidad Frágil: Sin bonos en Liguilla/Playoffs y -10% de valor si el club pierde.
-   - De Cristal: Si el jugador disputa > 80% de los partidos de la temporada, su nota mínima requerida para subir sube automáticamente a 7.0.
-   - Esponja Táctica: +1 GVR extra tras haber jugado 5 partidos en una posición secundaria.
-   - Estilo Regular: Evolución estándar sin alteraciones.
+4. BONIFICACIONES EXTRAS POR PREMIOS INDIVIDUALES (Se suman tras la revalorización por nota):
+   - 🥇 Líder de Goleo: +20% valor extra (o +$2,000,000 si su valor es < $10M) y +1 GRL extra.
+   - 🎯 Líder de Asistencias: +15% valor extra (o +$1,500,000 si su valor es < $10M) y +1 GRL extra.
+   - ⭐ Doble Corona (Goleo + Asistencias): +40% valor extra (o +$4,000,000 si su valor es < $10M) y +2 GRL extra.
+   - 🧤 Mejor Portero de la Liga: +30% valor extra (o +$4,000,000 si su valor es < $10M) y +1 GRL extra.
 
-5. REVALORIZACIÓN CONTABLE DE MERCADO (Obligatorio para Canteranos y rangos de precio):
-   - Canteranos Iniciales ($100k - $1.0M): Nota ≥ 7.2 ($1.5M) | 6.5-7.1 ($600k) | 5.8-6.4 ($300k) | < 5.8 ($150k).
-   - Promesas en Ascenso ($1.1M - $10.0M): Nota ≥ 7.2 (+100%) | 6.5-7.1 (+50%) | 5.8-6.4 (+20%) | < 5.8 (+5%).
-   - Consolidados ($10.1M - $50.0M): Nota ≥ 7.2 (+40%) | 6.5-7.1 (+25%) | 5.8-6.4 (+12%) | < 5.8 (+5%).
-   - Estrella / Élite (> $50.0M): Nota ≥ 7.2 (+25%) | 6.5-7.1 (+15%) | 5.8-6.4 (+5%) | < 5.8 (+1%).
-
-FORMATO DE RESPUESTA REQUERIDO:
-Presenta una auditoría detallada jugador por jugador con los siguientes campos obligatorios:
-- Nombre y Posición:
-- Estatus (Veterano / Joven / Canterano) y Edad:
-- Nota Obtenida / Partidos Jugados:
-- Rasgos Especiales o Modificadores Activos:
-- Variación de Media: [Sube, Baja o Se Mantiene, especificando los puntos GVR exactos (Ej: +3 GVR) y el número exacto de habilidades agregadas, sin enlistar cuáles].
-- Nuevo Valor de Mercado: [Calculado estrictamente según las tablas de revalorización contable].</pre>
+FORMATO DE RESPUESTA REQUERIDO (Jugador por Jugador):
+Para cada canterano entrega la ficha oficial:
+- Nombre del Jugador | Edad | Posición:
+- Rendimiento: [Partidos Jugados / Nota Promedio Final]
+- Variación de GRL: [Ej: Sube de 72 a 75 (+3 GRL) y especifica cuántas habilidades aleatorias sube según los puntos ganados].
+- Variación de Valor de Mercado: [Especifica el valor anterior -> nuevo valor en MDE tras aplicar el porcentaje por nota + premios extras].
+- Justificación Técnica: [Breve resumen del porqué de sus incrementos]. </pre>
                 </div>
 
                 <!-- Prompt 3: Efecto Dominó -->
