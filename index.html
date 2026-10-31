@@ -181,7 +181,7 @@
                                 <li><strong>Jóvenes (hasta 25 años):</strong> Puedes venderlos hasta al <strong>triple</strong> de su precio de Transfermarkt.</li>
                                 <li><strong>Apogeo (26 a 29 años):</strong> Puedes venderlos hasta al <strong>doble</strong> de su precio.</li>
                                 <li><strong>Veteranos (30+ años):</strong> Su precio máximo permitido es el valor base más un <strong>50% extra</strong> (su valor y medio).</li>
-                                 <li><strong>Limite de Jugadores extranjeros:</strong> Solo puedes tener (sin contar canteranos), como maximo por division: 5e xtranjeros en tercera/8 extranjeros en segunda/15 extranjeros en primera/. Los cuales se tendran que reportar en el grupo al momento de informar la compra ya sea como "comunitario" o "entracomunitario o extranjero".</li>
+                                 <li><strong>Limite de Jugadores extranjeros:</strong> Solo puedes tener (sin contar canteranos o jugadores con mas de 5 temporadas continuas en el club), como maximo por division: 5e xtranjeros en tercera/8 extranjeros en segunda/15 extranjeros en primera/. Los cuales se tendran que reportar en el grupo al momento de informar la compra ya sea como "comunitario" o "entracomunitario o extranjero".</li>
                             </ul>
                         </div>
                     </div>
@@ -189,33 +189,113 @@
             </div>
         </main>
 
-        <!-- PESTAÑA 4: JUGADORES Y DESARROLLO -->
-        <main id="jugadores" class="tab-content">
-            <div class="card-box">
-                <h3>📈 Crecimiento y Evaluaciones de Temporada</h3>
-                <div class="dev-table-grid">
-                    <div class="dev-card">
-                        <h4>👴 Veteranos (≥ 26 años)</h4>
-                        <p>• Nota ≥ 6.7: <strong>+1 GVR</strong></p>
-                        <p>• Nota < 6.7: <strong>0 GVR</strong> (Conserva media)</p>
-                    </div>
-                    <div class="dev-card">
-                        <h4>👦 Jóvenes Fichados (≤ 25 años)</h4>
-                        <p>• Nota ≥ 7.2: <strong>+4 GVR</strong></p>
-                        <p>• Nota 6.7 - 7.1: <strong>+3 GVR</strong></p>
-                        <p>• Nota 6.3 - 6.6: <strong>+2 GVR</strong></p>
-                        <p>• Nota 5.8 - 6.2: <strong>+1 GVR</strong></p>
-                        <p>• Nota ≤ 5.5: <strong>-1 GVR</strong></p>
-                    </div>
-                    <div class="dev-card">
-                        <h4>🌱 Canteranos (Por Instalación)</h4>
-                        <p>• <strong>Nota ≥ 7.2:</strong> Nivel 1 (+4) | Nivel 2 (+3) | Nivel 3 (+2)</p>
-                        <p>• <strong>Nota 6.5 - 7.1:</strong> Nivel 1 (+3) | Nivel 2 (+2) | Nivel 3 (+1)</p>
-                        <p>• <strong>Nota 5.8 - 6.4:</strong> Nivel 1 (+2) | Nivel 2 (+1) | Nivel 3 (0)</p>
-                    </div>
+     <!-- PESTAÑA 4: JUGADORES Y DESARROLLO -->
+    <main id="jugadores" class="tab-content">
+        <div class="card-box">
+            <h3>📈 Crecimiento y Evaluaciones de Temporada</h3>
+            <div class="dev-table-grid">
+                <div class="dev-card">
+                    <h4>👴 Veteranos (≥ 26 años)</h4>
+                    <p>• Nota ≥ 6.7: <strong>+1 GVR</strong></p>
+                    <p>• Nota < 6.7: <strong>0 GVR</strong> (Conserva media)</p>
+                </div>
+                <div class="dev-card">
+                    <h4>👦 Jóvenes Fichados (≤ 25 años)</h4>
+                    <p>• Nota ≥ 7.2: <strong>+4 GVR</strong></p>
+                    <p>• Nota 6.7 - 7.1: <strong>+3 GVR</strong></p>
+                    <p>• Nota 6.3 - 6.6: <strong>+2 GVR</strong></p>
+                    <p>• Nota 5.8 - 6.2: <strong>+1 GVR</strong></p>
+                    <p>• Nota ≤ 5.5: <strong>-1 GVR</strong></p>
+                </div>
+                <div class="dev-card">
+                    <h4>🌱 Canteranos (Por Instalación)</h4>
+                    <p>• <strong>Nota ≥ 7.2:</strong> Nivel 1 (+4) | Nivel 2 (+3) | Nivel 3 (+2)</p>
+                    <p>• <strong>Nota 6.5 - 7.1:</strong> Nivel 1 (+3) | Nivel 2 (+2) | Nivel 3 (+1)</p>
+                    <p>• <strong>Nota 5.8 - 6.4:</strong> Nivel 1 (+2) | Nivel 2 (+1) | Nivel 3 (0)</p>
                 </div>
             </div>
-        </main>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
+
+            <h3>🌱 D) Canteranos del Club (Aumento de Valor de Mercado)</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px;"><em>Aplica para los jugadores formados en la cantera (≤ 25 años). Todo canterano recién promovido o sin minutos base inicia con un valor de <strong>$100,000</strong>. Su revalorización en el primer equipo depende de su calificación promedio al finalizar la temporada:</em></p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 25px;">
+                <div style="background: #0B0E14; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 8px;">1. Canteranos Iniciales ($100k - $1.0M)</h4>
+                    <ul style="font-size: 0.85rem; padding-left: 15px; color: var(--text-secondary);">
+                        <li><strong>Nota ≥ 7.2 (Crack):</strong> $1,500,000</li>
+                        <li><strong>Nota 6.5 - 7.1 (Titular):</strong> $600,000</li>
+                        <li><strong>Nota 5.8 - 6.4 (Rotación):</strong> $300,000</li>
+                        <li><strong>Nota < 5.8 (Pocos min):</strong> $150,000</li>
+                    </ul>
+                </div>
+                <div style="background: #0B0E14; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 8px;">2. Promesas ($1.1M - $10.0M)</h4>
+                    <ul style="font-size: 0.85rem; padding-left: 15px; color: var(--text-secondary);">
+                        <li><strong>Nota ≥ 7.2 (Crack):</strong> +100% (Duplica)</li>
+                        <li><strong>Nota 6.5 - 7.1 (Titular):</strong> +50%</li>
+                        <li><strong>Nota 5.8 - 6.4 (Rotación):</strong> +20%</li>
+                        <li><strong>Nota < 5.8 (Pocos min):</strong> +5%</li>
+                    </ul>
+                </div>
+                <div style="background: #0B0E14; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 8px;">3. Consolidados ($10.1M - $50.0M)</h4>
+                    <ul style="font-size: 0.85rem; padding-left: 15px; color: var(--text-secondary);">
+                        <li><strong>Nota ≥ 7.2 (Crack):</strong> +40%</li>
+                        <li><strong>Nota 6.5 - 7.1 (Titular):</strong> +25%</li>
+                        <li><strong>Nota 5.8 - 6.4 (Rotación):</strong> +12%</li>
+                        <li><strong>Nota < 5.8 (Pocos min):</strong> +5%</li>
+                    </ul>
+                </div>
+                <div style="background: #0B0E14; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 8px;">4. Estrellas / Élite (> $50.0M)</h4>
+                    <ul style="font-size: 0.85rem; padding-left: 15px; color: var(--text-secondary);">
+                        <li><strong>Nota ≥ 7.2 (Crack):</strong> +25%</li>
+                        <li><strong>Nota 6.5 - 7.1 (Titular):</strong> +15%</li>
+                        <li><strong>Nota 5.8 - 6.4 (Rotación):</strong> +5%</li>
+                        <li><strong>Nota < 5.8 (Pocos min):</strong> +1%</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="background: rgba(212, 175, 55, 0.1); border-left: 4px solid var(--accent-gold); padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                <h4 style="color: var(--accent-gold); margin-top: 0;">🏆 Bonificaciones Extras por Premios Individuales</h4>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;"><em>Estos bonos se suman al valor final obtenido tras aplicar el aumento por calificación:</em></p>
+                <ul style="font-size: 0.85rem; padding-left: 15px; color: var(--text-primary); line-height: 1.6;">
+                    <li><strong>🥇 Líder de Goleo (Máximo Anotador):</strong> <strong>+20% de valor extra</strong> (o <strong>+$2,000,000</strong> si su valor es menor a $10M, además sube 1 GRL).</li>
+                    <li><strong>🎯 Líder de Asistencias (Máximo Asistidor):</strong> <strong>+15% de valor extra</strong> (o <strong>+$1,500,000</strong> si su valor es menor a $10M, además sube 1 GRL).</li>
+                    <li><strong>⭐ Doble Corona (Goleo + Asistencias):</strong> <strong>+40% de valor extra</strong> (o <strong>+$4,000,000</strong> si su valor es menor a $10M, además sube 2 GRL).</li>
+                </ul>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
+
+            <h3>🔍 E) Sistema de Infraestructura, Visoría y Academia</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-top: 15px;">
+                <div style="background: #0B0E14; border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 10px;">1. Reclutamiento y Visoría</h4>
+                    <ul style="font-size: 0.85rem; padding-left: 15px; color: var(--text-secondary); line-height: 1.5;">
+                        <li><strong>Local / Estatal ($10M – $20M):</strong> 3-5 jugadores (65-69 GVR) | Req: Cantera Nivel 3.</li>
+                        <li><strong>Nacional ($30M – $45M):</strong> 6-10 jugadores (70-73 GVR) | Req: Cantera Nivel 2.</li>
+                        <li><strong>Continental ($50M – $65M):</strong> 11-15 jugadores (74-76 GVR) | Req: Cantera Nivel 1.</li>
+                        <li><strong>Global / Élite ($70M – $85M):</strong> 16-20 jugadores (76-77 GVR, alta probabilidad de 78 Jackpot) | Req: Cantera Nivel 1.</li>
+                    </ul>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;"><strong>Ficha Técnico-Biológica:</strong> Nombre, edad (16-19), posición, GVR inicial (máx 78), biotipo físico y 2 rasgos únicos.</p>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px;"><strong>Incorporación:</strong> Mandar a Academia es GRATIS; promover al Primer Equipo negocia contrato por separado.</p>
+                </div>
+
+                <div style="background: #0B0E14; border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 10px;">2. Infraestructura de Academia</h4>
+                    <ul style="font-size: 0.85rem; padding-left: 15px; color: var(--text-secondary); line-height: 1.6;">
+                        <li><strong>Nivel 1 (Alto Rendimiento):</strong> Const: $80M | Mant: $25M/temp | Cap: 20 jugadores | Desbloquea en 1ª División.</li>
+                        <li><strong>Nivel 2 (Mediano Rendimiento):</strong> Const: $35M | Mant: $12M/temp | Cap: 12 jugadores | Desbloquea en 2ª División.</li>
+                        <li><strong>Nivel 3 (Bajo Rendimiento):</strong> Const: $10M | Mant: $5M/temp | Cap: 6 jugadores | Desbloquea en 3ª División.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
 
         <!-- PESTAÑA 5: FINANZAS Y PATROCINIOS -->
         <main id="finanzas" class="tab-content">
@@ -290,7 +370,6 @@
                             </thead>
                             <tbody>
                                 <tr><td>Merchandising (Alto / Med / Bajo)</td><td>25M / 20M / 15M</td><td>15M / 12M / 8M</td><td>10M / 6M / 4M</td></tr>
-                                <tr><td>Sponsors Principales (Ranking)</td><td>Top 1-50 (170M)</td><td>Top 51-300 (120M-70M)</td><td>301+ (20M)</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -330,6 +409,22 @@
                                 <tr><td>Profesional / Grande</td><td>21 MDE</td><td>6 MDE</td></tr>
                                 <tr><td>Básico / Mediano</td><td>14 MDE</td><td>3 MDE</td></tr>
                                 <tr><td>Pequeño</td><td>7 MDE</td><td>---</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tarjeta: Costo de Creación de Instalaciones y Estadios -->
+                    <div class="card-table">
+                        <h3>🏗️ Costo Crear Instalación y Estadio</h3>
+                        <table>
+                            <thead>
+                                <tr><th>Tipo / Nivel</th><th>Gasto de Construcción</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Básico (Nivel 3)</td><td>10 MDE</td></tr>
+                                <tr><td>Profesional (Nivel 2)</td><td>25 MDE</td></tr>
+                                <tr><td>Élite (Nivel 1)</td><td>50 MDE</td></tr>
+                                <tr><td>Ampliación / Nuevo Estadio</td><td>50 MDE</td></tr>
                             </tbody>
                         </table>
                     </div>
