@@ -108,6 +108,8 @@ function filterDivision(div) {
 function getBadge(estatus) {
     switch (estatus) {
         case 'champions': return '<span class="badge champions">🏆 Champions</span>';
+        case 'europa': return '<span class="badge champions">🏆 Europa</span>';
+        case 'conference': return '<span class="badge champions">🏆 Conference</span>';
         case 'liguilla': return '<span class="badge liguilla">🔵 Liguilla</span>';
         case 'ascenso': return '<span class="badge ascenso">🟢 Ascenso</span>';
         case 'descenso': return '<span class="badge descenso">🔴 Riesgo/Descenso</span>';
